@@ -246,7 +246,7 @@ const server = http.createServer(async (req, res) => {
       const cleanInput = username.trim();
       const user = db.prepare("SELECT * FROM users WHERE (username = ? OR phone = ?) AND password = ? AND is_active = 1").get(cleanInput, cleanInput, password);
       if (!user) {
-        return sendError('Invalid credentials. Check username/mobile number and password.', 401);
+        return sendError('Wrong password or username', 401);
       }
 
       let mechanic = null;

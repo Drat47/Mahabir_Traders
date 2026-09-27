@@ -67,13 +67,21 @@ async function apiFetch(endpoint, options = {}) {
 
   try {
     const res = await fetch(endpoint, { ...options, headers });
+    let data = null;
+    try {
+      data = await res.json();
+    } catch (e) {}
+
     if (res.status === 401) {
+      if (endpoint.includes('/api/auth/login')) {
+        throw new Error(data?.error || 'Wrong password or username');
+      }
       logout(false);
-      throw new Error('Session expired. Please log in again.');
+      throw new Error(data?.error || 'Session expired. Please log in again.');
     }
-    const data = await res.json();
+
     if (!res.ok) {
-      throw new Error(data.error || 'Server error');
+      throw new Error(data?.error || 'Server error');
     }
     return data;
   } catch (err) {
