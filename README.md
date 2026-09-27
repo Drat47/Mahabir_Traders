@@ -212,7 +212,6 @@ This application is ready for deployment on [Render](https://render.com).
 ---
 
 ## 👨‍💻 Author & Maintenance
-* **Proprietor:** **Rajesh Kumar Khemka** (📞 9955594571)
 * **Author / Developer:** **Dharmesh Singhal**
 * **Repository:** [https://github.com/Drat47/Mahabir_Traders](https://github.com/Drat47/Mahabir_Traders)
 * **Application:** Mahabir Traders Loyalty & Field Audit System

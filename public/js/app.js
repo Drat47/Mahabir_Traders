@@ -587,28 +587,12 @@ function renderLoginView(tab = 'login', prefillPhone = '') {
   if (mobileDrawer) mobileDrawer.innerHTML = '';
 
   main.innerHTML = `
-    <div style="max-width: 520px; margin: 2vh auto; padding: 12px;">
-      <!-- Mahabir Traders Official Top Banner Photo -->
-      <div class="home-top-banner-wrap" onclick="openBillViewerModal('/images/mahabir_traders_banner.jpg', 'Mahabir Traders')" title="Click to view full photo" style="cursor:pointer;">
-        <img src="/images/mahabir_traders_banner.jpg" class="home-top-banner-img" alt="Mahabir Traders - Building Materials & Construction Supplies">
-      </div>
-
-      <div class="card" style="padding: 22px; box-shadow: var(--shadow-lg);">
-        <div style="text-align: center; margin-bottom: 16px;">
-          <h2 style="font-size: 22px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; margin: 0 0 2px 0;">MAHABIR TRADERS</h2>
-          <p style="font-size: 13px; font-weight: 600; color: var(--accent); margin-top: 2px;">Building Materials & Construction Supplies</p>
-
-          <!-- Contact Badges -->
-          <div class="store-contact-badges">
-            <span class="store-contact-pill">👤 Rajesh Kumar Khemka</span>
-            <a href="tel:9955594571" class="store-contact-pill highlight">📞 9955594571</a>
-            <span class="store-contact-pill">📍 Block Road, Rosera</span>
-          </div>
-
-          <!-- Hindi Tagline Banner -->
-          <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-left:3px solid #F59E0B;padding:8px 12px;border-radius:var(--radius-sm);font-size:12px;color:#334155;line-height:1.4;margin-top:8px;text-align:left;">
-            हमारे यहाँ मकान संबंधित सभी सामान जैसे – <b>Kajaria Tiles</b>, <b>Ashirwad Pipes</b>, <b>Kamdhenu Rods</b> इत्यादि सामान उचित मूल्य पर मिलते हैं।
-          </div>
+    <div style="max-width: 520px; margin: 4vh auto; padding: 12px;">
+      <div class="card" style="padding: 26px; box-shadow: var(--shadow-lg);">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <div style="font-size: 38px; margin-bottom: 8px;">🏪</div>
+          <h2 style="font-size: 22px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; margin: 0 0 4px 0;">MAHABIR TRADERS</h2>
+          <p style="font-size: 13px; font-weight: 600; color: var(--accent); margin-top: 2px;">Mechanic Loyalty, Rewards & Field Audit System</p>
         </div>
 
         <button type="button" class="btn btn-success" id="pwa-install-banner-btn" style="width:100%;margin-bottom:14px;" onclick="triggerPwaInstall()">📲 Install App on Phone (1-Tap)</button>
@@ -947,120 +931,8 @@ async function logout(callApi = true) {
 }
 
 /* =========================================================================
-   MAHABIR TRADERS - ABOUT STORE COMPONENT & VIEW (ALL DASHBOARDS)
+   ABOUT SYSTEM VIEW
    ========================================================================= */
-
-function renderAboutStoreCardHtml() {
-  return `
-    <div class="about-store-card">
-      <div class="about-banner-container" onclick="openBillViewerModal('/images/mahabir_traders_banner.jpg', 'Mahabir Traders')" style="cursor:pointer;" title="Click to view full banner photo">
-        <img src="/images/mahabir_traders_banner.jpg" class="about-banner-img" alt="Mahabir Traders - Building Materials & Construction Supplies">
-      </div>
-
-      <div class="about-store-header">
-        <div>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span style="font-size:26px;">🏪</span>
-            <div>
-              <h2 style="font-size:20px;font-weight:800;color:var(--primary);margin:0;letter-spacing:0.5px;">MAHABIR TRADERS</h2>
-              <p style="font-size:13px;font-weight:600;color:var(--accent);margin:2px 0 0 0;">Building Materials & Construction Supplies</p>
-            </div>
-          </div>
-        </div>
-
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <a href="tel:9955594571" class="btn btn-success btn-sm" style="text-decoration:none;">📞 Call: 9955594571</a>
-          <a href="https://wa.me/919955594571" target="_blank" class="btn btn-secondary btn-sm" style="background:#DCFCE7;color:#166534;text-decoration:none;">💬 WhatsApp</a>
-        </div>
-      </div>
-
-      <!-- Proprietor & Location Details -->
-      <div style="background:#F8FAFC;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;font-size:13px;">
-        <div>
-          <span style="color:var(--text-muted);display:block;font-size:11px;font-weight:700;text-transform:uppercase;">Proprietor / Contact Person</span>
-          <b style="color:var(--primary);font-size:14px;">👤 Rajesh Kumar Khemka</b>
-        </div>
-        <div>
-          <span style="color:var(--text-muted);display:block;font-size:11px;font-weight:700;text-transform:uppercase;">Phone / Mobile</span>
-          <b style="color:var(--primary);font-size:14px;">📞 9955594571</b>
-        </div>
-        <div style="grid-column: 1 / -1;">
-          <span style="color:var(--text-muted);display:block;font-size:11px;font-weight:700;text-transform:uppercase;">Store Address</span>
-          <b style="color:var(--text);">📍 Block Road, Rosera, Samastipur (Bihar)</b>
-        </div>
-      </div>
-
-      <!-- Hindi Store Notice / Assurance Box -->
-      <div class="store-hindi-tagline-box">
-        <div style="font-size:28px;">🏠</div>
-        <div class="store-hindi-tagline-text">
-          "हमारे यहाँ मकान संबंधित सभी सामान जैसे – <b>Kajaria Tiles</b>, <b>Ashirwad Pipes</b>, <b>Kamdhenu Rods</b> इत्यादि सामान उचित मूल्य पर मिलते हैं।"
-        </div>
-      </div>
-
-      <!-- Authorised Dealer Brands -->
-      <div style="margin-top:16px;">
-        <div style="font-size:12px;font-weight:800;color:#92400E;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
-          <span>⭐ AUTHORISED DEALER</span>
-        </div>
-        <div class="about-brands-grid">
-          <div class="about-brand-card auth-dealer">
-            <div class="about-brand-icon">🏗️</div>
-            <div class="about-brand-info">
-              <div class="about-brand-name">TATA TISCON</div>
-              <div class="about-brand-sub">Joy of Building · TISCON 555SD TMT Bars</div>
-            </div>
-          </div>
-          <div class="about-brand-card auth-dealer">
-            <div class="about-brand-icon">🧱</div>
-            <div class="about-brand-info">
-              <div class="about-brand-name">UltraTech CEMENT</div>
-              <div class="about-brand-sub">The Engineer's Choice · High Durability</div>
-            </div>
-          </div>
-          <div class="about-brand-card auth-dealer">
-            <div class="about-brand-icon">🎨</div>
-            <div class="about-brand-info">
-              <div class="about-brand-name">asianpaints</div>
-              <div class="about-brand-sub">ap asianpaints · Complete Protective Coatings</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Also Available Products -->
-      <div style="margin-top:14px;">
-        <div style="font-size:12px;font-weight:800;color:var(--primary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
-          <span>📦 ALSO AVAILABLE</span>
-        </div>
-        <div class="about-brands-grid">
-          <div class="about-brand-card">
-            <div class="about-brand-icon">🪟</div>
-            <div class="about-brand-info">
-              <div class="about-brand-name">KAJARIA TILES</div>
-              <div class="about-brand-sub">हर घर की पसंद · Floor, Wall & Vitrified Tiles</div>
-            </div>
-          </div>
-          <div class="about-brand-card">
-            <div class="about-brand-icon">🚰</div>
-            <div class="about-brand-info">
-              <div class="about-brand-name">ASHIRWAD PIPES</div>
-              <div class="about-brand-sub">मजबूती और भरोसे का नाम · CPVC, UPVC & SWR</div>
-            </div>
-          </div>
-          <div class="about-brand-card">
-            <div class="about-brand-icon">🔩</div>
-            <div class="about-brand-info">
-              <div class="about-brand-name">KAMDHENU RODS</div>
-              <div class="about-brand-sub">मजबूत निर्माण की पहचान · High Strength Steel</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  `;
-}
 
 async function renderAboutView() {
   const main = document.getElementById('main-content');
@@ -1068,15 +940,26 @@ async function renderAboutView() {
     <div class="top-bar">
       <div>
         <h1 class="page-title">🏪 About Mahabir Traders</h1>
-        <p style="font-size:13px;color:var(--text-muted)">Authorized Dealership, Contact Information & Construction Materials Store</p>
-      </div>
-      <div class="top-actions">
-        <a href="tel:9955594571" class="btn btn-success btn-sm">📞 Call: 9955594571</a>
-        <a href="https://wa.me/919955594571" target="_blank" class="btn btn-secondary btn-sm" style="background:#DCFCE7;color:#166534;">💬 WhatsApp</a>
+        <p style="font-size:13px;color:var(--text-muted)">Mechanic Loyalty, Rewards & Field Audit System</p>
       </div>
     </div>
 
-    ${renderAboutStoreCardHtml()}
+    <div class="card" style="max-width:720px;padding:24px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+        <span style="font-size:32px;">🏪</span>
+        <div>
+          <h2 style="font-size:20px;font-weight:800;color:var(--primary);margin:0;">Mahabir Traders</h2>
+          <p style="font-size:13px;color:var(--text-muted);margin:2px 0 0 0;">Loyalty & Field Audit Platform</p>
+        </div>
+      </div>
+      <p style="font-size:14px;line-height:1.6;color:var(--text-muted);">
+        Welcome to the official Mahabir Traders Loyalty Platform. This portal is designed to streamline field bill audits, track mechanic rewards and points, manage promotional redemptions, and maintain transparent business ledgers.
+      </p>
+      <div style="background:#F8FAFC;padding:16px;border-radius:var(--radius-sm);margin-top:16px;font-size:13px;border:1px solid var(--border);">
+        <b>Version:</b> 1.0.0 (Multi-Device PWA)<br>
+        <b>Core Modules:</b> Worker Directory, Bill Camera Verification, Point Recovery Math, Rewards Catalog, Audit Logs
+      </div>
+    </div>
   `;
 }
 
@@ -1090,9 +973,6 @@ async function renderAdminDashboard() {
   AppState.stats = stats;
 
   main.innerHTML = `
-    <!-- Top-Most Area: Mahabir Traders Official Store Banner & Dealership Details -->
-    ${renderAboutStoreCardHtml()}
-
     <div class="top-bar">
       <div>
         <h1 class="page-title">Operations & Audit Dashboard</h1>
@@ -1247,9 +1127,6 @@ async function renderBillVerifications() {
   const purchases = res.purchases || [];
 
   main.innerHTML = `
-    <!-- Top-Most Area: Mahabir Traders Official Store Banner & Dealership Details -->
-    ${renderAboutStoreCardHtml()}
-
     <div class="top-bar">
       <div>
         <h1 class="page-title">🔍 Mobile Audit & Verification Queue</h1>
@@ -4065,9 +3942,6 @@ async function renderMechanicDashboard() {
   const purchases = purRes.purchases || [];
 
   main.innerHTML = `
-    <!-- Top-Most Area: Mahabir Traders Official Store Banner & Dealership Details -->
-    ${renderAboutStoreCardHtml()}
-
     <div class="top-bar">
       <div>
         <h1 class="page-title">Welcome, ${AppState.user.name}</h1>
