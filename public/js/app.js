@@ -301,6 +301,7 @@ function renderMobileDrawer() {
   if (role === 'admin') {
     navItems = [
       { id: 'dash', icon: '📊', label: 'Dashboard Overview' },
+      { id: 'about', icon: '🏪', label: 'About Mahabir Traders' },
       { id: 'verifications', icon: '🔍', label: 'Bill Audits Queue', count: AppState.stats.pendingBills || 0 },
       { id: 'mechanics', icon: '👷', label: 'Mechanics Directory' },
       { id: 'purchases', icon: '🧾', label: 'Purchases & Bills' },
@@ -310,29 +311,28 @@ function renderMobileDrawer() {
       { id: 'reports', icon: '📈', label: 'Reports & Leaderboard' },
       { id: 'audit_logs', icon: '📋', label: 'Audit Trail Logs' },
       { id: 'notifications', icon: '🔔', label: 'Notifications' },
-      { id: 'about', icon: '🏪', label: 'About Mahabir Traders' },
       { id: 'settings', icon: '⚙️', label: 'Settings' }
     ];
   } else if (role === 'auditor') {
     navItems = [
       { id: 'dash', icon: '📊', label: 'Field Overview' },
+      { id: 'about', icon: '🏪', label: 'About Mahabir Traders' },
       { id: 'audit_feed', icon: '🔍', label: 'Bill Audit Queue', count: AppState.stats.pendingBills || 0 },
       { id: 'submit_purchase', icon: '📸', label: 'Snap & Log Bill' },
       { id: 'mechanics', icon: '👷', label: 'Mechanics Directory' },
       { id: 'purchases', icon: '🧾', label: 'Audited Purchases' },
       { id: 'returns', icon: '↩️', label: 'Returns & Reversals' },
       { id: 'audit_logs', icon: '📋', label: 'My Audit Trail' },
-      { id: 'about', icon: '🏪', label: 'About Mahabir Traders' },
       { id: 'notifications', icon: '🔔', label: 'Notifications' }
     ];
   } else {
     navItems = [
       { id: 'dash', icon: '🏠', label: 'My Dashboard' },
+      { id: 'about', icon: '🏪', label: 'About Mahabir Traders' },
       { id: 'submit_purchase', icon: '📸', label: 'Submit Purchase & Bill' },
       { id: 'purchases', icon: '🧾', label: 'My Purchase Records' },
       { id: 'rewards', icon: '🎁', label: 'Rewards & Claim' },
       { id: 'redemptions', icon: '🏆', label: 'Redemption History' },
-      { id: 'about', icon: '🏪', label: 'About Mahabir Traders' },
       { id: 'notifications', icon: '🔔', label: 'Notifications' }
     ];
   }
@@ -474,6 +474,7 @@ function renderSidebar() {
   if (role === 'admin') {
     navItems = [
       { id: 'dash', label: '📊 Dashboard' },
+      { id: 'about', label: '🏪 About Store' },
       { id: 'verifications', label: '🔍 Bill Audits', count: AppState.stats.pendingBills || 0 },
       { id: 'mechanics', label: '👷 Mechanics' },
       { id: 'purchases', label: '🧾 Purchases' },
@@ -482,28 +483,27 @@ function renderSidebar() {
       { id: 'redemptions', label: '🏆 Redemptions', count: AppState.stats.pendingRedemptions || 0 },
       { id: 'reports', label: '📈 Reports & Rankings' },
       { id: 'audit_logs', label: '📋 Audit Logs' },
-      { id: 'about', label: '🏪 About Store' },
       { id: 'settings', label: '⚙️ Settings' }
     ];
   } else if (role === 'auditor') {
     navItems = [
       { id: 'dash', label: '📊 Field Overview' },
+      { id: 'about', label: '🏪 About Store' },
       { id: 'audit_feed', label: '🔍 Audit Queue', count: AppState.stats.pendingBills || 0 },
       { id: 'submit_purchase', label: '📸 Snap & Log Bill' },
       { id: 'mechanics', label: '👷 Mechanics Directory' },
       { id: 'purchases', label: '🧾 Audited Purchases' },
       { id: 'returns', label: '↩️ Returns & Reversals' },
-      { id: 'audit_logs', label: '📋 My Audit Logs' },
-      { id: 'about', label: '🏪 About Store' }
+      { id: 'audit_logs', label: '📋 My Audit Logs' }
     ];
   } else {
     navItems = [
       { id: 'dash', label: '🏠 My Dashboard' },
+      { id: 'about', label: '🏪 About Store' },
       { id: 'submit_purchase', label: '📸 Submit Purchase' },
       { id: 'purchases', label: '🧾 My Purchases' },
       { id: 'rewards', label: '🎁 Rewards & Redeem' },
       { id: 'redemptions', label: '🏆 Redemption History' },
-      { id: 'about', label: '🏪 About Store' },
       { id: 'notifications', label: '🔔 Notifications' }
     ];
   }
@@ -937,8 +937,49 @@ async function logout(callApi = true) {
 }
 
 /* =========================================================================
-   ABOUT SYSTEM VIEW
+   ABOUT SYSTEM VIEW & SHOWCASE LIGHTBOX
    ========================================================================= */
+
+function openShowcaseLightbox(imgSrc = '/images/mahabir_about_showcase.png') {
+  let modal = document.getElementById('about-lightbox-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'about-lightbox-modal';
+    modal.className = 'lightbox-modal';
+    modal.onclick = (e) => {
+      if (e.target === modal || e.target.classList.contains('lightbox-close')) {
+        closeShowcaseLightbox();
+      }
+    };
+    document.body.appendChild(modal);
+  }
+  modal.innerHTML = `
+    <div class="lightbox-content" onclick="event.stopPropagation()">
+      <button class="lightbox-close" onclick="closeShowcaseLightbox()" title="Close Fullscreen">✕</button>
+      <img src="${imgSrc}" class="lightbox-img" alt="Mahabir Traders Showroom Walkthrough & Store Catalog" />
+    </div>
+  `;
+  modal.style.display = 'flex';
+}
+
+function closeShowcaseLightbox() {
+  const modal = document.getElementById('about-lightbox-modal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+}
+
+function copyGstinToClipboard(gstin = '10AHBPK0437M1ZF') {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(gstin).then(() => {
+      showToast(`GSTIN copied to clipboard: ${gstin}`, 'success');
+    }).catch(() => {
+      prompt('Copy GSTIN:', gstin);
+    });
+  } else {
+    prompt('Copy GSTIN:', gstin);
+  }
+}
 
 async function renderAboutView() {
   const main = document.getElementById('main-content');
@@ -946,24 +987,183 @@ async function renderAboutView() {
     <div class="top-bar">
       <div>
         <h1 class="page-title">🏪 About Mahabir Traders</h1>
-        <p style="font-size:13px;color:var(--text-muted)">Mechanic Loyalty, Rewards & Field Audit System</p>
+        <p style="font-size:13px;color:var(--text-muted)">Authorized Hub for Building Materials, Sanitaryware & Vitrified Tiles · Rosera, Samastipur</p>
+      </div>
+      <div class="top-actions">
+        <a href="tel:+919955594571" class="btn btn-primary btn-sm">📞 Call Rajesh Ji</a>
+        <a href="https://wa.me/919955594571?text=Hello%20Rajesh%20Ji%2C%20I%20am%20contacting%20you%20from%20Mahabir%20Traders%20App" target="_blank" class="btn btn-secondary btn-sm" style="background:#25D366;color:#ffffff;border:none;">💬 WhatsApp</a>
       </div>
     </div>
 
-    <div class="card" style="max-width:720px;padding:24px;">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-        <span style="font-size:32px;">🏪</span>
-        <div>
-          <h2 style="font-size:20px;font-weight:800;color:var(--primary);margin:0;">Mahabir Traders</h2>
-          <p style="font-size:13px;color:var(--text-muted);margin:2px 0 0 0;">Loyalty & Field Audit Platform</p>
+    <div class="about-grid-layout">
+      <!-- Left Column: Showcase Flyer Poster -->
+      <div class="about-poster-card">
+        <div class="about-poster-img-wrap" onclick="openShowcaseLightbox('/images/mahabir_about_showcase.png')">
+          <img src="/images/mahabir_about_showcase.png" alt="Mahabir Traders Showroom & Store Poster" class="about-poster-img" />
+          <div class="about-poster-zoom-hint">
+            <span>🔍</span> Tap / Click to Enlarge
+          </div>
+        </div>
+        <div class="about-poster-footer">
+          <button class="btn btn-secondary btn-sm" style="width:100%;" onclick="openShowcaseLightbox('/images/mahabir_about_showcase.png')">
+            🔍 View Full Poster (HD)
+          </button>
+          <a href="/images/mahabir_about_showcase.png" download="Mahabir_Traders_Showcase.png" class="btn btn-secondary btn-sm" title="Download Image">
+            ⬇️
+          </a>
         </div>
       </div>
-      <p style="font-size:14px;line-height:1.6;color:var(--text-muted);">
-        Welcome to the official Mahabir Traders Loyalty Platform. This portal is designed to streamline field bill audits, track mechanic rewards and points, manage promotional redemptions, and maintain transparent business ledgers.
-      </p>
-      <div style="background:#F8FAFC;padding:16px;border-radius:var(--radius-sm);margin-top:16px;font-size:13px;border:1px solid var(--border);">
-        <b>Version:</b> 1.0.0 (Multi-Device PWA)<br>
-        <b>Core Modules:</b> Worker Directory, Bill Camera Verification, Point Recovery Math, Rewards Catalog, Audit Logs
+
+      <!-- Right Column: Interactive Details & Walkthrough -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        
+        <!-- Store Identity & GST Card -->
+        <div class="card" style="padding:20px;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+            <div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:28px;">🏪</span>
+                <h2 style="font-size:22px;font-weight:800;color:var(--primary);margin:0;">Mahabir Traders</h2>
+              </div>
+              <div style="font-size:14px;font-weight:700;color:#0284C7;margin-top:2px;">महावीर ट्रेडर्स · Rosera / Block Road</div>
+            </div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <span class="badge" style="background:#FEF3C7;color:#92400E;border:1px solid #FDE68A;font-weight:700;">⭐ Trusted For Decades</span>
+              <span class="badge" style="background:#E0E7FF;color:#3730A3;border:1px solid #C7D2FE;font-weight:700;">🏢 Authorized Hub</span>
+            </div>
+          </div>
+
+          <p style="font-size:15px;font-weight:700;color:#1E293B;line-height:1.4;margin-bottom:8px;">
+            Building Strong Foundations.
+          </p>
+          <p style="font-size:13.5px;line-height:1.6;color:var(--text-muted);margin:0 0 14px 0;">
+            Crafting modern sanitary & architectural living spaces across Samastipur & North Bihar. Single-window authorized source for certified steel, cement, designer tiles, and luxury sanitaryware in Rosera.
+          </p>
+
+          <!-- GST Bar -->
+          <div style="display:flex;align-items:center;justify-content:space-between;background:#F1F5F9;padding:10px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);flex-wrap:wrap;gap:8px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:16px;">🧾</span>
+              <span style="font-size:13px;font-weight:700;color:#334155;">GSTIN:</span>
+              <code style="font-size:13.5px;font-weight:800;color:#0F172A;letter-spacing:0.5px;">10AHBPK0437M1ZF</code>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="copyGstinToClipboard('10AHBPK0437M1ZF')" style="padding:4px 10px;font-size:12px;">
+              📋 Copy GSTIN
+            </button>
+          </div>
+        </div>
+
+        <!-- Leadership & Contact Details -->
+        <div class="card" style="padding:20px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+            <div style="width:48px;height:48px;border-radius:50%;background:#0B132B;color:#38BDF8;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;flex-shrink:0;">
+              👤
+            </div>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:#D97706;text-transform:uppercase;letter-spacing:0.5px;">Leadership & Quality Promise</div>
+              <h3 style="font-size:18px;font-weight:800;color:#0F172A;margin:2px 0 0 0;">Rajesh Kumar Khemka</h3>
+              <div style="font-size:12.5px;color:var(--text-muted);">Proprietor & Managing Director</div>
+            </div>
+          </div>
+
+          <!-- Proprietor Quote Box -->
+          <div style="background:#EFF6FF;border-left:4px solid #3B82F6;padding:12px 14px;border-radius:4px;margin-bottom:16px;">
+            <div style="font-size:11px;font-weight:700;color:#1D4ED8;text-transform:uppercase;margin-bottom:4px;">💬 Proprietor's Message</div>
+            <p style="font-size:13px;font-style:italic;color:#1E3A8A;margin:0;line-height:1.5;">
+              "Delivering 100% factory-grade building materials and modern sanitary designs with complete integrity and wholesale pricing."
+            </p>
+          </div>
+
+          <!-- Action Contact Grid -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+            <a href="tel:+919955594571" class="btn btn-primary" style="display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;padding:10px 12px;font-size:13px;">
+              <span>📞</span>
+              <span>Call Rajesh Ji</span>
+            </a>
+            <a href="https://wa.me/919955594571?text=Hello%20Rajesh%20Ji%2C%20I%20am%20contacting%20you%20from%20Mahabir%20Traders%20App" target="_blank" class="btn btn-secondary" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:#ffffff;border:none;text-decoration:none;padding:10px 12px;font-size:13px;">
+              <span>💬</span>
+              <span>WhatsApp</span>
+            </a>
+          </div>
+
+          <!-- Store Location -->
+          <div style="display:flex;align-items:flex-start;gap:10px;background:#F8FAFC;padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border);">
+            <span style="font-size:18px;margin-top:2px;">📍</span>
+            <div style="flex:1;">
+              <div style="font-size:12px;font-weight:700;color:#475569;">Store Location & Dispatch Point:</div>
+              <div style="font-size:13px;font-weight:600;color:#0F172A;margin-top:2px;">Block Road, Rosera, Samastipur District, Bihar — 848210</div>
+            </div>
+            <a href="https://maps.google.com/?q=Mahabir+Traders+Block+Road+Rosera+Samastipur+Bihar+848210" target="_blank" class="btn btn-secondary btn-sm" style="padding:4px 8px;font-size:11px;flex-shrink:0;">
+              🗺️ Map
+            </a>
+          </div>
+        </div>
+
+        <!-- Showroom Display & Studio Walkthrough (3 Zones) -->
+        <div class="card" style="padding:20px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+            <div>
+              <div style="font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Walkthrough Experience</div>
+              <h3 style="font-size:17px;font-weight:800;color:#0F172A;margin:2px 0 0 0;">Showroom Display & Studio</h3>
+            </div>
+            <span class="badge" style="background:#EFF6FF;color:#1D4ED8;border:1px solid #BFDBFE;font-weight:700;">3 Experience Zones</span>
+          </div>
+
+          <!-- Zone 01 -->
+          <div class="experience-zone-card">
+            <div class="zone-badge">🚿 ZONE 01 · VANITY STUDIO</div>
+            <h4 style="font-size:14px;font-weight:700;color:#0F172A;margin:0 0 4px 0;">Designer Wash Basins & Mirror Displays</h4>
+            <p style="font-size:12.5px;color:var(--text-muted);margin:0;line-height:1.5;">
+              Dual-tone gloss ceramic basins, luxury tabletop sinks, LED mirrors, and designer chrome fittings.
+            </p>
+          </div>
+
+          <!-- Zone 02 -->
+          <div class="experience-zone-card" style="border-left-color:#F59E0B;">
+            <div class="zone-badge" style="background:#FEF3C7;color:#92400E;">🧱 ZONE 02 · SLABS & TILES</div>
+            <h4 style="font-size:14px;font-weight:700;color:#0F172A;margin:0 0 4px 0;">Full-Height Sliding Vitrified Tile Racks</h4>
+            <p style="font-size:12.5px;color:var(--text-muted);margin:0;line-height:1.5;">
+              Large-format PGVT glazed vitrified slabs, anti-skid floor tiles, and elevation displays.
+            </p>
+          </div>
+
+          <!-- Zone 03 -->
+          <div class="experience-zone-card" style="border-left-color:#10B981;">
+            <div class="zone-badge" style="background:#D1FAE5;color:#065F46;">🚽 ZONE 03 · SANITARY MART</div>
+            <h4 style="font-size:14px;font-weight:700;color:#0F172A;margin:0 0 4px 0;">Sanitaryware & Closets Showroom</h4>
+            <p style="font-size:12.5px;color:var(--text-muted);margin:0;line-height:1.5;">
+              Rimless flushing EWCs, wall-hung concealed cisterns, and ceramic pedestal basins.
+            </p>
+          </div>
+
+          <!-- Trust Pillars Grid -->
+          <div class="trust-pillar-grid">
+            <div class="trust-pillar-item">
+              <div style="font-size:22px;margin-bottom:4px;">🛡️</div>
+              <div style="font-size:12.5px;font-weight:700;color:#0F172A;">100% Genuine</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Authorized Mill Stock</div>
+            </div>
+            <div class="trust-pillar-item">
+              <div style="font-size:22px;margin-bottom:4px;">🚚</div>
+              <div style="font-size:12.5px;font-weight:700;color:#0F172A;">Bulk Dispatch</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Job-Site Logistics</div>
+            </div>
+            <div class="trust-pillar-item">
+              <div style="font-size:22px;margin-bottom:4px;">🧾</div>
+              <div style="font-size:12.5px;font-weight:700;color:#0F172A;">GST Invoicing</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Transparent Billing</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- System Platform Information -->
+        <div class="card" style="padding:16px;background:#F8FAFC;border:1px solid var(--border);">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:12.5px;color:var(--text-muted);">
+            <div><b>App Version:</b> 1.0.0 (Multi-Device PWA)</div>
+            <div><b>Platform:</b> Mechanic Loyalty, Rewards & Field Audit System</div>
+          </div>
+        </div>
+
       </div>
     </div>
   `;
