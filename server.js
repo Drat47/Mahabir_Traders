@@ -556,7 +556,15 @@ const server = http.createServer(async (req, res) => {
       if (!user || (user.role !== 'admin' && user.role !== 'auditor')) return sendError('Forbidden', 403);
 
       const body = await parseJsonBody(req);
-      const { name, phone, address, trade_type, uid, password } = body;
+      const { name, phone, trade_type, address, uid, password } = body;
+
+      if (!name || !name.trim() || !uid || !uid.trim() || !address || !address.trim() || !trade_type) {
+        return sendError('Name, User ID, Trade, and Address are required', 400);
+      }
+
+      if (!password || password.trim().length < 4) {
+        return sendError('Password is mandatory and must be at least 4 characters long', 400);
+      }
 
       const cleanPhone = (phone || '').replace(/[^0-9]/g, '');
       if (!cleanPhone || cleanPhone.length !== 10) {

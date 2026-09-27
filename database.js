@@ -30,7 +30,7 @@ function initDatabase() {
       phone TEXT NOT NULL,
       address TEXT NOT NULL,
       trade_type TEXT NOT NULL,
-      password TEXT NOT NULL DEFAULT 'mechanic123',
+      password TEXT NOT NULL,
       available_points INTEGER DEFAULT 0,
       lifetime_points INTEGER DEFAULT 0,
       recovery_points INTEGER DEFAULT 0,

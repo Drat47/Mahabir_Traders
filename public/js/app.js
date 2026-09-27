@@ -599,8 +599,8 @@ function renderLoginView(tab = 'login', prefillPhone = '') {
             </div>
             
             <div class="form-group">
-              <label>Password</label>
-              <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+              <label>Password <span style="color:var(--danger)">*</span></label>
+              <input type="password" id="login-password" placeholder="Enter your password" required autocomplete="current-password">
             </div>
 
             <button type="submit" class="btn btn-primary btn-lg" id="login-btn" style="margin-top:6px;">Secure Login</button>
@@ -1938,12 +1938,18 @@ function openAddMechanicModal() {
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label>Login User ID</label>
+              <label>Login User ID <span style="color:var(--danger)">*</span></label>
               <input type="text" id="new-m-uid" required placeholder="e.g. MEC1007">
             </div>
             <div class="form-group">
-              <label>Password</label>
-              <input type="password" id="new-m-pw" required value="mechanic123">
+              <label>Create Password <span style="color:var(--danger)">*</span></label>
+              <input type="password" id="new-m-pw" required minlength="4" placeholder="Enter password (min 4 chars)" autocomplete="new-password">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Confirm Password <span style="color:var(--danger)">*</span></label>
+              <input type="password" id="new-m-confirm-pw" required minlength="4" placeholder="Re-enter password" autocomplete="new-password">
             </div>
           </div>
           <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;">
@@ -1968,13 +1974,23 @@ async function handleAddMechanicSubmit(e) {
     return showToast('Mechanic mobile number is mandatory and must be exactly 10 digits', 'error');
   }
 
+  const pw = document.getElementById('new-m-pw') ? document.getElementById('new-m-pw').value : '';
+  const confirmPw = document.getElementById('new-m-confirm-pw') ? document.getElementById('new-m-confirm-pw').value : '';
+
+  if (!pw || pw.length < 4) {
+    return showToast('Password is mandatory and must be at least 4 characters long', 'error');
+  }
+  if (pw !== confirmPw) {
+    return showToast('Passwords do not match. Please re-enter.', 'error');
+  }
+
   const payload = {
     name: document.getElementById('new-m-name').value.trim(),
     phone: cleanPhone,
     trade_type: trade_type,
     address: document.getElementById('new-m-addr').value.trim(),
     uid: document.getElementById('new-m-uid').value.trim(),
-    password: document.getElementById('new-m-pw').value
+    password: pw
   };
 
   try {
@@ -4210,7 +4226,7 @@ async function renderSettingsView() {
               🔒 Current Password <span style="color:var(--danger)">*</span> (Required to save changes)
             </label>
             <div style="display:flex;gap:4px;">
-              <input type="password" id="admin-current-password" required placeholder="Enter current password (default: admin123)" autocomplete="current-password" style="background:#fff;">
+              <input type="password" id="admin-current-password" required placeholder="Enter current admin password" autocomplete="current-password" style="background:#fff;">
               <button type="button" class="btn btn-secondary btn-sm" onclick="togglePasswordVisibility('admin-current-password', this)" style="padding:4px 8px;">👁️</button>
             </div>
             <small style="color:#B45309;font-size:11px;display:block;margin-top:4px;">
