@@ -620,8 +620,8 @@ function renderLoginView(tab = 'login', prefillPhone = '') {
 
             <div class="form-group">
               <label>10-Digit Mobile Number <span style="color:var(--danger)">*</span></label>
-              <input type="tel" id="signup-phone" pattern="[0-9]{10}" placeholder="e.g. 9876543210" required autocomplete="tel">
-              <small style="color:var(--text-muted);font-size:11px;">You will use this mobile number to log in and receive points alerts.</small>
+              <input type="tel" id="signup-phone" pattern="[0-9]{10}" maxlength="10" minlength="10" inputmode="numeric" placeholder="10-digit mobile number" required autocomplete="tel">
+              <small style="color:var(--text-muted);font-size:11px;">Mandatory 10-digit mobile number for account login & points alerts.</small>
             </div>
 
             <div class="form-group">
@@ -700,8 +700,9 @@ async function handleSignUpSubmit(e) {
   const confirmPw = document.getElementById('signup-confirm-pw').value;
   const btn = document.getElementById('signup-btn');
 
-  if (phone.replace(/[^0-9]/g, '').length !== 10) {
-    return showToast('Please enter a valid 10-digit mobile number', 'error');
+  const cleanPhone = phone.replace(/[^0-9]/g, '');
+  if (!cleanPhone || cleanPhone.length !== 10) {
+    return showToast('Mobile number is mandatory and must be exactly 10 digits', 'error');
   }
 
   if (pw !== confirmPw) {
@@ -714,7 +715,7 @@ async function handleSignUpSubmit(e) {
   try {
     const res = await API.post('/api/auth/signup', {
       name,
-      phone,
+      phone: cleanPhone,
       trade_type,
       address,
       password: pw
@@ -757,8 +758,8 @@ function openForgotPasswordModal(initialPhone = '') {
           </p>
           <form onsubmit="handleSendOtpSubmit(event)">
             <div class="form-group">
-              <label>Registered Mobile Number</label>
-              <input type="tel" id="reset-phone-input" pattern="[0-9]{10}" value="${cleanInitialPhone}" placeholder="10-digit mobile number" required autofocus>
+              <label>Registered 10-Digit Mobile Number <span style="color:var(--danger)">*</span></label>
+              <input type="tel" id="reset-phone-input" pattern="[0-9]{10}" maxlength="10" minlength="10" inputmode="numeric" value="${cleanInitialPhone}" placeholder="10-digit mobile number" required autofocus>
             </div>
             <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;">
               <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
@@ -782,8 +783,9 @@ async function handleSendOtpSubmit(e) {
   const phone = phoneInput ? phoneInput.value.trim() : '';
   const btn = document.getElementById('send-otp-btn');
 
-  if (phone.replace(/[^0-9]/g, '').length !== 10) {
-    return showToast('Please enter a valid 10-digit mobile number', 'error');
+  const cleanPhone = phone.replace(/[^0-9]/g, '');
+  if (!cleanPhone || cleanPhone.length !== 10) {
+    return showToast('Mobile number is mandatory and must be exactly 10 digits', 'error');
   }
 
   btn.disabled = true;
@@ -1510,8 +1512,9 @@ async function renderSubmitPurchase() {
 
           <div class="form-row">
             <div class="form-group">
-              <label>Customer Phone Number (Optional)</label>
-              <input type="tel" id="pur-cust-phone" placeholder="10-digit mobile number (Optional)">
+              <label>Customer Mobile Number <span style="color:var(--danger)">*</span></label>
+              <input type="tel" id="pur-cust-phone" pattern="[0-9]{10}" maxlength="10" minlength="10" inputmode="numeric" placeholder="10-digit mobile number" required autocomplete="tel">
+              <small style="color:var(--text-muted);font-size:11px;">Mandatory 10-digit mobile number for audit verification.</small>
             </div>
             <div class="form-group">
               <label>Customer Address / Area (Optional)</label>
@@ -1741,6 +1744,11 @@ async function handlePurchaseSubmit(e) {
     return showToast('Customer Name is required', 'error');
   }
 
+  const cleanCustPhone = customerPhone.replace(/[^0-9]/g, '');
+  if (!cleanCustPhone || cleanCustPhone.length !== 10) {
+    return showToast('Customer mobile number is mandatory and must be exactly 10 digits', 'error');
+  }
+
   // Collect item rows (optional - can be catalog item or custom typed item)
   const itemRows = document.querySelectorAll('#items-container .purchase-item-row, #items-container .form-row');
   const items = [];
@@ -1911,8 +1919,8 @@ function openAddMechanicModal() {
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label>Phone Number</label>
-              <input type="tel" id="new-m-phone" required pattern="[0-9]{10}" placeholder="10-digit mobile number">
+              <label>10-Digit Mobile Number <span style="color:var(--danger)">*</span></label>
+              <input type="tel" id="new-m-phone" required pattern="[0-9]{10}" maxlength="10" minlength="10" inputmode="numeric" placeholder="10-digit mobile number">
             </div>
             <div class="form-group">
               <label>Trade / Specialty</label>
@@ -1953,10 +1961,16 @@ async function handleAddMechanicSubmit(e) {
   const customTrade = document.getElementById('new-m-type-custom') ? document.getElementById('new-m-type-custom').value.trim() : '';
   const selTrade = document.getElementById('new-m-type') ? document.getElementById('new-m-type').value : '';
   const trade_type = customTrade || (selTrade && selTrade !== '__custom__' ? selTrade : 'Others');
+  const phone = document.getElementById('new-m-phone').value.trim();
+  const cleanPhone = phone.replace(/[^0-9]/g, '');
+
+  if (!cleanPhone || cleanPhone.length !== 10) {
+    return showToast('Mechanic mobile number is mandatory and must be exactly 10 digits', 'error');
+  }
 
   const payload = {
     name: document.getElementById('new-m-name').value.trim(),
-    phone: document.getElementById('new-m-phone').value.trim(),
+    phone: cleanPhone,
     trade_type: trade_type,
     address: document.getElementById('new-m-addr').value.trim(),
     uid: document.getElementById('new-m-uid').value.trim(),
@@ -4161,8 +4175,9 @@ async function renderSettingsView() {
           </div>
 
           <div class="form-group">
-            <label>Admin Contact Mobile (Optional)</label>
-            <input type="tel" id="admin-phone-input" value="${AppState.user.phone || ''}" placeholder="10-digit mobile number" pattern="[0-9]{10}" autocomplete="tel">
+            <label>Admin Contact Mobile <span style="color:var(--danger)">*</span></label>
+            <input type="tel" id="admin-phone-input" value="${AppState.user.phone || ''}" placeholder="10-digit mobile number" pattern="[0-9]{10}" maxlength="10" minlength="10" inputmode="numeric" required autocomplete="tel">
+            <small style="color:var(--text-muted);font-size:11px;">Mandatory 10-digit mobile number for administrator alerts and password resets.</small>
           </div>
 
           <div style="background:#F8FAFC;border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin:16px 0;">
@@ -4237,6 +4252,11 @@ async function handleAdminCredentialsSubmit(e) {
 
   if (!username) {
     return showToast('Admin username cannot be empty', 'error');
+  }
+
+  const cleanPhone = phone.replace(/[^0-9]/g, '');
+  if (!cleanPhone || cleanPhone.length !== 10) {
+    return showToast('Admin mobile number is mandatory and must be exactly 10 digits', 'error');
   }
 
   if (newPassword && newPassword.length < 4) {

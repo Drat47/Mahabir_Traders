@@ -284,9 +284,9 @@ const server = http.createServer(async (req, res) => {
         return sendError('Name, mobile number, and password are required', 400);
       }
 
-      const cleanPhone = phone.replace(/[^0-9]/g, '');
-      if (cleanPhone.length !== 10) {
-        return sendError('Please enter a valid 10-digit mobile number', 400);
+      const cleanPhone = (phone || '').replace(/[^0-9]/g, '');
+      if (!cleanPhone || cleanPhone.length !== 10) {
+        return sendError('Mobile number is mandatory and must be exactly 10 digits', 400);
       }
 
       if (password.length < 4) {
@@ -351,13 +351,9 @@ const server = http.createServer(async (req, res) => {
       const body = await parseJsonBody(req);
       const { phone } = body;
 
-      if (!phone) {
-        return sendError('Mobile number is required', 400);
-      }
-
-      const cleanPhone = phone.replace(/[^0-9]/g, '');
-      if (cleanPhone.length !== 10) {
-        return sendError('Please enter a valid 10-digit mobile number', 400);
+      const cleanPhone = (phone || '').replace(/[^0-9]/g, '');
+      if (!cleanPhone || cleanPhone.length !== 10) {
+        return sendError('Mobile number is mandatory and must be exactly 10 digits', 400);
       }
 
       // Find user or mechanic with this phone
@@ -562,11 +558,12 @@ const server = http.createServer(async (req, res) => {
       const body = await parseJsonBody(req);
       const { name, phone, address, trade_type, uid, password } = body;
 
-      if (!name || !phone || !address || !trade_type || !uid || !password) {
-        return sendError('All fields are required', 400);
+      const cleanPhone = (phone || '').replace(/[^0-9]/g, '');
+      if (!cleanPhone || cleanPhone.length !== 10) {
+        return sendError('Mechanic mobile number is mandatory and must be exactly 10 digits', 400);
       }
 
-      const existing = db.prepare("SELECT id FROM mechanics WHERE uid = ? OR phone = ?").get(uid.trim(), phone.trim());
+      const existing = db.prepare("SELECT id FROM mechanics WHERE uid = ? OR phone = ?").get(uid.trim(), cleanPhone);
       if (existing) {
         return sendError('A mechanic with this User ID or Phone already exists', 400);
       }
@@ -575,12 +572,12 @@ const server = http.createServer(async (req, res) => {
         INSERT INTO mechanics (uid, name, phone, address, trade_type, password, available_points, lifetime_points, recovery_points, is_active)
         VALUES (?, ?, ?, ?, ?, ?, 0, 0, 0, 1)
       `);
-      const result = stmt.run(uid.trim(), name.trim(), phone.trim(), address.trim(), trade_type.trim(), password.trim());
+      const result = stmt.run(uid.trim(), name.trim(), cleanPhone, address.trim(), trade_type.trim(), password.trim());
       const mechId = Number(result.lastInsertRowid);
 
       // Create user login entry
       db.prepare("INSERT INTO users (username, password, role, name, phone, mechanic_id) VALUES (?, ?, 'mechanic', ?, ?, ?)")
-        .run(uid.trim(), password.trim(), name.trim(), phone.trim(), mechId);
+        .run(uid.trim(), password.trim(), name.trim(), cleanPhone, mechId);
 
       logAudit(user.name, user.role, 'Add Mechanic', `Registered new mechanic ${name} (${uid})`, req);
       return sendJson({ success: true, id: mechId, message: 'Mechanic registered successfully' });
@@ -758,12 +755,16 @@ const server = http.createServer(async (req, res) => {
         return sendError('Purchase Date and Customer Name are required', 400);
       }
 
+      const cleanPhone = (customerPhone || '').replace(/[^0-9]/g, '');
+      if (!cleanPhone || cleanPhone.length !== 10) {
+        return sendError('Customer mobile number is mandatory and must be exactly 10 digits', 400);
+      }
+
       const amt = parseFloat(totalAmount) || 0;
-      const cleanPhone = (customerPhone || '').trim();
       const cleanAddr = (customerAddress || '').trim();
       const validItems = Array.isArray(items) && items.length > 0 ? items : [{ productId: null, productName: 'General Materials / Store Purchase', quantity: 1, unit: 'Order' }];
 
-      // Duplicate check (only if customer phone and amount are provided)
+      // Duplicate check (mandatory 10-digit customer phone and amount)
       if (cleanPhone && amt > 0) {
         const duplicate = db.prepare(`
           SELECT id FROM purchases 
@@ -1570,7 +1571,11 @@ const server = http.createServer(async (req, res) => {
       }
 
       const finalName = (newName || adminRecord.name).trim();
-      const finalPhone = newPhone ? newPhone.trim() : adminRecord.phone;
+      const cleanPhone = (newPhone || adminRecord.phone || '').replace(/[^0-9]/g, '');
+      if (!cleanPhone || cleanPhone.length !== 10) {
+        return sendError('Admin mobile number is mandatory and must be exactly 10 digits', 400);
+      }
+      const finalPhone = cleanPhone;
 
       // Update in database
       db.prepare(`
