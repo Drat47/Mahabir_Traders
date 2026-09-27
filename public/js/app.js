@@ -76,8 +76,11 @@ async function apiFetch(endpoint, options = {}) {
       if (endpoint.includes('/api/auth/login')) {
         throw new Error(data?.error || 'Wrong password or username');
       }
+      // Silently clean up expired session without showing popup on initial page load
       logout(false);
-      throw new Error(data?.error || 'Session expired. Please log in again.');
+      const err = new Error(data?.error || 'Session expired');
+      err.isAuthCheck = true;
+      throw err;
     }
 
     if (!res.ok) {
@@ -85,12 +88,15 @@ async function apiFetch(endpoint, options = {}) {
     }
     return data;
   } catch (err) {
-    showToast(err.message, 'error');
+    // Only display popup if it's not a silent auth check or initial session load
+    if (!options.silent && !err.isAuthCheck && !endpoint.includes('/api/auth/me')) {
+      showToast(err.message, 'error');
+    }
     throw err;
   }
 }
 
-// Toast Notification System
+// Toast Notification System (1 Second Display)
 function showToast(msg, type = 'info') {
   let container = document.getElementById('toast-container');
   if (!container) {
@@ -118,10 +124,10 @@ function showToast(msg, type = 'info') {
 
   container.appendChild(toast);
 
-  // Auto-dismiss after 3.2 seconds
+  // Auto-dismiss after exactly 1 second (1000ms)
   const timer = setTimeout(() => {
     dismissToast(toast);
-  }, 3200);
+  }, 1000);
   toast._dismissTimer = timer;
 }
 
@@ -134,7 +140,7 @@ function dismissToast(toastEl) {
     if (toastEl && toastEl.parentNode) {
       toastEl.remove();
     }
-  }, 250);
+  }, 180);
 }
 
 // Format Currency
