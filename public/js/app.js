@@ -561,10 +561,7 @@ function renderLoginView(tab = 'login', prefillPhone = '') {
             </div>
             
             <div class="form-group">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-                <label style="margin-bottom:0;">Password</label>
-                <a class="auth-link" style="font-size:12px;" onclick="openForgotPasswordModal(document.getElementById('login-username').value)">Forgot Password?</a>
-              </div>
+              <label>Password</label>
               <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
             </div>
 
