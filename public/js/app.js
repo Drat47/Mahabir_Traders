@@ -996,28 +996,28 @@ async function renderAboutView() {
     </div>
 
     <div class="about-grid-layout">
-      <!-- Left Column: Showcase Flyer Poster -->
+      <!-- Left Column: Full Stitched Showcase Poster -->
       <div class="about-poster-card">
-        <div class="about-poster-img-wrap" onclick="openShowcaseLightbox('/images/mahabir_about_showcase.png')">
-          <img src="/images/mahabir_about_showcase.png" alt="Mahabir Traders Showroom & Store Poster" class="about-poster-img" />
+        <div class="about-poster-img-wrap" onclick="openShowcaseLightbox('/images/mahabir_about_stitch.png')">
+          <img src="/images/mahabir_about_stitch.png" alt="Mahabir Traders Full Showcase Poster" class="about-poster-img" />
           <div class="about-poster-zoom-hint">
-            <span>🔍</span> Tap / Click to Enlarge
+            <span>🔍</span> Tap to Enlarge Poster
           </div>
         </div>
         <div class="about-poster-footer">
-          <button class="btn btn-secondary btn-sm" style="width:100%;" onclick="openShowcaseLightbox('/images/mahabir_about_showcase.png')">
+          <button class="btn btn-secondary btn-sm" style="width:100%;" onclick="openShowcaseLightbox('/images/mahabir_about_stitch.png')">
             🔍 View Full Poster (HD)
           </button>
-          <a href="/images/mahabir_about_showcase.png" download="Mahabir_Traders_Showcase.png" class="btn btn-secondary btn-sm" title="Download Image">
+          <a href="/images/mahabir_about_stitch.png" download="Mahabir_Traders_Showcase.png" class="btn btn-secondary btn-sm" title="Download Image">
             ⬇️
           </a>
         </div>
       </div>
 
-      <!-- Right Column: Interactive Details & Walkthrough -->
+      <!-- Right Column: Interactive Details, Storefront & Live Gallery Walkthrough -->
       <div style="display:flex;flex-direction:column;gap:16px;">
         
-        <!-- Store Identity & GST Card -->
+        <!-- Store Identity & Storefront Photo Card -->
         <div class="card" style="padding:20px;">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
             <div>
@@ -1033,12 +1033,26 @@ async function renderAboutView() {
             </div>
           </div>
 
-          <p style="font-size:15px;font-weight:700;color:#1E293B;line-height:1.4;margin-bottom:8px;">
+          <h3 style="font-size:17px;font-weight:800;color:#0F172A;line-height:1.3;margin:0 0 4px 0;">
             Building Strong Foundations.
-          </p>
+          </h3>
           <p style="font-size:13.5px;line-height:1.6;color:var(--text-muted);margin:0 0 14px 0;">
-            Crafting modern sanitary & architectural living spaces across Samastipur & North Bihar. Single-window authorized source for certified steel, cement, designer tiles, and luxury sanitaryware in Rosera.
+            Crafting modern sanitary &amp; architectural living spaces across Samastipur &amp; North Bihar. Single-window authorized source for certified steel, cement, designer tiles, and luxury sanitaryware in Rosera.
           </p>
+
+          <!-- Storefront Photo Banner -->
+          <div class="storefront-banner-card" onclick="openShowcaseLightbox('/images/storefront.jpg')">
+            <img src="/images/storefront.jpg" alt="Mahabir Traders Storefront Rosera Block Road" class="storefront-banner-img" />
+            <div class="storefront-banner-overlay">
+              <div>
+                <div style="font-size:16px;font-weight:800;color:#ffffff;text-shadow:0 1px 4px rgba(0,0,0,0.8);">महावीर ट्रेडर्स</div>
+                <div style="font-size:12px;color:#E2E8F0;text-shadow:0 1px 3px rgba(0,0,0,0.8);">Block Road, Rosera</div>
+              </div>
+              <span style="padding:4px 10px;border-radius:4px;background:#C2410C;color:#ffffff;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">
+                Authorized Hub
+              </span>
+            </div>
+          </div>
 
           <!-- GST Bar -->
           <div style="display:flex;align-items:center;justify-content:space-between;background:#F1F5F9;padding:10px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);flex-wrap:wrap;gap:8px;">
@@ -1060,9 +1074,9 @@ async function renderAboutView() {
               👤
             </div>
             <div>
-              <div style="font-size:11px;font-weight:700;color:#D97706;text-transform:uppercase;letter-spacing:0.5px;">Leadership & Quality Promise</div>
+              <div style="font-size:11px;font-weight:700;color:#D97706;text-transform:uppercase;letter-spacing:0.5px;">Leadership &amp; Quality Promise</div>
               <h3 style="font-size:18px;font-weight:800;color:#0F172A;margin:2px 0 0 0;">Rajesh Kumar Khemka</h3>
-              <div style="font-size:12.5px;color:var(--text-muted);">Proprietor & Managing Director</div>
+              <div style="font-size:12.5px;color:var(--text-muted);">Proprietor &amp; Managing Director</div>
             </div>
           </div>
 
@@ -1090,7 +1104,7 @@ async function renderAboutView() {
           <div style="display:flex;align-items:flex-start;gap:10px;background:#F8FAFC;padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border);">
             <span style="font-size:18px;margin-top:2px;">📍</span>
             <div style="flex:1;">
-              <div style="font-size:12px;font-weight:700;color:#475569;">Store Location & Dispatch Point:</div>
+              <div style="font-size:12px;font-weight:700;color:#475569;">Store Location &amp; Dispatch Point:</div>
               <div style="font-size:13px;font-weight:600;color:#0F172A;margin-top:2px;">Block Road, Rosera, Samastipur District, Bihar — 848210</div>
             </div>
             <a href="https://maps.google.com/?q=Mahabir+Traders+Block+Road+Rosera+Samastipur+Bihar+848210" target="_blank" class="btn btn-secondary btn-sm" style="padding:4px 8px;font-size:11px;flex-shrink:0;">
@@ -1099,38 +1113,47 @@ async function renderAboutView() {
           </div>
         </div>
 
-        <!-- Showroom Display & Studio Walkthrough (3 Zones) -->
+        <!-- Showroom Display & Studio Walkthrough (3 Zones with High-Res Images) -->
         <div class="card" style="padding:20px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
             <div>
               <div style="font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Walkthrough Experience</div>
-              <h3 style="font-size:17px;font-weight:800;color:#0F172A;margin:2px 0 0 0;">Showroom Display & Studio</h3>
+              <h3 style="font-size:18px;font-weight:800;color:#0F172A;margin:2px 0 0 0;">Showroom Display &amp; Studio</h3>
             </div>
             <span class="badge" style="background:#EFF6FF;color:#1D4ED8;border:1px solid #BFDBFE;font-weight:700;">3 Experience Zones</span>
           </div>
 
-          <!-- Zone 01 -->
+          <!-- Zone 01: Wash Basins & Vanities -->
           <div class="experience-zone-card">
             <div class="zone-badge">🚿 ZONE 01 · VANITY STUDIO</div>
-            <h4 style="font-size:14px;font-weight:700;color:#0F172A;margin:0 0 4px 0;">Designer Wash Basins & Mirror Displays</h4>
+            <div class="zone-img-wrap" onclick="openShowcaseLightbox('/images/zone1_vanity.jpg')">
+              <img src="/images/zone1_vanity.jpg" alt="Designer Wash Basins & Mirror Displays" class="zone-img" />
+            </div>
+            <h4 style="font-size:14.5px;font-weight:700;color:#0F172A;margin:0 0 4px 0;">Designer Wash Basins &amp; Mirror Displays</h4>
             <p style="font-size:12.5px;color:var(--text-muted);margin:0;line-height:1.5;">
               Dual-tone gloss ceramic basins, luxury tabletop sinks, LED mirrors, and designer chrome fittings.
             </p>
           </div>
 
-          <!-- Zone 02 -->
+          <!-- Zone 02: Luxury Tiles & Glazed Vitrified Display -->
           <div class="experience-zone-card" style="border-left-color:#F59E0B;">
-            <div class="zone-badge" style="background:#FEF3C7;color:#92400E;">🧱 ZONE 02 · SLABS & TILES</div>
-            <h4 style="font-size:14px;font-weight:700;color:#0F172A;margin:0 0 4px 0;">Full-Height Sliding Vitrified Tile Racks</h4>
+            <div class="zone-badge" style="background:#FEF3C7;color:#92400E;">🧱 ZONE 02 · SLABS &amp; TILES</div>
+            <div class="zone-img-wrap" onclick="openShowcaseLightbox('/images/zone2_tiles.jpg')">
+              <img src="/images/zone2_tiles.jpg" alt="Full-Height Sliding Vitrified Tile Racks" class="zone-img" />
+            </div>
+            <h4 style="font-size:14.5px;font-weight:700;color:#0F172A;margin:0 0 4px 0;">Full-Height Sliding Vitrified Tile Racks</h4>
             <p style="font-size:12.5px;color:var(--text-muted);margin:0;line-height:1.5;">
               Large-format PGVT glazed vitrified slabs, anti-skid floor tiles, and elevation displays.
             </p>
           </div>
 
-          <!-- Zone 03 -->
+          <!-- Zone 03: Modern Sanitary Studio -->
           <div class="experience-zone-card" style="border-left-color:#10B981;">
             <div class="zone-badge" style="background:#D1FAE5;color:#065F46;">🚽 ZONE 03 · SANITARY MART</div>
-            <h4 style="font-size:14px;font-weight:700;color:#0F172A;margin:0 0 4px 0;">Sanitaryware & Closets Showroom</h4>
+            <div class="zone-img-wrap" onclick="openShowcaseLightbox('/images/zone3_sanitary.jpg')">
+              <img src="/images/zone3_sanitary.jpg" alt="Sanitaryware & Closets Showroom" class="zone-img" />
+            </div>
+            <h4 style="font-size:14.5px;font-weight:700;color:#0F172A;margin:0 0 4px 0;">Sanitaryware &amp; Closets Showroom</h4>
             <p style="font-size:12.5px;color:var(--text-muted);margin:0;line-height:1.5;">
               Rimless flushing EWCs, wall-hung concealed cisterns, and ceramic pedestal basins.
             </p>
@@ -1160,7 +1183,7 @@ async function renderAboutView() {
         <div class="card" style="padding:16px;background:#F8FAFC;border:1px solid var(--border);">
           <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:12.5px;color:var(--text-muted);">
             <div><b>App Version:</b> 1.0.0 (Multi-Device PWA)</div>
-            <div><b>Platform:</b> Mechanic Loyalty, Rewards & Field Audit System</div>
+            <div><b>Platform:</b> Mechanic Loyalty, Rewards &amp; Field Audit System</div>
           </div>
         </div>
 
