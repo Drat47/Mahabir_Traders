@@ -180,8 +180,8 @@ erDiagram
 
 ### Step 1: Clone Repository
 ```bash
-git clone https://github.com/Drat47/Mahaveer_Traders.git
-cd Mahaveer_Traders
+git clone https://github.com/Drat47/Mahabir_Traders.git
+cd Mahabir_Traders
 ```
 
 ### Step 2: Install Dependencies
@@ -214,5 +214,5 @@ This application is ready for deployment on [Render](https://render.com).
 ## 👨‍💻 Author & Maintenance
 
 * **Author:** **Dharmesh Singhal**
-* **Repository:** [https://github.com/Drat47/Mahaveer_Traders](https://github.com/Drat47/Mahaveer_Traders)
+* **Repository:** [https://github.com/Drat47/Mahabir_Traders](https://github.com/Drat47/Mahabir_Traders)
 * **Application:** Mahabir Traders Loyalty & Field Audit System
