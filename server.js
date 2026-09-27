@@ -100,7 +100,6 @@ function creditPoints(mechanicId, points, type, refId, desc, actorName) {
 
 // Helper: Build WhatsApp and SMS Notification Text for Worker
 function buildWorkerBillNotification(purchase, mechanic, pointsAwarded, status = 'APPROVED') {
-  const itemsText = (purchase.items || []).map(i => `${i.product_name} (${i.quantity} ${i.unit})`).join(', ') || 'General materials';
   const cleanPhone = (mechanic.phone || '').replace(/[^0-9]/g, '');
 
   let text = '';
@@ -112,9 +111,7 @@ function buildWorkerBillNotification(purchase, mechanic, pointsAwarded, status =
       `📅 *Date:* ${purchase.purchase_date}\n` +
       `👤 *Customer:* ${purchase.customer_name}\n` +
       `📞 *Customer Phone:* ${purchase.customer_phone}\n` +
-      `📍 *Location:* ${purchase.customer_address}\n` +
-      `💰 *Total Bill Amount:* ₹${Number(purchase.total_amount || 0).toLocaleString('en-IN')}\n` +
-      `📦 *Items:* ${itemsText}\n\n` +
+      `📍 *Location:* ${purchase.customer_address || ''}\n` +
       `🎁 *Points Earned on this Bill:* +${pointsAwarded} Points!\n` +
       `⭐ *Your Available Balance:* ${mechanic.available_points} Points\n\n` +
       `Thank you for partnering with Mahabir Traders!`;
@@ -126,8 +123,7 @@ function buildWorkerBillNotification(purchase, mechanic, pointsAwarded, status =
       `📅 *Date:* ${purchase.purchase_date}\n` +
       `👤 *Customer:* ${purchase.customer_name}\n` +
       `📞 *Customer Phone:* ${purchase.customer_phone}\n` +
-      `💰 *Total Bill Amount:* ₹${Number(purchase.total_amount || 0).toLocaleString('en-IN')}\n` +
-      `📦 *Items:* ${itemsText}\n\n` +
+      `📍 *Location:* ${purchase.customer_address || ''}\n` +
       `⏳ *Status:* Pending Verification (Estimated: +${pointsAwarded} pts)\n\n` +
       `Mahabir Traders`;
   }
