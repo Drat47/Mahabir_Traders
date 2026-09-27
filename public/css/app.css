@@ -1188,3 +1188,201 @@ input:focus, select:focus, textarea:focus {
     justify-content: flex-end;
   }
 }
+
+/* =========================================================================
+   MAHABIR TRADERS - STORE BANNER & ABOUT SECTION STYLES
+   ========================================================================= */
+
+.home-top-banner-wrap {
+  width: 100%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  margin-bottom: 16px;
+  background: #0B132B;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.home-top-banner-wrap:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+}
+
+.home-top-banner-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.store-contact-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.store-contact-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.store-contact-pill:hover {
+  background: #E2E8F0;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.store-contact-pill.highlight {
+  background: #DCFCE7;
+  border-color: #86EFAC;
+  color: #166534;
+}
+
+.about-store-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.about-banner-container {
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 18px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  background: #0F172A;
+}
+
+.about-banner-img {
+  width: 100%;
+  height: auto;
+  max-height: 280px;
+  object-fit: cover;
+  display: block;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.about-banner-img:hover {
+  opacity: 0.95;
+}
+
+.about-store-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.about-brands-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin: 14px 0;
+}
+
+.about-brand-card {
+  background: #F8FAFC;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.about-brand-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.about-brand-card.auth-dealer {
+  background: #FEF3C7;
+  border-color: #FDE68A;
+}
+
+.about-brand-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.about-brand-info {
+  flex: 1;
+}
+
+.about-brand-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 2px;
+}
+
+.about-brand-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+.store-hindi-tagline-box {
+  background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+  border: 1px solid #334155;
+  border-left: 4px solid #F59E0B;
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin: 16px 0;
+  color: #F8FAFC;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.store-hindi-tagline-text {
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.6;
+  color: #F1F5F9;
+}
+
+.store-hindi-tagline-text b {
+  color: #FDE047;
+}
+
+@media (max-width: 640px) {
+  .about-store-header {
+    flex-direction: column;
+  }
+  .about-brands-grid {
+    grid-template-columns: 1fr;
+  }
+  .store-hindi-tagline-box {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+}
+
