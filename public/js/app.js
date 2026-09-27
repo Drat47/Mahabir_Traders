@@ -90,18 +90,51 @@ async function apiFetch(endpoint, options = {}) {
   }
 }
 
-// Toast Notification
+// Toast Notification System
 function showToast(msg, type = 'info') {
-  const container = document.getElementById('toast-container');
-  if (!container) return;
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    document.body.appendChild(container);
+  }
+
+  // Cap active visible toasts to 3
+  while (container.children.length >= 3) {
+    container.firstElementChild.remove();
+  }
+
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
-  toast.innerHTML = `<span>${type === 'success' ? '✓' : type === 'error' ? '⚠' : 'ℹ'}</span> <span>${msg}</span>`;
+  
+  const icon = type === 'success' ? '✅' : type === 'error' ? '⚠️' : 'ℹ️';
+  toast.innerHTML = `
+    <div class="toast-content">
+      <span class="toast-icon">${icon}</span>
+      <span class="toast-msg">${msg}</span>
+    </div>
+    <button type="button" class="toast-close" title="Dismiss" onclick="dismissToast(this.closest('.toast'))">✕</button>
+  `;
+
   container.appendChild(toast);
-  setTimeout(() => {
-    toast.style.opacity = '0';
-    setTimeout(() => toast.remove(), 300);
+
+  // Auto-dismiss after 3.2 seconds
+  const timer = setTimeout(() => {
+    dismissToast(toast);
   }, 3200);
+  toast._dismissTimer = timer;
+}
+
+function dismissToast(toastEl) {
+  if (!toastEl || toastEl._isDismissing) return;
+  toastEl._isDismissing = true;
+  if (toastEl._dismissTimer) clearTimeout(toastEl._dismissTimer);
+  toastEl.classList.add('toast-fade-out');
+  setTimeout(() => {
+    if (toastEl && toastEl.parentNode) {
+      toastEl.remove();
+    }
+  }, 250);
 }
 
 // Format Currency
