@@ -600,7 +600,7 @@ function renderLoginView(tab = 'login', prefillPhone = '') {
 
           <!-- Contact Badges -->
           <div class="store-contact-badges">
-            <span class="store-contact-pill">👤 R.K. Khemka</span>
+            <span class="store-contact-pill">👤 Rajesh Kumar Khemka</span>
             <a href="tel:9955594571" class="store-contact-pill highlight">📞 9955594571</a>
             <span class="store-contact-pill">📍 Block Road, Rosera</span>
           </div>
@@ -978,7 +978,7 @@ function renderAboutStoreCardHtml() {
       <div style="background:#F8FAFC;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;font-size:13px;">
         <div>
           <span style="color:var(--text-muted);display:block;font-size:11px;font-weight:700;text-transform:uppercase;">Proprietor / Contact Person</span>
-          <b style="color:var(--primary);font-size:14px;">👤 R.K. KHEMKA</b>
+          <b style="color:var(--primary);font-size:14px;">👤 Rajesh Kumar Khemka</b>
         </div>
         <div>
           <span style="color:var(--text-muted);display:block;font-size:11px;font-weight:700;text-transform:uppercase;">Phone / Mobile</span>
