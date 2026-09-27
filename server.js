@@ -1219,18 +1219,22 @@ const server = http.createServer(async (req, res) => {
       const user = authenticate(req);
       if (!user || user.role !== 'admin') return sendError('Forbidden', 403);
       const body = await parseJsonBody(req);
-      const { name, pointsRequired, stock, eligibleTypes, imageUrl, image_url } = body;
+      const { name, pointsRequired, stock, eligibleTypes, imageUrl, image_url, targetProductName, target_product_name, targetProductImageUrl, target_product_image_url } = body;
 
       if (!name || !pointsRequired) return sendError('Reward name and required points are required', 400);
 
       const img = (imageUrl || image_url || '').trim();
+      const targetProdName = (targetProductName || target_product_name || '').trim();
+      const targetProdImg = (targetProductImageUrl || target_product_image_url || '').trim();
       const typesJson = JSON.stringify(eligibleTypes && eligibleTypes.length ? eligibleTypes : ['all']);
       const stockVal = stock !== undefined && stock !== null ? parseInt(stock, 10) : 999;
 
-      const result = db.prepare("INSERT INTO rewards (name, points_required, stock, eligible_types, image_url, is_active) VALUES (?, ?, ?, ?, ?, 1)")
-        .run(name.trim(), parseInt(pointsRequired, 10), stockVal, typesJson, img || null);
+      const result = db.prepare(`
+        INSERT INTO rewards (name, points_required, stock, eligible_types, image_url, target_product_name, target_product_image_url, is_active) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, 1)
+      `).run(name.trim(), parseInt(pointsRequired, 10), stockVal, typesJson, img || null, targetProdName || null, targetProdImg || null);
 
-      logAudit(user.name, user.role, 'Add Reward', `Created reward ${name} for ${pointsRequired} pts`, req);
+      logAudit(user.name, user.role, 'Add Reward', `Created reward ${name} for ${pointsRequired} pts (Target: ${targetProdName || 'Any'})`, req);
       return sendJson({ success: true, id: Number(result.lastInsertRowid) });
     }
 
@@ -1256,13 +1260,15 @@ const server = http.createServer(async (req, res) => {
       if (!rew) return sendError('Reward not found', 404);
 
       const body = await parseJsonBody(req);
-      const { name, pointsRequired, stock, eligibleTypes, imageUrl, image_url } = body;
+      const { name, pointsRequired, stock, eligibleTypes, imageUrl, image_url, targetProductName, target_product_name, targetProductImageUrl, target_product_image_url } = body;
       const typesJson = JSON.stringify(eligibleTypes && eligibleTypes.length ? eligibleTypes : ['all']);
       const img = imageUrl !== undefined ? imageUrl : (image_url !== undefined ? image_url : rew.image_url);
+      const targetProdName = targetProductName !== undefined ? targetProductName : (target_product_name !== undefined ? target_product_name : rew.target_product_name);
+      const targetProdImg = targetProductImageUrl !== undefined ? targetProductImageUrl : (target_product_image_url !== undefined ? target_product_image_url : rew.target_product_image_url);
 
       db.prepare(`
         UPDATE rewards 
-        SET name = ?, points_required = ?, stock = ?, eligible_types = ?, image_url = ?
+        SET name = ?, points_required = ?, stock = ?, eligible_types = ?, image_url = ?, target_product_name = ?, target_product_image_url = ?
         WHERE id = ?
       `).run(
         name ? name.trim() : rew.name,
@@ -1270,6 +1276,8 @@ const server = http.createServer(async (req, res) => {
         stock !== undefined ? parseInt(stock, 10) : rew.stock,
         typesJson,
         img || null,
+        targetProdName ? targetProdName.trim() : null,
+        targetProdImg || null,
         id
       );
 
@@ -1518,6 +1526,83 @@ const server = http.createServer(async (req, res) => {
 
       logAudit(user.name, user.role, 'Update Settings', JSON.stringify(body), req);
       return sendJson({ success: true });
+    }
+
+    // 16b. Admin: Update Admin Username & Password Credentials
+    if (pathname === '/api/admin/change-credentials' && req.method === 'POST') {
+      const user = authenticate(req);
+      if (!user || user.role !== 'admin') return sendError('Forbidden: Only administrator can change admin credentials', 403);
+
+      const body = await parseJsonBody(req);
+      const { currentPassword, newUsername, newName, newPhone, newPassword, confirmPassword } = body;
+
+      if (!currentPassword) {
+        return sendError('Please enter your current password to authorize changes', 400);
+      }
+
+      // Verify current password against database
+      const adminRecord = db.prepare("SELECT * FROM users WHERE id = ? AND role = 'admin'").get(user.id);
+      if (!adminRecord || adminRecord.password !== currentPassword) {
+        return sendError('Current password is incorrect', 400);
+      }
+
+      const trimmedUsername = (newUsername || '').trim();
+      if (!trimmedUsername) {
+        return sendError('Username cannot be empty', 400);
+      }
+
+      if (trimmedUsername !== adminRecord.username) {
+        const existing = db.prepare("SELECT id FROM users WHERE username = ? AND id != ?").get(trimmedUsername, adminRecord.id);
+        if (existing) {
+          return sendError(`Username "${trimmedUsername}" is already taken by another account. Please choose a different username.`, 400);
+        }
+      }
+
+      let finalPassword = adminRecord.password;
+      if (newPassword && newPassword.trim() !== '') {
+        if (newPassword.length < 4) {
+          return sendError('New password must be at least 4 characters long', 400);
+        }
+        if (newPassword !== confirmPassword) {
+          return sendError('New password and confirm password do not match', 400);
+        }
+        finalPassword = newPassword;
+      }
+
+      const finalName = (newName || adminRecord.name).trim();
+      const finalPhone = newPhone ? newPhone.trim() : adminRecord.phone;
+
+      // Update in database
+      db.prepare(`
+        UPDATE users 
+        SET username = ?, password = ?, name = ?, phone = ? 
+        WHERE id = ?
+      `).run(trimmedUsername, finalPassword, finalName, finalPhone, adminRecord.id);
+
+      // Update active session object
+      user.username = trimmedUsername;
+      user.name = finalName;
+      user.phone = finalPhone;
+
+      logAudit(
+        finalName, 
+        'admin', 
+        'Update Admin Credentials', 
+        `Admin credentials updated (Username: ${trimmedUsername}${newPassword ? ', password changed' : ''})`, 
+        req
+      );
+
+      return sendJson({
+        success: true,
+        message: 'Admin username and credentials updated successfully!',
+        user: {
+          id: user.id,
+          username: trimmedUsername,
+          name: finalName,
+          phone: finalPhone,
+          role: 'admin'
+        }
+      });
     }
 
     /* =========================================================================

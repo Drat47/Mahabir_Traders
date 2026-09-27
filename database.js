@@ -190,6 +190,18 @@ function initDatabase() {
     // Column already exists
   }
 
+  try {
+    db.exec(`ALTER TABLE rewards ADD COLUMN target_product_name TEXT DEFAULT '';`);
+  } catch (e) {
+    // Column already exists
+  }
+
+  try {
+    db.exec(`ALTER TABLE rewards ADD COLUMN target_product_image_url TEXT DEFAULT '';`);
+  } catch (e) {
+    // Column already exists
+  }
+
   // Insert default settings if not exists
   const checkSettings = db.prepare("SELECT COUNT(*) as count FROM settings").get();
   if (checkSettings.count === 0) {
