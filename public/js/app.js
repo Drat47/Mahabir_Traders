@@ -1939,17 +1939,23 @@ function openAddMechanicModal() {
           <div class="form-row">
             <div class="form-group">
               <label>Login User ID <span style="color:var(--danger)">*</span></label>
-              <input type="text" id="new-m-uid" required placeholder="e.g. MEC1007">
+              <input type="text" id="new-m-uid" required placeholder="e.g. MEC1007" autocomplete="off" value="">
             </div>
             <div class="form-group">
               <label>Create Password <span style="color:var(--danger)">*</span></label>
-              <input type="password" id="new-m-pw" required minlength="4" placeholder="Enter password (min 4 chars)" autocomplete="new-password">
+              <div style="position:relative;display:flex;align-items:center;">
+                <input type="password" id="new-m-pw" required minlength="4" placeholder="Enter password (min 4 chars)" autocomplete="new-password" value="" style="padding-right:38px;width:100%;">
+                <button type="button" onclick="togglePasswordVisibility('new-m-pw', this)" style="position:absolute;right:8px;background:none;border:none;cursor:pointer;font-size:15px;color:var(--text-muted);" title="Toggle visibility">👁️</button>
+              </div>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
               <label>Confirm Password <span style="color:var(--danger)">*</span></label>
-              <input type="password" id="new-m-confirm-pw" required minlength="4" placeholder="Re-enter password" autocomplete="new-password">
+              <div style="position:relative;display:flex;align-items:center;">
+                <input type="password" id="new-m-confirm-pw" required minlength="4" placeholder="Re-enter password" autocomplete="new-password" value="" style="padding-right:38px;width:100%;">
+                <button type="button" onclick="togglePasswordVisibility('new-m-confirm-pw', this)" style="position:absolute;right:8px;background:none;border:none;cursor:pointer;font-size:15px;color:var(--text-muted);" title="Toggle visibility">👁️</button>
+              </div>
             </div>
           </div>
           <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;">
@@ -1960,6 +1966,13 @@ function openAddMechanicModal() {
       </div>
     </div>
   `;
+  // Ensure fields are explicitly cleared of any browser autofill
+  setTimeout(() => {
+    const p1 = document.getElementById('new-m-pw');
+    const p2 = document.getElementById('new-m-confirm-pw');
+    if (p1) p1.value = '';
+    if (p2) p2.value = '';
+  }, 60);
 }
 
 async function handleAddMechanicSubmit(e) {
