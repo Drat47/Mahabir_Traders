@@ -1090,6 +1090,9 @@ async function renderAdminDashboard() {
   AppState.stats = stats;
 
   main.innerHTML = `
+    <!-- Top-Most Area: Mahabir Traders Official Store Banner & Dealership Details -->
+    ${renderAboutStoreCardHtml()}
+
     <div class="top-bar">
       <div>
         <h1 class="page-title">Operations & Audit Dashboard</h1>
@@ -1180,9 +1183,6 @@ async function renderAdminDashboard() {
         </div>
       </div>
     </div>
-
-    <!-- About Mahabir Traders Store Section -->
-    ${renderAboutStoreCardHtml()}
   `;
 
   // Render Chart.js
@@ -1237,12 +1237,19 @@ async function renderAdminDashboard() {
    AUDITOR / FIELD AUDIT QUEUE VIEW (MOBILE-OPTIMIZED)
    ========================================================================= */
 
+async function renderAuditorDashboard() {
+  return renderBillVerifications();
+}
+
 async function renderBillVerifications() {
   const main = document.getElementById('main-content');
   const res = await API.get('/api/purchases?status=PENDING');
   const purchases = res.purchases || [];
 
   main.innerHTML = `
+    <!-- Top-Most Area: Mahabir Traders Official Store Banner & Dealership Details -->
+    ${renderAboutStoreCardHtml()}
+
     <div class="top-bar">
       <div>
         <h1 class="page-title">🔍 Mobile Audit & Verification Queue</h1>
@@ -1297,9 +1304,6 @@ async function renderBillVerifications() {
         `).join('')}
       </div>
     `}
-
-    <!-- About Mahabir Traders Store Section -->
-    ${renderAboutStoreCardHtml()}
   `;
 }
 
@@ -4061,6 +4065,9 @@ async function renderMechanicDashboard() {
   const purchases = purRes.purchases || [];
 
   main.innerHTML = `
+    <!-- Top-Most Area: Mahabir Traders Official Store Banner & Dealership Details -->
+    ${renderAboutStoreCardHtml()}
+
     <div class="top-bar">
       <div>
         <h1 class="page-title">Welcome, ${AppState.user.name}</h1>
@@ -4121,9 +4128,6 @@ async function renderMechanicDashboard() {
         </table>
       </div>
     </div>
-
-    <!-- About Mahabir Traders Store Section -->
-    ${renderAboutStoreCardHtml()}
   `;
 }
 
