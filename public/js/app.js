@@ -263,7 +263,7 @@ function renderMobileHeader() {
         </button>
         <div class="mobile-brand-title" onclick="navigate('dash')" style="cursor:pointer;">
           <span>🏪</span>
-          <span>Mahaveer</span>
+          <span>Mahabir</span>
           <span class="user-badge role-${role}" style="font-size:10px;padding:1px 5px;">${roleName}</span>
         </div>
       </div>
@@ -4236,7 +4236,7 @@ async function renderSettingsView() {
             </div>
             <div class="form-group" style="flex:1;">
               <label>Admin Display Name <span style="color:var(--danger)">*</span></label>
-              <input type="text" id="admin-name-input" value="${AppState.user.name || 'System Admin'}" required placeholder="e.g. Mahaveer Admin" autocomplete="name">
+              <input type="text" id="admin-name-input" value="${AppState.user.name || 'System Admin'}" required placeholder="e.g. Mahabir Admin" autocomplete="name">
             </div>
           </div>
 
@@ -4297,7 +4297,7 @@ async function renderSettingsView() {
     <div class="card" style="max-width:720px;">
       <div class="card-title" style="margin-bottom:12px;">💻 System & Network Information</div>
       <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">
-        Local server network access details for Mahaveer Traders Loyalty System.
+        Local server network access details for Mahabir Traders Loyalty System.
       </p>
       <div style="background:#F1F5F9;padding:12px;border-radius:var(--radius-sm);font-family:monospace;font-size:14px;margin:12px 0;">
         Primary Server Address: <b>${net.primaryUrl || window.location.origin}</b>

@@ -1,4 +1,4 @@
-# 🏪 Mahaveer Traders - Mechanic Loyalty, Rewards & Field Audit System
+# 🏪 Mahabir Traders - Mechanic Loyalty, Rewards & Field Audit System
 
 [![Live Application](https://img.shields.io/badge/Live%20App-Render%20Production-2563eb?style=for-the-badge&logo=render)](https://mahaveer-traders.onrender.com)
 [![Author](https://img.shields.io/badge/Author-Dharmesh%20Singhal-10b981?style=for-the-badge)](https://github.com/Drat47)
@@ -18,7 +18,7 @@
 
 ## 📖 System Overview
 
-**Mahaveer Traders Loyalty & Field Audit System** is an enterprise web application designed for hardware, plumbing, paint, electrical, and construction supply businesses. It automates worker/mechanic loyalty rewards, streamlines field purchase bill submissions with instant photo capture, enables multi-stage auditor verifications, handles product returns with ledger recovery math, and provides a targeted rewards catalog.
+**Mahabir Traders Loyalty & Field Audit System** is an enterprise web application designed for hardware, plumbing, paint, electrical, and construction supply businesses. It automates worker/mechanic loyalty rewards, streamlines field purchase bill submissions with instant photo capture, enables multi-stage auditor verifications, handles product returns with ledger recovery math, and provides a targeted rewards catalog.
 
 ### ✨ Key Capabilities:
 1. **Multi-Role User Ecosystem:** Distinct interfaces for **Business Administrators**, **Field Verification Auditors**, and **Registered Field Mechanics / Workers**.
@@ -215,4 +215,4 @@ This application is ready for deployment on [Render](https://render.com).
 
 * **Author:** **Dharmesh Singhal**
 * **Repository:** [https://github.com/Drat47/Mahaveer_Traders](https://github.com/Drat47/Mahaveer_Traders)
-* **Application:** Mahaveer Traders Loyalty & Field Audit System
+* **Application:** Mahabir Traders Loyalty & Field Audit System

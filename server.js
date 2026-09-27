@@ -105,7 +105,7 @@ function buildWorkerBillNotification(purchase, mechanic, pointsAwarded, status =
 
   let text = '';
   if (status === 'APPROVED') {
-    text = `🏪 *MAHAVEER TRADERS - POINTS CREDIT ALERT* 🏪\n\n` +
+    text = `🏪 *MAHABIR TRADERS - POINTS CREDIT ALERT* 🏪\n\n` +
       `Hello *${mechanic.name}*,\n` +
       `A new customer bill under your reference has been *APPROVED*!\n\n` +
       `📄 *Bill ID:* #${purchase.id}\n` +
@@ -117,9 +117,9 @@ function buildWorkerBillNotification(purchase, mechanic, pointsAwarded, status =
       `📦 *Items:* ${itemsText}\n\n` +
       `🎁 *Points Earned on this Bill:* +${pointsAwarded} Points!\n` +
       `⭐ *Your Available Balance:* ${mechanic.available_points} Points\n\n` +
-      `Thank you for partnering with Mahaveer Traders!`;
+      `Thank you for partnering with Mahabir Traders!`;
   } else {
-    text = `🏪 *MAHAVEER TRADERS - BILL LOGGED* 🏪\n\n` +
+    text = `🏪 *MAHABIR TRADERS - BILL LOGGED* 🏪\n\n` +
       `Hello *${mechanic.name}*,\n` +
       `A new customer bill has been logged under your reference!\n\n` +
       `📄 *Bill ID:* #${purchase.id}\n` +
@@ -129,7 +129,7 @@ function buildWorkerBillNotification(purchase, mechanic, pointsAwarded, status =
       `💰 *Total Bill Amount:* ₹${Number(purchase.total_amount || 0).toLocaleString('en-IN')}\n` +
       `📦 *Items:* ${itemsText}\n\n` +
       `⏳ *Status:* Pending Verification (Estimated: +${pointsAwarded} pts)\n\n` +
-      `Mahaveer Traders`;
+      `Mahabir Traders`;
   }
 
   return {
@@ -340,7 +340,7 @@ const server = http.createServer(async (req, res) => {
 
       return sendJson({
         success: true,
-        message: 'Account created successfully! Welcome to Mahaveer Traders Loyalty System.',
+        message: 'Account created successfully! Welcome to Mahabir Traders Loyalty System.',
         token,
         user: sessionUser
       });
@@ -379,8 +379,8 @@ const server = http.createServer(async (req, res) => {
         VALUES (?, ?, ?, 0)
       `).run(cleanPhone, otp, expiresAt);
 
-      const otpMsg = `Your Mahaveer Traders password reset OTP is ${otp}. Valid for 10 minutes.`;
-      const whatsappText = `🔐 *MAHAVEER TRADERS - PASSWORD RESET OTP*\n\nHello *${userName}*,\nYour password reset OTP is: *${otp}*\n\nValid for 10 minutes. Do not share this OTP.`;
+      const otpMsg = `Your Mahabir Traders password reset OTP is ${otp}. Valid for 10 minutes.`;
+      const whatsappText = `🔐 *MAHABIR TRADERS - PASSWORD RESET OTP*\n\nHello *${userName}*,\nYour password reset OTP is: *${otp}*\n\nValid for 10 minutes. Do not share this OTP.`;
       const whatsappUrl = `https://wa.me/91${cleanPhone}?text=${encodeURIComponent(whatsappText)}`;
       const smsUrl = `sms:+91${cleanPhone}?body=${encodeURIComponent(otpMsg)}`;
 
@@ -1103,7 +1103,7 @@ const server = http.createServer(async (req, res) => {
 
       // Build WhatsApp and SMS notification text for the worker
       const cleanPhone = (mech.phone || '').replace(/[^0-9]/g, '');
-      const waText = `🏪 *MAHAVEER TRADERS - BILL ADJUSTMENT / RETURN ALERT* 🏪\n\n` +
+      const waText = `🏪 *MAHABIR TRADERS - BILL ADJUSTMENT / RETURN ALERT* 🏪\n\n` +
         `Hello *${mech.name}*,\n` +
         `A return / exchange adjustment was processed for customer *${purchase.customer_name}* (Bill #${purchase.id}).\n\n` +
         `📄 *Bill ID:* #${purchase.id}\n` +
@@ -1115,7 +1115,7 @@ const server = http.createServer(async (req, res) => {
         `⚖️ *Points Adjustment:* ${pointsChange > 0 ? `+${pointsChange}` : pointsChange} Points\n` +
         `⭐ *Your New Available Balance:* ${newBal} Points\n` +
         (pendingRecovery > 0 ? `⚠️ *Recovery Pending:* ${pendingRecovery} pts will be adjusted from future bills.\n` : '') +
-        `\nThank you for partnering with Mahaveer Traders!`;
+        `\nThank you for partnering with Mahabir Traders!`;
 
       const notification = {
         workerName: mech.name,

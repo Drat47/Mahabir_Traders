@@ -207,7 +207,7 @@ function initDatabase() {
   if (checkSettings.count === 0) {
     const insertSetting = db.prepare("INSERT INTO settings (key, value) VALUES (?, ?)");
     insertSetting.run('points_rate_per_hundred', '3'); // 3 points per ₹100
-    insertSetting.run('business_name', 'Mahaveer Traders');
+    insertSetting.run('business_name', 'Mahabir Traders');
     insertSetting.run('currency_symbol', '₹');
     insertSetting.run('allow_auditor_approval', '1');
   }
