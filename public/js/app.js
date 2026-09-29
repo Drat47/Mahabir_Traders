@@ -2014,26 +2014,7 @@ async function renderAboutView() {
         </div>
       </div>
 
-      <!-- 4. High-Resolution Poster Card (Full HD Showcase) -->
-      <div class="card" style="padding:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;background:#F8FAFC;border:1px dashed var(--border-focus);">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span style="font-size:26px;">🖼️</span>
-          <div>
-            <div style="font-weight:700;font-size:14px;color:var(--primary);">${t('view_full_poster')}</div>
-            <small style="color:var(--text-muted);">View or download full showroom poster banner (HD)</small>
-          </div>
-        </div>
-        <div style="display:flex;gap:8px;">
-          <button class="btn btn-secondary btn-sm" onclick="openShowcaseLightbox('/images/mahabir_about_stitch.png')">
-            🔍 ${t('view')}
-          </button>
-          <a href="/images/mahabir_about_stitch.png" download="Mahabir_Traders_Showcase.png" class="btn btn-secondary btn-sm" title="Download Image">
-            ⬇️ Download
-          </a>
-        </div>
-      </div>
-
-      <!-- 5. System Platform Information -->
+      <!-- 4. System Platform Information -->
       <div class="card" style="padding:16px;background:#F8FAFC;border:1px solid var(--border);">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:12.5px;color:var(--text-muted);">
           <div><b>${t('version')}:</b> 1.0.0 (Multi-Device PWA)</div>
