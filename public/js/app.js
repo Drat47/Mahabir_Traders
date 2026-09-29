@@ -760,15 +760,71 @@ async function triggerPwaInstall() {
     deferredInstallPrompt.prompt();
     const { outcome } = await deferredInstallPrompt.userChoice;
     if (outcome === 'accepted') {
-      showToast('App icon installed on your phone home screen!', 'success');
+      const msg = AppState.lang === 'hi' 
+        ? 'ऐप सफलतापूर्वक इंस्टॉल हो गया! आप महाबीर ट्रेडर्स को अपने ऐप्स / होम स्क्रीन पर पा सकते हैं।'
+        : 'App installed successfully! You can find Mahabir Traders in your apps / home screen.';
+      showToast(msg, 'success');
       const btn = document.getElementById('pwa-install-banner-btn');
       if (btn) btn.style.display = 'none';
     }
     deferredInstallPrompt = null;
   } else {
-    // Instructions for iOS Safari or browsers without native prompt
-    alert('To install this app on your phone:\n1. Tap the browser Menu (or Share button on iPhone)\n2. Tap "Add to Home Screen" / "Install App"\n3. The app icon will appear on your phone screen!');
+    // Show visual step-by-step installation guide for iOS & other Android browsers
+    openInstallGuideModal();
   }
+}
+
+function openInstallGuideModal() {
+  const isHi = AppState.lang === 'hi';
+  const modalRoot = document.getElementById('modal-root');
+  if (!modalRoot) return;
+
+  modalRoot.innerHTML = `
+    <div class="modal-backdrop" onclick="closeModal()">
+      <div class="modal-content" style="max-width:480px;text-align:left;" onclick="event.stopPropagation()">
+        
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <img src="/icons/icon-192.png" style="width:40px;height:40px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.15);" alt="Mahabir App Icon" />
+            <div>
+              <h3 style="font-size:17px;font-weight:800;color:var(--primary);margin:0;">
+                ${isHi ? 'फ़ोन पर ऐप इंस्टॉल करें' : 'Install App on Phone'}
+              </h3>
+              <small style="color:var(--text-muted);font-size:12px;">Mahabir Traders (1-Tap Home Screen)</small>
+            </div>
+          </div>
+          <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+
+        <div style="background:#F8FAFC;border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:14px;">
+          <h4 style="font-size:14px;font-weight:700;color:#0F172A;margin:0 0 8px 0;">
+            ${isHi ? '🤖 एंड्रॉयड फ़ोन (Chrome / Samsung):' : '🤖 Android (Chrome / Samsung Browser):'}
+          </h4>
+          <ol style="margin:0 0 0 18px;padding:0;font-size:13px;line-height:1.6;color:var(--text);">
+            <li>${isHi ? 'ब्राउज़र के ऊपर दाईं ओर <b>तीन बिंदु (⋮)</b> मेनू पर टैप करें।' : 'Tap the <b>three dots (⋮)</b> menu at top-right.'}</li>
+            <li>${isHi ? '<b>"Install App"</b> या <b>"Add to Home Screen"</b> (होम स्क्रीन पर जोड़ें) चुनें।' : 'Select <b>"Install App"</b> or <b>"Add to Home Screen"</b>.'}</li>
+            <li>${isHi ? 'ऐप आइकन आपके फ़ोन स्क्रीन पर आ जाएगा।' : 'The app icon will be added to your home screen.'}</li>
+          </ol>
+        </div>
+
+        <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:var(--radius-sm);padding:14px;margin-bottom:16px;">
+          <h4 style="font-size:14px;font-weight:700;color:#1E40AF;margin:0 0 8px 0;">
+            ${isHi ? '🍏 आईफ़ोन (iPhone / Safari):' : '🍏 Apple iPhone (Safari):'}
+          </h4>
+          <ol style="margin:0 0 0 18px;padding:0;font-size:13px;line-height:1.6;color:#1E3A8A;">
+            <li>${isHi ? 'नीचे दिए गए <b>शेयर आइकन (⎋)</b> पर टैप करें।' : 'Tap the <b>Share icon (⎋)</b> at the bottom bar.'}</li>
+            <li>${isHi ? 'नीचे स्क्रॉल करके <b>"Add to Home Screen" (+)</b> पर टैप करें।' : 'Scroll down and tap <b>"Add to Home Screen" (+)</b>.'}</li>
+            <li>${isHi ? 'ऊपर दाईं ओर <b>"Add"</b> दबाएं।' : 'Tap <b>"Add"</b> at the top right.'}</li>
+          </ol>
+        </div>
+
+        <button type="button" class="btn btn-primary" style="width:100%;" onclick="closeModal()">
+          ${isHi ? 'समझ गया (बंद करें)' : 'Got it (Close)'}
+        </button>
+
+      </div>
+    </div>
+  `;
 }
 
 // Trade Types List
