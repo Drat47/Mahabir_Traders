@@ -137,6 +137,32 @@ function buildWorkerBillNotification(purchase, mechanic, pointsAwarded, status =
   };
 }
 
+// Helper: Build WhatsApp Welcome Greeting for Newly Registered Worker
+function buildWorkerWelcomeGreeting(name, uid, phone, tradeType = 'Worker') {
+  const cleanPhone = (phone || '').replace(/[^0-9]/g, '');
+  const text = `🏪 *MAHABIR TRADERS - WELCOME ABOARD!* 🏪\n\n` +
+    `Namaste *${name}*,\n` +
+    `Welcome to the *Mahabir Traders* Mechanic & Worker Loyalty Rewards Program!\n\n` +
+    `👤 *Your User ID:* ${uid}\n` +
+    `📱 *Registered Mobile:* ${cleanPhone}\n` +
+    `🛠️ *Trade Category:* ${tradeType}\n` +
+    `🎁 *Starting Balance:* 0 Points\n\n` +
+    `Submit customer purchase bills whenever you buy or refer materials from Mahabir Traders to earn instant reward points and claim exciting gifts!\n\n` +
+    `📍 *Store Location:* Block Road, Rosera, Samastipur\n` +
+    `📞 *Helpline / Orders:* +91 9955594571 / 8949492740\n\n` +
+    `Thank you for partnering with Mahabir Traders!`;
+
+  return {
+    workerName: name,
+    workerPhone: cleanPhone,
+    uid,
+    tradeType,
+    whatsappUrl: `https://wa.me/91${cleanPhone}?text=${encodeURIComponent(text)}`,
+    smsUrl: `sms:+91${cleanPhone}?body=${encodeURIComponent(text)}`,
+    messageText: text
+  };
+}
+
 // Helper: Parse Request JSON Body
 function parseJsonBody(req) {
   return new Promise((resolve, reject) => {
@@ -334,11 +360,14 @@ const server = http.createServer(async (req, res) => {
       logAudit(name.trim(), 'mechanic', 'User Self-Registration', `New worker registered (${trade}, ${cleanPhone}, ${uid})`, req);
       addNotification(0, `👷 New ${trade} worker registered: ${name.trim()} (${cleanPhone}, ${uid})`);
 
+      const welcomeGreeting = buildWorkerWelcomeGreeting(name.trim(), uid, cleanPhone, trade);
+
       return sendJson({
         success: true,
         message: 'Account created successfully! Welcome to Mahabir Traders Loyalty System.',
         token,
-        user: sessionUser
+        user: sessionUser,
+        welcomeGreeting
       });
     }
 
@@ -584,7 +613,8 @@ const server = http.createServer(async (req, res) => {
         .run(uid.trim(), password.trim(), name.trim(), cleanPhone, mechId);
 
       logAudit(user.name, user.role, 'Add Mechanic', `Registered new mechanic ${name} (${uid})`, req);
-      return sendJson({ success: true, id: mechId, message: 'Mechanic registered successfully' });
+      const welcomeGreeting = buildWorkerWelcomeGreeting(name.trim(), uid.trim(), cleanPhone, trade_type.trim());
+      return sendJson({ success: true, id: mechId, message: 'Mechanic registered successfully', welcomeGreeting });
     }
 
     // Single Mechanic Details & Ledger

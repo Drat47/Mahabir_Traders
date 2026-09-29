@@ -1252,6 +1252,15 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* --- About Showcase & Grid Styles --- */
+.about-single-column {
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+}
+
 .about-grid-layout {
   display: grid;
   grid-template-columns: 360px 1fr;
@@ -1631,6 +1640,95 @@ input:focus, select:focus, textarea:focus {
     width: calc(100% - 24px);
     max-width: 100%;
   }
+}
+
+/* =========================================================================
+   LANGUAGE SWITCHER STYLES (EN / HI)
+   ========================================================================= */
+
+.lang-switcher-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+  text-decoration: none;
+  line-height: 1.2;
+}
+
+.lang-switcher-btn:hover {
+  background: rgba(255, 255, 255, 0.24);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.lang-switcher-btn.light {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+  color: #0F172A;
+}
+
+.lang-switcher-btn.light:hover {
+  background: #E2E8F0;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.lang-segmented-group {
+  display: inline-flex;
+  background: #E2E8F0;
+  border-radius: 20px;
+  padding: 3px;
+  gap: 2px;
+  border: 1px solid #CBD5E1;
+}
+
+.lang-segmented-group.dark {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.lang-segmented-btn {
+  border: none;
+  background: transparent;
+  padding: 3px 10px;
+  border-radius: 16px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.lang-segmented-group.dark .lang-segmented-btn {
+  color: #cbd5e1;
+}
+
+.lang-segmented-btn.active {
+  background: #0F172A;
+  color: #ffffff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+.lang-segmented-group.dark .lang-segmented-btn.active {
+  background: #38BDF8;
+  color: #0F172A;
+}
+
+.lang-segmented-btn:hover:not(.active) {
+  color: #0F172A;
+}
+
+.lang-segmented-group.dark .lang-segmented-btn:hover:not(.active) {
+  color: #ffffff;
 }
 
 

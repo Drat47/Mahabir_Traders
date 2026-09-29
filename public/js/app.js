@@ -11,6 +11,7 @@ const API = {
 let AppState = {
   token: localStorage.getItem('mech_audit_token') || null,
   user: null,
+  lang: localStorage.getItem('mahabir_app_lang') || 'en',
   view: 'dash',
   subViewId: null,
   stats: {},
@@ -27,6 +28,724 @@ let AppState = {
   selectedFilter: 'ALL',
   searchQuery: ''
 };
+
+/* =========================================================================
+   INTERNATIONALIZATION (i18n) - ENGLISH & HINDI DICTIONARIES
+   ========================================================================= */
+
+const I18N = {
+  en: {
+    brand_name: 'Mahabir Traders',
+    brand_tagline: 'Mechanic Loyalty, Rewards & Field Audit System',
+    lang_name: 'English',
+    switch_to_lang: 'हिन्दी में देखें',
+    language_selector: 'Language / भाषा',
+    loading: 'Loading data...',
+    save: 'Save Changes',
+    cancel: 'Cancel',
+    submit: 'Submit',
+    search: 'Search...',
+    all: 'ALL',
+    view: 'View',
+    actions: 'Actions',
+    status: 'Status',
+    date: 'Date',
+    phone: 'Phone Number',
+    address: 'Address / Location',
+    customer: 'Customer',
+    amount: 'Amount',
+    points: 'Points',
+    total: 'Total',
+    items: 'Items',
+    logout: 'Logout',
+    version: 'Version',
+    active: 'Active',
+    inactive: 'Inactive',
+    approved: 'Approved',
+    pending: 'Pending',
+    rejected: 'Rejected',
+    close: 'Close',
+    back: 'Back',
+    details: 'Details',
+    profile: 'Profile',
+    call_worker: 'Call Worker',
+    whatsapp: 'WhatsApp',
+    edit: 'Edit',
+    delete: 'Delete',
+    reset_pw: 'Reset Password',
+    activate: 'Activate',
+    deactivate: 'Deactivate',
+    refresh: 'Refresh',
+
+    // User Roles
+    role_admin: 'Admin',
+    role_auditor: 'Auditor',
+    role_mechanic: 'Worker',
+
+    // Navigation
+    nav_dashboard: 'Dashboard Overview',
+    nav_about_store: 'About Mahabir Traders',
+    nav_bill_audits: 'Bill Audits Queue',
+    nav_mechanics: 'Mechanics Directory',
+    nav_purchases: 'Purchases & Bills',
+    nav_returns: 'Returns & Reversals',
+    nav_rewards: 'Rewards Catalog',
+    nav_redemptions: 'Redemptions',
+    nav_reports: 'Reports & Leaderboard',
+    nav_audit_logs: 'Audit Trail Logs',
+    nav_notifications: 'Notifications',
+    nav_settings: 'Settings',
+    nav_field_overview: 'Field Overview',
+    nav_snap_bill: 'Snap & Log Bill',
+    nav_my_dashboard: 'My Dashboard',
+    nav_my_purchases: 'My Purchase Records',
+    nav_rewards_claim: 'Rewards & Claim',
+    nav_redemption_history: 'Redemption History',
+
+    // Mobile Bottom Nav
+    bottom_dash: 'Dash',
+    bottom_audits: 'Audits',
+    bottom_snap: 'Snap',
+    bottom_returns: 'Returns',
+    bottom_home: 'Home',
+    bottom_bills: 'Bills',
+    bottom_rewards: 'Rewards',
+    bottom_menu: 'Menu',
+
+    // Auth Screen
+    tab_login: '🔐 Sign In',
+    tab_register: '📝 New Sign Up',
+    auth_subtitle_login: 'Field Audit & Worker Loyalty Access',
+    auth_subtitle_register: 'Create New Mechanic / Worker Account',
+    login_id_label: 'Mobile Number or Username',
+    login_id_placeholder: '10-digit mobile or User ID (e.g. 9876510001 / MEC1001)',
+    password_label: 'Password',
+    password_placeholder: 'Enter your password',
+    login_btn: 'Secure Login',
+    new_worker_prompt: 'New worker or contractor?',
+    signup_link: 'Sign Up for Rewards ➔',
+    existing_user_prompt: 'Already registered?',
+    signin_link: 'Sign In to Account ➔',
+    pwa_install_btn: '📲 Install App on Phone (1-Tap)',
+
+    // Worker Registration
+    full_name: 'Full Name',
+    full_name_placeholder: 'e.g. Ramesh Kumar',
+    mobile_number: '10-Digit Mobile Number',
+    trade_category: 'Work Trade / Category',
+    choose_trade: '-- Choose Trade Category --',
+    other_trade_opt: '✏️ Other / Custom Trade (Type below)',
+    custom_trade_placeholder: 'Or type custom Trade / Specialty here...',
+    shop_address: 'Workshop Address / Town Area',
+    shop_address_placeholder: 'e.g. Cinema Road, Rosera',
+    create_password: 'Create Password (min. 4 chars)',
+    confirm_password: 'Confirm Password',
+    register_btn: 'Complete Registration & Get ID',
+    register_note: 'Mandatory 10-digit mobile number for account login & points alerts.',
+
+    // Admin Dashboard
+    admin_dash_title: 'Operations & Audit Dashboard',
+    admin_dash_subtitle: 'Live business metrics and field audit oversight',
+    verify_bills_btn: '🔍 Verify Bills',
+    stat_total_mechanics: 'Total Mechanics',
+    stat_active_in_field: 'Active in Field',
+    stat_pending_verification: 'Pending Verification',
+    stat_requires_action: 'Requires Auditor Action',
+    stat_approved_purchases: 'Approved Purchases',
+    stat_total_value: 'Total Value',
+    stat_points_issued: 'Points Issued',
+    stat_points_redeemed: 'Redeemed',
+    stat_pending_claims: 'Pending Claims',
+    stat_reward_redemptions: 'Reward Redemptions',
+    stat_product_returns: 'Product Returns',
+    stat_pts_reversed: 'pts reversed',
+    chart_trade_breakdown: 'Trade Category Revenue Breakdown',
+    field_cat_performance: 'Field Category Performance',
+    field_cat_subtitle: 'Click any trade category to view its workers and profiles',
+    full_report_btn: 'Full Report',
+    th_trade_type: 'Trade Type (Click to Open)',
+    th_workers: 'Workers',
+    th_approved_sales: 'Approved Sales',
+    th_pending_bills: 'Pending Bills',
+    leaderboard_title: 'Top Performing Mechanics & Loyalty Points',
+    recent_purchases_title: 'Recent Purchases & Audit Verification Status',
+
+    // Worker Dashboard
+    worker_welcome: 'Welcome',
+    user_id_label: 'User ID',
+    available_points: 'Available Points',
+    lifetime_points: 'Lifetime Points',
+    recovery_pending: 'Recovery Pending',
+    ready_for_redemption: 'Ready for redemption',
+    total_points_earned: 'Total points earned',
+    deducted_future_bills: 'Deducted from future bills',
+    submit_purchase_btn: '📸 Submit Purchase',
+    recent_purchases: 'Recent Purchases',
+
+    // Bill Submissions & Audits
+    audit_queue_title: '🔍 Mobile Audit & Verification Queue',
+    audit_queue_sub: 'Verify customer authenticity, bill receipt photos, and award points',
+    all_caught_up: 'All Caught Up!',
+    no_pending_bills: 'No pending bill submissions in the audit queue.',
+    snap_new_bill: '📸 Snap New Bill',
+    bill_receipt: 'Bill Receipt',
+    call_customer: 'Call Customer',
+    view_bill_photo: 'View Bill Photo',
+    approve_credit_pts: '✓ Approve & Credit Points',
+    reject_bill: '✕ Reject Bill',
+    request_correction: '⚠️ Request Correction',
+    points_to_award: 'Points to Award',
+    rejection_reason: 'Rejection Reason',
+    correction_msg: 'Correction Message',
+
+    // Purchases Form
+    submit_purchase_title: '📸 Submit Purchase & Bill',
+    submit_purchase_sub: 'Upload bill photo and record customer purchase details',
+    select_mechanic_title: '👷 Select Mechanic',
+    choose_mech_dropdown: '-- Choose Mechanic from Dropdown --',
+    search_mech_placeholder: 'Or type mechanic name, User ID (e.g. MEC1001), or phone...',
+    cust_date_title: '👤 Customer & Date',
+    purchase_date: 'Purchase Date',
+    cust_name: 'Customer Name',
+    cust_name_placeholder: 'Full name of customer',
+    cust_phone: 'Customer Mobile Number',
+    cust_addr: 'Customer Address / Area (Optional)',
+    cust_addr_placeholder: 'Location, Street, City (Optional)',
+    products_purchased_title: '📦 Products Purchased',
+    optional_badge: '(Optional)',
+    products_purchased_sub: 'Optional: Choose from the catalog or type any custom item name in the text field if not in the dropdown menu.',
+    th_catalog_dd: 'Catalog Dropdown',
+    th_item_name: 'Item Name / Text Field',
+    th_quantity: 'Quantity',
+    th_unit: 'Unit',
+    add_product_line: '+ Add Product Line',
+    amount_photo_title: '💰 Amount & Bill Photo',
+    total_bill_amount: 'Total Bill Amount (₹)',
+    bill_photo_receipt: 'Bill Photo / Receipt',
+    bill_photo_sub: 'Take a photo of the bill if available (Optional).',
+    submit_bill_btn: 'Submit Purchase & Generate Bill',
+
+    // About Store View
+    about_title: 'About Mahabir Traders',
+    about_subtitle: 'Authorized Hub for Building Materials, Sanitaryware & Vitrified Tiles · Rosera, Samastipur',
+    trusted_badge: '⭐ Trusted For Decades',
+    authorized_hub_badge: '🏢 Authorized Hub',
+    foundations_headline: 'Building Strong Foundations.',
+    foundations_desc: 'Crafting modern sanitary & architectural living spaces across Samastipur & North Bihar. Single-window authorized source for certified steel, cement, designer tiles, and luxury sanitaryware in Rosera.',
+    leadership_title: 'Leadership & Quality Promise',
+    proprietor_name: 'Rajesh Kumar Khemka',
+    proprietor_role: 'Proprietor & Managing Director',
+    proprietors_message_title: "Proprietor's Message",
+    proprietors_message: '“Delivering 100% factory-grade building materials and modern sanitary designs with complete integrity and wholesale pricing.”',
+    call_rajesh: 'Call Rajesh Ji',
+    whatsapp_rajesh: 'WhatsApp',
+    store_location_label: 'Store Location & Dispatch Point:',
+    store_location_val: 'Block Road, Rosera, Samastipur District, Bihar — 848210',
+    map_btn: 'Map',
+    walkthrough_title: 'Showroom Display & Studio',
+    experience_zones: '3 Experience Zones',
+    zone1_title: 'ZONE 01 · VANITY STUDIO',
+    zone1_name: 'Designer Wash Basins & Mirror Displays',
+    zone1_desc: 'Dual-tone gloss ceramic basins, luxury tabletop sinks, LED mirrors, and designer chrome fittings.',
+    zone2_title: 'ZONE 02 · SLABS & TILES',
+    zone2_name: 'Full-Height Sliding Vitrified Tile Racks',
+    zone2_desc: 'Large-format PGVT glazed vitrified slabs, anti-skid floor tiles, and elevation displays.',
+    zone3_title: 'ZONE 03 · SANITARY MART',
+    zone3_name: 'Sanitaryware & Closets Showroom',
+    zone3_desc: 'Rimless flushing EWCs, wall-hung concealed cisterns, and ceramic pedestal basins.',
+    trust_genuine: '100% Genuine',
+    trust_genuine_sub: 'Authorized Mill Stock',
+    trust_dispatch: 'Bulk Dispatch',
+    trust_dispatch_sub: 'Job-Site Logistics',
+    trust_gst: 'GST Invoicing',
+    trust_gst_sub: 'Transparent Billing',
+    view_full_poster: '🔍 View Full Poster (HD)',
+    copy_gstin: '📋 Copy GSTIN',
+    tap_to_enlarge: '🔍 Tap to Enlarge Poster',
+
+    // Returns & Reversals
+    returns_title: '↩️ Product Returns, Reversals & Exchanges',
+    returns_subtitle: 'Search verified purchases to process customer item returns, product replacements, and automatic points adjustments for workers.',
+    search_purchases_return: '🔍 Search Customer Purchases for Return / Replacement',
+    search_purchases_placeholder: '🔎 Type Customer Name, Mechanic Name, Phone Number, Bill ID (e.g. #102), or Product...',
+    processed_returns_title: '📜 Processed Returns & Points Reversal History',
+
+    // Rewards Catalog
+    rewards_catalog_title: '🎁 Rewards Catalog',
+    your_balance: 'Your Available Balance',
+    add_reward_btn: '+ Add Reward Item',
+    claim_reward_btn: 'Claim Reward',
+    need_more_pts: 'Need {pts} more pts',
+
+    // Mechanics Directory
+    mechanics_directory_title: '👷 Mechanics Directory',
+    mechanics_directory_sub: 'Manage accounts, points balance, and field profiles',
+    register_mechanic_btn: '+ Register Mechanic',
+    search_mechanics_placeholder: 'Search by name, phone, user ID, or address...',
+
+    // Reports & Audit
+    reports_title: '📈 Reports & Performance',
+    top_mechanics_leaderboard: '🏆 Top Mechanics Leaderboard',
+    export_csv: '📊 Export CSV',
+    audit_logs_title: '📋 Comprehensive Audit Trail',
+    audit_logs_sub: 'Immutable log of all approvals, rejections, points adjustments, and logins',
+
+    // Settings
+    settings_title: 'Admin Settings & Security',
+    settings_subtitle: 'Manage administrator login credentials, username, secure password, and system preferences',
+    system_settings_title: 'System Settings',
+    system_settings_subtitle: 'System information and network configuration',
+    language_preferences_title: 'Language Preferences / भाषा वरीयता',
+    language_preferences_desc: 'Select your preferred language throughout the application:',
+    admin_credentials_card: 'Administrator Account Credentials',
+    save_credentials_btn: '💾 Save & Update Credentials',
+    admin_username: 'Admin Login Username',
+    admin_display_name: 'Admin Display Name',
+    admin_contact_mobile: 'Admin Contact Mobile',
+    change_admin_pw: 'Change Admin Password',
+    new_pw: 'New Password',
+    confirm_new_pw: 'Confirm New Password',
+    current_pw: 'Current Password',
+    sys_net_info: 'System & Network Information',
+    primary_server_addr: 'Primary Server Address',
+
+    // Messages
+    lang_changed_toast: 'Language changed to English',
+    logged_out_toast: 'Logged out successfully',
+
+    // Category & Worker Details
+    back_to_dash: '← Back to Dashboard',
+    back_to_cat: '← Back to {cat} Category',
+    all_mechanics_btn: '👷 All Mechanics',
+    add_worker_btn: '+ Add {cat}',
+    category_workers_title: '👷 {cat} Category Workers',
+    category_workers_sub: "All registered {cat} professionals. Click any worker's name to view their complete profile, bills & transaction ledger.",
+    total_in_cat: 'Total {cat}s',
+    across_all_cat: 'Across all {cat}s',
+    total_earned_to_date: 'Total earned to date',
+    awaiting_audit: 'Awaiting bill audit',
+    search_cat_placeholder: 'Search {cat}s by name, phone, user ID, or address...',
+    no_workers_cat: 'No workers found registered in {cat} category.',
+    th_user_id: 'User ID',
+    th_worker_name_click: 'Worker Name (Click to View Details)',
+    th_phone_contact: 'Phone / Quick Contact',
+    th_address_shop: 'Address / Shop',
+    th_avail_points: 'Available Points',
+    th_lifetime_points: 'Lifetime Points',
+    th_pending_bills_count: 'Pending Bills',
+    th_status: 'Status',
+    th_action: 'Action',
+    view_full_profile: 'View Full Profile ➔',
+    adjust_points_btn: '± Adjust Points',
+    active_account: 'Active Account',
+    inactive_account: 'Inactive',
+    all_historical_bills: 'All historical bills submitted by {name}',
+    points_ledger_title: '📜 Points Transaction Ledger & History',
+    points_ledger_sub: 'Complete chronological audit statement of credits, debits, reversals, and adjustments',
+    th_timestamp: 'Timestamp',
+    th_txn_type: 'Transaction Type',
+    th_desc_reason: 'Description / Reason',
+    th_points_change: 'Points Change',
+    th_bal_after: 'Balance After',
+    th_auditor_actor: 'Auditor / System Actor',
+    no_txns_found: 'No transaction records found.',
+    no_purchases_found: 'No purchases submitted yet.',
+    no_logs_found: 'No audit logs recorded.',
+    no_redemptions_found: 'No redemptions requested.',
+    th_actor: 'Actor',
+    th_role: 'Role',
+    th_details: 'Details',
+    th_client_ip: 'Client IP',
+    th_reward: 'Reward',
+    download_audit_csv: '📊 Download Audit CSV',
+    redemptions_title: '🏆 Reward Redemptions',
+    redemptions_sub: 'Claims submitted by mechanics for rewards',
+    filter_by_category: '👁️ Filter View by Worker Category:',
+    visible_to_all: '🌟 Visible to All',
+    item_to_sell: '📦 Item to Sell',
+    reward_gift: '🎁 Reward Gift',
+    on_selling: '📦 On Selling:',
+    eligible_label: 'Eligible:',
+    claim_reward: 'Claim Reward',
+    need_more_pts_msg: 'Need {pts} more pts'
+  },
+
+  hi: {
+    brand_name: 'महाबीर ट्रेडर्स',
+    brand_tagline: 'मिस्त्री लॉयल्टी, रिवॉर्ड और फील्ड ऑडिट सिस्टम',
+    lang_name: 'हिन्दी',
+    switch_to_lang: 'View in English',
+    language_selector: 'भाषा / Language',
+    loading: 'डेटा लोड हो रहा है...',
+    save: 'बदलाव सहेजें',
+    cancel: 'रद्द करें',
+    submit: 'जमा करें',
+    search: 'खोजें...',
+    all: 'सभी',
+    view: 'देखें',
+    actions: 'क्रियाएं',
+    status: 'स्थिति',
+    date: 'तारीख',
+    phone: 'मोबाइल नंबर',
+    address: 'पता / स्थान',
+    customer: 'ग्राहक',
+    amount: 'राशि',
+    points: 'पॉइंट्स',
+    total: 'कुल',
+    items: 'सामग्री / सामान',
+    logout: 'लॉगआउट',
+    version: 'संस्करण',
+    active: 'सक्रिय',
+    inactive: 'निष्क्रिय',
+    approved: 'स्वीकृत',
+    pending: 'लंबित',
+    rejected: 'अस्वीकृत',
+    close: 'बंद करें',
+    back: 'वापस',
+    details: 'विवरण',
+    profile: 'प्रोफ़ाइल',
+    call_worker: 'कारीगर को कॉल करें',
+    whatsapp: 'व्हाट्सएप',
+    edit: 'संपादित करें',
+    delete: 'हटाएं',
+    reset_pw: 'पासवर्ड रीसेट करें',
+    activate: 'सक्रिय करें',
+    deactivate: 'निष्क्रिय करें',
+    refresh: 'रिफ्रेश',
+
+    // User Roles
+    role_admin: 'एडमिन',
+    role_auditor: 'ऑडिटर',
+    role_mechanic: 'कारीगर / मिस्त्री',
+
+    // Navigation
+    nav_dashboard: 'डैशबोर्ड अवलोकन',
+    nav_about_store: 'महाबीर ट्रेडर्स के बारे में',
+    nav_bill_audits: 'बिल ऑडिट कतार',
+    nav_mechanics: 'मिस्त्री / कारीगर सूची',
+    nav_purchases: 'खरीद व बिल रिकॉर्ड',
+    nav_returns: 'वापसी व पॉइंट संशोधन',
+    nav_rewards: 'इनाम कैटलॉग',
+    nav_redemptions: 'इनाम निकासी',
+    nav_reports: 'रिपोर्ट और रैंकिंग',
+    nav_audit_logs: 'ऑडिट लॉग्स',
+    nav_notifications: 'सूचनाएं',
+    nav_settings: 'सेटिंग्स',
+    nav_field_overview: 'फ़ील्ड अवलोकन',
+    nav_snap_bill: 'बिल फोटो खींचे व दर्ज करें',
+    nav_my_dashboard: 'मेरा डैशबोर्ड',
+    nav_my_purchases: 'मेरे बिल रिकॉर्ड',
+    nav_rewards_claim: 'इनाम और पॉइंट क्लेम',
+    nav_redemption_history: 'इनाम निकासी इतिहास',
+
+    // Mobile Bottom Nav
+    bottom_dash: 'डैशबोर्ड',
+    bottom_audits: 'ऑडिट',
+    bottom_snap: 'फोटो बिल',
+    bottom_returns: 'वापसी',
+    bottom_home: 'होम',
+    bottom_bills: 'बिल',
+    bottom_rewards: 'इनाम',
+    bottom_menu: 'मेनू',
+
+    // Auth Screen
+    tab_login: '🔐 साइन इन',
+    tab_register: '📝 नया रजिस्ट्रेशन',
+    auth_subtitle_login: 'फ़ील्ड ऑडिट और मिस्त्री लॉयल्टी पोर्टल',
+    auth_subtitle_register: 'नया मिस्त्री / कारीगर खाता बनाएं',
+    login_id_label: 'मोबाइल नंबर या यूज़रनेम',
+    login_id_placeholder: '10 अंकों का मोबाइल या यूजर आईडी (उदा. 9876510001 / MEC1001)',
+    password_label: 'पासवर्ड',
+    password_placeholder: 'अपना पासवर्ड दर्ज करें',
+    login_btn: 'सुरक्षित लॉगिन करें',
+    new_worker_prompt: 'नया कारीगर या ठेकेदार हैं?',
+    signup_link: 'रिवार्ड्स के लिए रजिस्टर करें ➔',
+    existing_user_prompt: 'पहले से पंजीकृत हैं?',
+    signin_link: 'खाते में साइन इन करें ➔',
+    pwa_install_btn: '📲 फ़ोन पर ऐप इंस्टॉल करें (1-टैप)',
+
+    // Worker Registration
+    full_name: 'पूरा नाम',
+    full_name_placeholder: 'उदा. रमेश कुमार',
+    mobile_number: '10 अंकों का मोबाइल नंबर',
+    trade_category: 'कार्य क्षेत्र / ट्रेड श्रेणी',
+    choose_trade: '-- ट्रेड श्रेणी चुनें --',
+    other_trade_opt: '✏️ अन्य / कस्टम ट्रेड (नीचे लिखें)',
+    custom_trade_placeholder: 'या यहाँ कस्टम ट्रेड / विशेषता लिखें...',
+    shop_address: 'दुकान / कार्यस्थल का पता',
+    shop_address_placeholder: 'उदा. सिनेमा रोड, रोसड़ा',
+    create_password: 'पासवर्ड बनाएं (कम से कम 4 अक्षर)',
+    confirm_password: 'पासवर्ड की पुष्टि करें',
+    register_btn: 'पंजीकरण पूरा करें और आईडी प्राप्त करें',
+    register_note: 'खाता लॉगिन और पॉइंट्स सूचना के लिए 10 अंकों का मोबाइल नंबर अनिवार्य है।',
+
+    // Admin Dashboard
+    admin_dash_title: 'संचालन एवं ऑडिट डैशबोर्ड',
+    admin_dash_subtitle: 'लाइव व्यापार मेट्रिक्स और फ़ील्ड ऑडिट निगरानी',
+    verify_bills_btn: '🔍 बिल सत्यापित करें',
+    stat_total_mechanics: 'कुल मिस्त्री / कारीगर',
+    stat_active_in_field: 'फ़ील्ड में सक्रिय',
+    stat_pending_verification: 'सत्यापन हेतु लंबित',
+    stat_requires_action: 'ऑडिटर सत्यापन आवश्यक',
+    stat_approved_purchases: 'स्वीकृत खरीद बिल',
+    stat_total_value: 'कुल व्यापार मूल्य',
+    stat_points_issued: 'जारी किए गए पॉइंट्स',
+    stat_points_redeemed: 'निकासी किए गए',
+    stat_pending_claims: 'लंबित इनाम दावे',
+    stat_reward_redemptions: 'इनाम निकासी अनुरोध',
+    stat_product_returns: 'सामग्री वापसी',
+    stat_pts_reversed: 'पॉइंट्स वापस कटे',
+    chart_trade_breakdown: 'ट्रेड श्रेणी अनुसार राजस्व विवरण',
+    field_cat_performance: 'ट्रेड श्रेणी अनुसार प्रदर्शन',
+    field_cat_subtitle: 'किसी भी ट्रेड श्रेणी पर क्लिक करके उनके कारीगर और प्रोफाइल देखें',
+    full_report_btn: 'पूरी रिपोर्ट',
+    th_trade_type: 'ट्रेड प्रकार (खोलने के लिए क्लिक करें)',
+    th_workers: 'कारीगर',
+    th_approved_sales: 'स्वीकृत बिक्री',
+    th_pending_bills: 'लंबित बिल',
+    leaderboard_title: 'शीर्ष प्रदर्शन करने वाले मिस्त्री और लॉयल्टी पॉइंट्स',
+    recent_purchases_title: 'हालिया खरीद एवं बिल ऑडिट स्थिति',
+
+    // Worker Dashboard
+    worker_welcome: 'स्वागत है',
+    user_id_label: 'यूजर आईडी',
+    available_points: 'उपलब्ध पॉइंट्स',
+    lifetime_points: 'कुल अर्जित पॉइंट्स (लाइफटाइम)',
+    recovery_pending: 'लंबित रिकवरी',
+    ready_for_redemption: 'इनाम निकासी के लिए तैयार',
+    total_points_earned: 'कुल अर्जित पॉइंट्स',
+    deducted_future_bills: 'आगामी बिलों से काटा जाएगा',
+    submit_purchase_btn: '📸 नया बिल जमा करें',
+    recent_purchases: 'हालिया खरीद रिकॉर्ड',
+
+    // Bill Submissions & Audits
+    audit_queue_title: '🔍 मोबाइल ऑडिट एवं सत्यापन कतार',
+    audit_queue_sub: 'ग्राहक प्रमाणिकता, बिल फोटो जांचें और पॉइंट्स प्रदान करें',
+    all_caught_up: 'सभी बिल सत्यापित हैं!',
+    no_pending_bills: 'ऑडिट कतार में कोई लंबित बिल नहीं है।',
+    snap_new_bill: '📸 नया बिल दर्ज करें',
+    bill_receipt: 'बिल रसीद',
+    call_customer: 'ग्राहक को कॉल करें',
+    view_bill_photo: 'बिल फोटो देखें',
+    approve_credit_pts: '✓ स्वीकृत करें और पॉइंट्स दें',
+    reject_bill: '✕ बिल अस्वीकार करें',
+    request_correction: '⚠️ सुधार का अनुरोध करें',
+    points_to_award: 'दिए जाने वाले पॉइंट्स',
+    rejection_reason: 'अस्वीकृति का कारण',
+    correction_msg: 'सुधार संदेश',
+
+    // Purchases Form
+    submit_purchase_title: '📸 खरीद एवं बिल विवरण दर्ज करें',
+    submit_purchase_sub: 'बिल फोटो अपलोड करें और ग्राहक खरीद विवरण दर्ज करें',
+    select_mechanic_title: '👷 कारीगर / मिस्त्री चुनें',
+    choose_mech_dropdown: '-- ड्रॉपडाउन से मिस्त्री चुनें --',
+    search_mech_placeholder: 'या नाम, यूजर आईडी (उदा. MEC1001), या मोबाइल लिखें...',
+    cust_date_title: '👤 ग्राहक एवं तारीख',
+    purchase_date: 'खरीद की तारीख',
+    cust_name: 'ग्राहक का नाम',
+    cust_name_placeholder: 'ग्राहक का पूरा नाम',
+    cust_phone: 'ग्राहक का मोबाइल नंबर',
+    cust_addr: 'ग्राहक का पता / क्षेत्र (वैकल्पिक)',
+    cust_addr_placeholder: 'स्थान, गली, शहर (वैकल्पिक)',
+    products_purchased_title: '📦 खरीदी गई सामग्री',
+    optional_badge: '(वैकल्पिक)',
+    products_purchased_sub: 'वैकल्पिक: कैटलॉग से चुनें या ड्रॉपडाउन में न होने पर नाम टाइप करें।',
+    th_catalog_dd: 'कैटलॉग ड्रॉपडाउन',
+    th_item_name: 'सामग्री का नाम / विवरण',
+    th_quantity: 'मात्रा',
+    th_unit: 'इकाई',
+    add_product_line: '+ और सामग्री जोड़ें',
+    amount_photo_title: '💰 कुल राशि एवं बिल फोटो',
+    total_bill_amount: 'कुल बिल राशि (₹)',
+    bill_photo_receipt: 'बिल फोटो / रसीद',
+    bill_photo_sub: 'यदि उपलब्ध हो तो बिल की फोटो खींचें (वैकल्पिक)।',
+    submit_bill_btn: 'खरीद दर्ज करें और बिल बनाएं',
+
+    // About Store View
+    about_title: 'महाबीर ट्रेडर्स के बारे में',
+    about_subtitle: 'भवन निर्माण सामग्री, सेनेटरीवेयर एवं विट्रीफाइड टाइल्स का अधिकृत हब · रोसड़ा, समस्तीपुर',
+    trusted_badge: '⭐ दशकों का अटूट विश्वास',
+    authorized_hub_badge: '🏢 अधिकृत डीलरशिप हब',
+    foundations_headline: 'मजबूत नींव का निर्माण।',
+    foundations_desc: 'समस्तीपुर और उत्तर बिहार में आधुनिक सेनेटरी और आवासीय स्थलों का निर्माण। रोसड़ा में प्रमाणित स्टील, सीमेंट, डिजाइनर टाइल्स और लक्जरी सेनेटरीवेयर का एकमात्र अधिकृत केंद्र।',
+    leadership_title: 'नेतृत्व एवं गुणवत्ता का भरोसा',
+    proprietor_name: 'राजेश कुमार खेमका',
+    proprietor_role: 'प्रोपराइटर एवं प्रबंध निदेशक',
+    proprietors_message_title: 'प्रोपराइटर का संदेश',
+    proprietors_message: '“100% फैक्ट्री-ग्रेड निर्माण सामग्री और आधुनिक सेनेटरी डिज़ाइन्स को पूर्ण सत्यनिष्ठा और थोक दरों पर उपलब्ध कराना हमारा संकल्प है।”',
+    call_rajesh: 'राजेश जी को कॉल करें',
+    whatsapp_rajesh: 'व्हाट्सएप करें',
+    store_location_label: 'स्टोर का पता एवं डिस्पैच पॉइंट:',
+    store_location_val: 'ब्लॉक रोड, रोसड़ा, जिला समस्तीपुर, बिहार — 848210',
+    map_btn: 'गूगल मैप',
+    walkthrough_title: 'शोरूम डिस्प्ले और स्टूडियो वॉकथ्रू',
+    experience_zones: '3 अनुभव ज़ोन (3 Zones)',
+    zone1_title: 'ज़ोन 01 · वैनिटी स्टूडियो',
+    zone1_name: 'डिज़ाइनर वॉश बेसिन एवं मिरर डिस्प्ले',
+    zone1_desc: 'डुअल-टोन ग्लॉस सिरेमिक बेसिन, लक्जरी टेबलटॉप सिंक, एलईडी मिरर और डिज़ाइनर क्रोम फिटिंग्स।',
+    zone2_title: 'ज़ोन 02 · स्लैब और टाइल्स',
+    zone2_name: 'फुल-हाइट स्लाइडिंग विट्रीफाइड टाइल रैक्स',
+    zone2_desc: 'बड़े आकार के पीजीवीटी ग्लेज्ड विट्रीफाइड स्लैब, एंटी-स्किड फ्लोर टाइल्स और एलिवेशन डिस्प्ले।',
+    zone3_title: 'ज़ोन 03 · सेनेटरी मार्ट',
+    zone3_name: 'सेनेटरीवेयर और क्लोजेट्स शोरूम',
+    zone3_desc: 'रिमलेस फ्लशिंग ईडब्ल्यूसी, वॉल-हंग कंसील्ड सिस्टर्न और सिरेमिक पेडस्टल बेसिन।',
+    trust_genuine: '100% असली माल',
+    trust_genuine_sub: 'अधिकृत मिल स्टॉक',
+    trust_dispatch: 'थोक डिलीवरी',
+    trust_dispatch_sub: 'साइट तक सुरक्षित लॉजिस्टिक्स',
+    trust_gst: 'जीएसटी बिलिंग',
+    trust_gst_sub: 'पारदर्शी बिल व पक्की रसीद',
+    view_full_poster: '🔍 पूरा पोस्टर देखें (HD)',
+    copy_gstin: '📋 GSTIN कॉपी करें',
+    tap_to_enlarge: '🔍 बड़ा पोस्टर देखने के लिए टैप करें',
+
+    // Returns & Reversals
+    returns_title: '↩️ सामग्री वापसी, पॉइंट संशोधन एवं एक्सचेंज',
+    returns_subtitle: 'ग्राहक सामग्री वापसी, उत्पाद बदलाव और कारीगरों के लिए स्वचालित पॉइंट समायोजन हेतु खरीद खोजें।',
+    search_purchases_return: '🔍 वापसी / बदलाव के लिए ग्राहक खरीद खोजें',
+    search_purchases_placeholder: '🔎 ग्राहक का नाम, कारीगर का नाम, मोबाइल नंबर, बिल आईडी (उदा. #102), या सामग्री लिखें...',
+    processed_returns_title: '📜 सामग्री वापसी एवं पॉइंट कटौती इतिहास',
+
+    // Rewards Catalog
+    rewards_catalog_title: '🎁 इनाम कैटलॉग',
+    your_balance: 'आपकी उपलब्ध पॉइंट राशि',
+    add_reward_btn: '+ नया इनाम जोड़ें',
+    claim_reward_btn: 'इनाम क्लेम करें',
+    need_more_pts: '{pts} और पॉइंट्स चाहिए',
+
+    // Mechanics Directory
+    mechanics_directory_title: '👷 मिस्त्री / कारीगर सूची',
+    mechanics_directory_sub: 'खाते, पॉइंट बैलेंस और फ़ील्ड प्रोफ़ाइल प्रबंधित करें',
+    register_mechanic_btn: '+ नया मिस्त्री पंजीकृत करें',
+    search_mechanics_placeholder: 'नाम, मोबाइल, यूजर आईडी, या पते से खोजें...',
+
+    // Reports & Audit
+    reports_title: '📈 रिपोर्ट और प्रदर्शन',
+    top_mechanics_leaderboard: '🏆 शीर्ष कारीगर रैंकिंग (लीडरबोर्ड)',
+    export_csv: '📊 CSV डाउनलोड करें',
+    audit_logs_title: '📋 संपूर्ण ऑडिट ट्रेल',
+    audit_logs_sub: 'स्वीकृतियों, अस्वीकृतियों, पॉइंट समायोजन और लॉगिन का स्थायी रिकॉर्ड',
+
+    // Settings
+    settings_title: 'एडमिन सेटिंग्स एवं सुरक्षा',
+    settings_subtitle: 'एडमिनिस्ट्रेटर लॉगिन क्रेडेंशियल्स, यूज़रनेम, सुरक्षित पासवर्ड और सिस्टम वरीयताएं प्रबंधित करें',
+    system_settings_title: 'सिस्टम सेटिंग्स',
+    system_settings_subtitle: 'सिस्टम जानकारी और नेटवर्क कॉन्फ़िगरेशन',
+    language_preferences_title: 'भाषा वरीयता (Language Preferences)',
+    language_preferences_desc: 'पूरे एप्लिकेशन में अपनी पसंदीदा भाषा चुनें:',
+    admin_credentials_card: 'एडमिनिस्ट्रेटर खाता क्रेडेंशियल्स',
+    save_credentials_btn: '💾 बदलाव सुरक्षित करें',
+    admin_username: 'एडमिन लॉगिन यूज़रनेम',
+    admin_display_name: 'एडमिन डिस्प्ले नाम',
+    admin_contact_mobile: 'एडमिन संपर्क मोबाइल नंबर',
+    change_admin_pw: 'एडमिन पासवर्ड बदलें',
+    new_pw: 'नया पासवर्ड',
+    confirm_new_pw: 'नए पासवर्ड की पुष्टि करें',
+    current_pw: 'वर्तमान पासवर्ड',
+    sys_net_info: 'सिस्टम एवं नेटवर्क जानकारी',
+    primary_server_addr: 'प्राइमरी सर्वर पता',
+
+    // Messages
+    lang_changed_toast: 'भाषा बदलकर हिन्दी कर दी गई है',
+    logged_out_toast: 'सफलतापूर्वक लॉगआउट कर दिया गया',
+
+    // Category & Worker Details
+    back_to_dash: '← डैशबोर्ड पर वापस',
+    back_to_cat: '← {cat} श्रेणी पर वापस',
+    all_mechanics_btn: '👷 सभी मिस्त्री',
+    add_worker_btn: '+ नया {cat} जोड़ें',
+    category_workers_title: '👷 {cat} ट्रेड कारीगर',
+    category_workers_sub: 'सभी पंजीकृत {cat} कारीगर। किसी भी कारीगर के नाम पर क्लिक करके उनकी प्रोफ़ाइल, बिल और पॉइंट लेज़र देखें।',
+    total_in_cat: 'कुल {cat}',
+    across_all_cat: 'सभी {cat} में',
+    total_earned_to_date: 'अब तक कुल अर्जित',
+    awaiting_audit: 'ऑडिट सत्यापन हेतु प्रतीक्षारत',
+    search_cat_placeholder: 'नाम, मोबाइल, यूजर आईडी, या पते से {cat} खोजें...',
+    no_workers_cat: '{cat} श्रेणी में कोई कारीगर पंजीकृत नहीं मिला।',
+    th_user_id: 'यूजर आईडी',
+    th_worker_name_click: 'कारीगर का नाम (विवरण हेतु क्लिक करें)',
+    th_phone_contact: 'मोबाइल / त्वरित संपर्क',
+    th_address_shop: 'दुकान / स्थान का पता',
+    th_avail_points: 'उपलब्ध पॉइंट्स',
+    th_lifetime_points: 'लाइफटाइम पॉइंट्स',
+    th_pending_bills_count: 'लंबित बिल',
+    th_status: 'स्थिति',
+    th_action: 'कार्रवाई',
+    view_full_profile: 'पूरी प्रोफ़ाइल देखें ➔',
+    adjust_points_btn: '± पॉइंट्स जोड़ें/घटाएं',
+    active_account: 'सक्रिय खाता',
+    inactive_account: 'निष्क्रिय',
+    all_historical_bills: '{name} द्वारा प्रस्तुत सभी ऐतिहासिक बिल रिकॉर्ड',
+    points_ledger_title: '📜 पॉइंट लेनदेन लेज़र एवं इतिहास',
+    points_ledger_sub: 'क्रेडिट, डेबिट, पॉइंट कटौती और समायोजन का पूर्ण कालक्रमानुसार रिकॉर्ड',
+    th_timestamp: 'समय',
+    th_txn_type: 'लेनदेन प्रकार',
+    th_desc_reason: 'विवरण / कारण',
+    th_points_change: 'पॉइंट्स बदलाव',
+    th_bal_after: 'शेष बैलेंस',
+    th_auditor_actor: 'ऑडिटर / सिस्टम',
+    no_txns_found: 'कोई लेनदेन रिकॉर्ड नहीं मिला।',
+    no_purchases_found: 'अभी तक कोई बिल जमा नहीं किया गया।',
+    no_logs_found: 'कोई ऑडिट लॉग रिकॉर्ड नहीं मिला।',
+    no_redemptions_found: 'कोई निकासी अनुरोध नहीं मिला।',
+    th_actor: 'यूजर / कर्ता',
+    th_role: 'भूमिका',
+    th_details: 'विवरण',
+    th_client_ip: 'क्लाइंट आईपी',
+    th_reward: 'इनाम',
+    download_audit_csv: '📊 ऑडिट CSV डाउनलोड करें',
+    redemptions_title: '🏆 इनाम निकासी अनुरोध',
+    redemptions_sub: 'कारीगरों द्वारा इनाम निकासी के लिए भेजे गए दावे',
+    filter_by_category: '👁️ ट्रेड श्रेणी अनुसार देखें:',
+    visible_to_all: '🌟 सभी ट्रेड्स के लिए',
+    item_to_sell: '📦 बिक्री सामग्री',
+    reward_gift: '🎁 उपहार / इनाम',
+    on_selling: '📦 इस सामग्री की बिक्री पर:',
+    eligible_label: 'पात्रता:',
+    claim_reward: 'इनाम क्लेम करें',
+    need_more_pts_msg: '{pts} और पॉइंट्स चाहिए'
+  }
+};
+
+function t(key, fallback = '', params = {}) {
+  const currentLang = AppState.lang || 'en';
+  let val = I18N[currentLang]?.[key] || I18N['en']?.[key] || fallback || key;
+  if (params && typeof params === 'object') {
+    Object.keys(params).forEach(k => {
+      val = val.replace(new RegExp(`\\{${k}\\}`, 'g'), params[k]);
+    });
+  }
+  return val;
+}
+
+function setLanguage(lang) {
+  if (lang !== 'en' && lang !== 'hi') lang = 'en';
+  AppState.lang = lang;
+  localStorage.setItem('mahabir_app_lang', lang);
+  document.documentElement.lang = lang;
+  
+  if (!AppState.user) {
+    renderLoginView(activeAuthTab || 'login');
+  } else {
+    renderView();
+  }
+  showToast(t('lang_changed_toast'), 'success');
+}
+
+function toggleLanguage() {
+  const target = AppState.lang === 'hi' ? 'en' : 'hi';
+  setLanguage(target);
+}
+
+function renderLangSwitcherHtml(variant = 'light') {
+  const isHi = AppState.lang === 'hi';
+  return `
+    <div class="lang-segmented-group ${variant === 'dark' ? 'dark' : ''}">
+      <button type="button" class="lang-segmented-btn ${!isHi ? 'active' : ''}" onclick="setLanguage('en')">English</button>
+      <button type="button" class="lang-segmented-btn ${isHi ? 'active' : ''}" onclick="setLanguage('hi')">हिन्दी</button>
+    </div>
+  `;
+}
 
 let deferredInstallPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -259,7 +978,7 @@ function renderMobileHeader() {
   }
 
   const role = AppState.user.role;
-  const roleName = role === 'admin' ? 'Admin' : role === 'auditor' ? 'Auditor' : (AppState.user.mechanic?.trade_type || 'Worker');
+  const roleName = role === 'admin' ? t('role_admin') : role === 'auditor' ? t('role_auditor') : (AppState.user.mechanic?.trade_type || t('role_mechanic'));
 
   slot.innerHTML = `
     <header class="mobile-header">
@@ -269,13 +988,17 @@ function renderMobileHeader() {
         </button>
         <div class="mobile-brand-title" onclick="navigate('dash')" style="cursor:pointer;">
           <span>🏪</span>
-          <span>Mahabir</span>
+          <span>${t('brand_name')}</span>
           <span class="user-badge role-${role}" style="font-size:10px;padding:1px 5px;">${roleName}</span>
         </div>
       </div>
 
       <div class="mobile-header-right">
-        <button class="mobile-icon-btn" onclick="navigate('notifications')" title="Notifications">
+        <button class="lang-switcher-btn" onclick="toggleLanguage()" title="Switch Language / भाषा बदलें">
+          <span>🌐</span>
+          <span>${AppState.lang === 'hi' ? 'EN' : 'हिन्दी'}</span>
+        </button>
+        <button class="mobile-icon-btn" onclick="navigate('notifications')" title="${t('nav_notifications')}">
           🔔
         </button>
         <button class="mobile-icon-btn" onclick="toggleMobileDrawer(true)" title="Profile & Menu" style="background:var(--accent);color:#fff;font-weight:700;font-size:12px;">
@@ -300,40 +1023,40 @@ function renderMobileDrawer() {
 
   if (role === 'admin') {
     navItems = [
-      { id: 'dash', icon: '📊', label: 'Dashboard Overview' },
-      { id: 'about', icon: '🏪', label: 'About Mahabir Traders' },
-      { id: 'verifications', icon: '🔍', label: 'Bill Audits Queue', count: AppState.stats.pendingBills || 0 },
-      { id: 'mechanics', icon: '👷', label: 'Mechanics Directory' },
-      { id: 'purchases', icon: '🧾', label: 'Purchases & Bills' },
-      { id: 'returns', icon: '↩️', label: 'Returns & Reversals' },
-      { id: 'rewards', icon: '🎁', label: 'Rewards Catalog' },
-      { id: 'redemptions', icon: '🏆', label: 'Redemptions', count: AppState.stats.pendingRedemptions || 0 },
-      { id: 'reports', icon: '📈', label: 'Reports & Leaderboard' },
-      { id: 'audit_logs', icon: '📋', label: 'Audit Trail Logs' },
-      { id: 'notifications', icon: '🔔', label: 'Notifications' },
-      { id: 'settings', icon: '⚙️', label: 'Settings' }
+      { id: 'dash', icon: '📊', label: t('nav_dashboard') },
+      { id: 'about', icon: '🏪', label: t('nav_about_store') },
+      { id: 'verifications', icon: '🔍', label: t('nav_bill_audits'), count: AppState.stats.pendingBills || 0 },
+      { id: 'mechanics', icon: '👷', label: t('nav_mechanics') },
+      { id: 'purchases', icon: '🧾', label: t('nav_purchases') },
+      { id: 'returns', icon: '↩️', label: t('nav_returns') },
+      { id: 'rewards', icon: '🎁', label: t('nav_rewards') },
+      { id: 'redemptions', icon: '🏆', label: t('nav_redemptions'), count: AppState.stats.pendingRedemptions || 0 },
+      { id: 'reports', icon: '📈', label: t('nav_reports') },
+      { id: 'audit_logs', icon: '📋', label: t('nav_audit_logs') },
+      { id: 'notifications', icon: '🔔', label: t('nav_notifications') },
+      { id: 'settings', icon: '⚙️', label: t('nav_settings') }
     ];
   } else if (role === 'auditor') {
     navItems = [
-      { id: 'dash', icon: '📊', label: 'Field Overview' },
-      { id: 'about', icon: '🏪', label: 'About Mahabir Traders' },
-      { id: 'audit_feed', icon: '🔍', label: 'Bill Audit Queue', count: AppState.stats.pendingBills || 0 },
-      { id: 'submit_purchase', icon: '📸', label: 'Snap & Log Bill' },
-      { id: 'mechanics', icon: '👷', label: 'Mechanics Directory' },
-      { id: 'purchases', icon: '🧾', label: 'Audited Purchases' },
-      { id: 'returns', icon: '↩️', label: 'Returns & Reversals' },
-      { id: 'audit_logs', icon: '📋', label: 'My Audit Trail' },
-      { id: 'notifications', icon: '🔔', label: 'Notifications' }
+      { id: 'dash', icon: '📊', label: t('nav_field_overview') },
+      { id: 'about', icon: '🏪', label: t('nav_about_store') },
+      { id: 'audit_feed', icon: '🔍', label: t('nav_bill_audits'), count: AppState.stats.pendingBills || 0 },
+      { id: 'submit_purchase', icon: '📸', label: t('nav_snap_bill') },
+      { id: 'mechanics', icon: '👷', label: t('nav_mechanics') },
+      { id: 'purchases', icon: '🧾', label: t('nav_purchases') },
+      { id: 'returns', icon: '↩️', label: t('nav_returns') },
+      { id: 'audit_logs', icon: '📋', label: t('nav_audit_logs') },
+      { id: 'notifications', icon: '🔔', label: t('nav_notifications') }
     ];
   } else {
     navItems = [
-      { id: 'dash', icon: '🏠', label: 'My Dashboard' },
-      { id: 'about', icon: '🏪', label: 'About Mahabir Traders' },
-      { id: 'submit_purchase', icon: '📸', label: 'Submit Purchase & Bill' },
-      { id: 'purchases', icon: '🧾', label: 'My Purchase Records' },
-      { id: 'rewards', icon: '🎁', label: 'Rewards & Claim' },
-      { id: 'redemptions', icon: '🏆', label: 'Redemption History' },
-      { id: 'notifications', icon: '🔔', label: 'Notifications' }
+      { id: 'dash', icon: '🏠', label: t('nav_my_dashboard') },
+      { id: 'about', icon: '🏪', label: t('nav_about_store') },
+      { id: 'submit_purchase', icon: '📸', label: t('nav_snap_bill') },
+      { id: 'purchases', icon: '🧾', label: t('nav_my_purchases') },
+      { id: 'rewards', icon: '🎁', label: t('nav_rewards_claim') },
+      { id: 'redemptions', icon: '🏆', label: t('nav_redemption_history') },
+      { id: 'notifications', icon: '🔔', label: t('nav_notifications') }
     ];
   }
 
@@ -348,12 +1071,15 @@ function renderMobileDrawer() {
       <div class="mobile-drawer-header">
         <div class="mobile-drawer-user">
           <div style="font-size:16px;font-weight:700;color:#fff;display:flex;align-items:center;gap:6px;">
-            <span>🏪 Mahabir Traders</span>
+            <span>🏪 ${t('brand_name')}</span>
           </div>
           <div style="font-size:14px;font-weight:600;color:#38BDF8;margin-top:4px;">${AppState.user.name}</div>
           <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
             <span class="user-badge role-${role}">${role}</span>
             ${role === 'mechanic' ? `<span style="font-size:11px;color:#4ADE80;font-weight:700;">${mechPts} pts</span>` : ''}
+          </div>
+          <div style="margin-top:8px;">
+            ${renderLangSwitcherHtml('dark')}
           </div>
         </div>
         <button class="mobile-drawer-close" onclick="toggleMobileDrawer(false)">✕</button>
@@ -371,7 +1097,7 @@ function renderMobileDrawer() {
 
       <div class="mobile-drawer-footer">
         <button class="btn btn-danger btn-sm" style="width:100%;" onclick="logout(true)">
-          🚪 Logout
+          🚪 ${t('logout')}
         </button>
       </div>
     </div>
@@ -396,7 +1122,7 @@ async function renderView() {
   renderBottomNav();
 
   const main = document.getElementById('main-content');
-  main.innerHTML = `<div style="text-align:center;padding:40px;"><p>Loading data...</p></div>`;
+  main.innerHTML = `<div style="text-align:center;padding:40px;"><p>${t('loading')}</p></div>`;
 
   try {
     switch (AppState.view) {
@@ -473,47 +1199,50 @@ function renderSidebar() {
 
   if (role === 'admin') {
     navItems = [
-      { id: 'dash', label: '📊 Dashboard' },
-      { id: 'about', label: '🏪 About Store' },
-      { id: 'verifications', label: '🔍 Bill Audits', count: AppState.stats.pendingBills || 0 },
-      { id: 'mechanics', label: '👷 Mechanics' },
-      { id: 'purchases', label: '🧾 Purchases' },
-      { id: 'returns', label: '↩️ Returns & Reversals' },
-      { id: 'rewards', label: '🎁 Rewards Catalog' },
-      { id: 'redemptions', label: '🏆 Redemptions', count: AppState.stats.pendingRedemptions || 0 },
-      { id: 'reports', label: '📈 Reports & Rankings' },
-      { id: 'audit_logs', label: '📋 Audit Logs' },
-      { id: 'settings', label: '⚙️ Settings' }
+      { id: 'dash', label: `📊 ${t('nav_dashboard')}` },
+      { id: 'about', label: `🏪 ${t('nav_about_store')}` },
+      { id: 'verifications', label: `🔍 ${t('nav_bill_audits')}`, count: AppState.stats.pendingBills || 0 },
+      { id: 'mechanics', label: `👷 ${t('nav_mechanics')}` },
+      { id: 'purchases', label: `🧾 ${t('nav_purchases')}` },
+      { id: 'returns', label: `↩️ ${t('nav_returns')}` },
+      { id: 'rewards', label: `🎁 ${t('nav_rewards')}` },
+      { id: 'redemptions', label: `🏆 ${t('nav_redemptions')}`, count: AppState.stats.pendingRedemptions || 0 },
+      { id: 'reports', label: `📈 ${t('nav_reports')}` },
+      { id: 'audit_logs', label: `📋 ${t('nav_audit_logs')}` },
+      { id: 'settings', label: `⚙️ ${t('nav_settings')}` }
     ];
   } else if (role === 'auditor') {
     navItems = [
-      { id: 'dash', label: '📊 Field Overview' },
-      { id: 'about', label: '🏪 About Store' },
-      { id: 'audit_feed', label: '🔍 Audit Queue', count: AppState.stats.pendingBills || 0 },
-      { id: 'submit_purchase', label: '📸 Snap & Log Bill' },
-      { id: 'mechanics', label: '👷 Mechanics Directory' },
-      { id: 'purchases', label: '🧾 Audited Purchases' },
-      { id: 'returns', label: '↩️ Returns & Reversals' },
-      { id: 'audit_logs', label: '📋 My Audit Logs' }
+      { id: 'dash', label: `📊 ${t('nav_field_overview')}` },
+      { id: 'about', label: `🏪 ${t('nav_about_store')}` },
+      { id: 'audit_feed', label: `🔍 ${t('nav_bill_audits')}`, count: AppState.stats.pendingBills || 0 },
+      { id: 'submit_purchase', label: `📸 ${t('nav_snap_bill')}` },
+      { id: 'mechanics', label: `👷 ${t('nav_mechanics')}` },
+      { id: 'purchases', label: `🧾 ${t('nav_purchases')}` },
+      { id: 'returns', label: `↩️ ${t('nav_returns')}` },
+      { id: 'audit_logs', label: `📋 ${t('nav_audit_logs')}` }
     ];
   } else {
     navItems = [
-      { id: 'dash', label: '🏠 My Dashboard' },
-      { id: 'about', label: '🏪 About Store' },
-      { id: 'submit_purchase', label: '📸 Submit Purchase' },
-      { id: 'purchases', label: '🧾 My Purchases' },
-      { id: 'rewards', label: '🎁 Rewards & Redeem' },
-      { id: 'redemptions', label: '🏆 Redemption History' },
-      { id: 'notifications', label: '🔔 Notifications' }
+      { id: 'dash', label: `🏠 ${t('nav_my_dashboard')}` },
+      { id: 'about', label: `🏪 ${t('nav_about_store')}` },
+      { id: 'submit_purchase', label: `📸 ${t('nav_snap_bill')}` },
+      { id: 'purchases', label: `🧾 ${t('nav_my_purchases')}` },
+      { id: 'rewards', label: `🎁 ${t('nav_rewards_claim')}` },
+      { id: 'redemptions', label: `🏆 ${t('nav_redemption_history')}` },
+      { id: 'notifications', label: `🔔 ${t('nav_notifications')}` }
     ];
   }
 
   sidebar.innerHTML = `
     <aside class="sidebar">
       <div class="sidebar-header">
-        <div class="brand-title">🏪 Mahabir Traders</div>
-        <span class="user-badge role-${role}">${role}</span>
-        <div style="font-size:12px;color:#cbd5e1;margin-top:4px;">${AppState.user.name}</div>
+        <div class="brand-title">🏪 ${t('brand_name')}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">
+          <span class="user-badge role-${role}">${role}</span>
+          ${renderLangSwitcherHtml('dark')}
+        </div>
+        <div style="font-size:12px;color:#cbd5e1;margin-top:6px;">${AppState.user.name}</div>
       </div>
       <nav class="nav-links">
         ${navItems.map(item => `
@@ -524,7 +1253,7 @@ function renderSidebar() {
         `).join('')}
       </nav>
       <div class="sidebar-footer">
-        <button class="btn btn-danger btn-sm" style="width:100%" onclick="logout(true)">Logout</button>
+        <button class="btn btn-danger btn-sm" style="width:100%" onclick="logout(true)">🚪 ${t('logout')}</button>
       </div>
     </aside>
   `;
@@ -543,27 +1272,27 @@ function renderBottomNav() {
 
   if (role === 'admin') {
     items = [
-      { id: 'dash', icon: '📊', label: 'Dash' },
-      { id: 'verifications', icon: '🔍', label: 'Audits', count: AppState.stats.pendingBills || 0 },
-      { id: 'submit_purchase', icon: '📸', label: 'Snap' },
-      { id: 'returns', icon: '↩️', label: 'Returns' },
-      { id: 'more', icon: '☰', label: 'Menu', isMenu: true }
+      { id: 'dash', icon: '📊', label: t('bottom_dash') },
+      { id: 'verifications', icon: '🔍', label: t('bottom_audits'), count: AppState.stats.pendingBills || 0 },
+      { id: 'submit_purchase', icon: '📸', label: t('bottom_snap') },
+      { id: 'returns', icon: '↩️', label: t('bottom_returns') },
+      { id: 'more', icon: '☰', label: t('bottom_menu'), isMenu: true }
     ];
   } else if (role === 'auditor') {
     items = [
-      { id: 'dash', icon: '📊', label: 'Overview' },
-      { id: 'audit_feed', icon: '🔍', label: 'Queue', count: AppState.stats.pendingBills || 0 },
-      { id: 'submit_purchase', icon: '📸', label: 'Snap' },
-      { id: 'returns', icon: '↩️', label: 'Returns' },
-      { id: 'more', icon: '☰', label: 'Menu', isMenu: true }
+      { id: 'dash', icon: '📊', label: t('bottom_dash') },
+      { id: 'audit_feed', icon: '🔍', label: t('bottom_audits'), count: AppState.stats.pendingBills || 0 },
+      { id: 'submit_purchase', icon: '📸', label: t('bottom_snap') },
+      { id: 'returns', icon: '↩️', label: t('bottom_returns') },
+      { id: 'more', icon: '☰', label: t('bottom_menu'), isMenu: true }
     ];
   } else {
     items = [
-      { id: 'dash', icon: '🏠', label: 'Home' },
-      { id: 'submit_purchase', icon: '📸', label: 'Submit' },
-      { id: 'purchases', icon: '🧾', label: 'Bills' },
-      { id: 'rewards', icon: '🎁', label: 'Rewards' },
-      { id: 'more', icon: '☰', label: 'Menu', isMenu: true }
+      { id: 'dash', icon: '🏠', label: t('bottom_home') },
+      { id: 'submit_purchase', icon: '📸', label: t('bottom_snap') },
+      { id: 'purchases', icon: '🧾', label: t('bottom_bills') },
+      { id: 'rewards', icon: '🎁', label: t('bottom_rewards') },
+      { id: 'more', icon: '☰', label: t('bottom_menu'), isMenu: true }
     ];
   }
 
@@ -595,10 +1324,19 @@ function renderLoginView(tab = 'login', prefillPhone = '') {
   main.innerHTML = `
     <div style="max-width: 520px; margin: 4vh auto; padding: 12px;">
       <div class="card" style="padding: 26px; box-shadow: var(--shadow-lg);">
+        
+        <!-- Language Switcher Bar on Top of Login -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);">
+          <span style="font-size:12px;font-weight:700;color:var(--text-muted);display:flex;align-items:center;gap:4px;">
+            <span>🌐</span> Language / भाषा:
+          </span>
+          ${renderLangSwitcherHtml('light')}
+        </div>
+
         <div style="text-align: center; margin-bottom: 20px;">
           <div style="font-size: 38px; margin-bottom: 8px;">🏪</div>
-          <h2 style="font-size: 22px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; margin: 0 0 4px 0;">MAHABIR TRADERS</h2>
-          <p style="font-size: 13px; font-weight: 600; color: var(--accent); margin-top: 2px;">Mechanic Loyalty, Rewards & Field Audit System</p>
+          <h2 style="font-size: 22px; font-weight: 800; color: var(--primary); letter-spacing: 0.5px; margin: 0 0 4px 0;">${t('brand_name').toUpperCase()}</h2>
+          <p style="font-size: 13px; font-weight: 600; color: var(--accent); margin-top: 2px;">${t('brand_tagline')}</p>
         </div>
 
         <button type="button" class="btn btn-success" id="pwa-install-banner-btn" style="width:100%;margin-bottom:14px;" onclick="triggerPwaInstall()">📲 Install App on Phone (1-Tap)</button>
@@ -606,10 +1344,10 @@ function renderLoginView(tab = 'login', prefillPhone = '') {
         <!-- Auth Tabs: Sign In / Sign Up -->
         <div class="auth-tab-group">
           <button type="button" class="auth-tab-btn ${activeAuthTab === 'login' ? 'active' : ''}" onclick="renderLoginView('login')">
-            🔐 Sign In
+            ${t('tab_login')}
           </button>
           <button type="button" class="auth-tab-btn ${activeAuthTab === 'signup' ? 'active' : ''}" onclick="renderLoginView('signup')">
-            📝 New Sign Up
+            ${t('tab_register')}
           </button>
         </div>
 
@@ -617,40 +1355,40 @@ function renderLoginView(tab = 'login', prefillPhone = '') {
           <!-- Sign In Form -->
           <form id="login-form" onsubmit="handleLoginSubmit(event)">
             <div class="form-group">
-              <label>Mobile Number or Username</label>
-              <input type="text" id="login-username" value="${prefillPhone}" placeholder="10-digit mobile or User ID (e.g. 9876510001 / MEC1001)" required autocomplete="username">
+              <label>${t('login_id_label')}</label>
+              <input type="text" id="login-username" value="${prefillPhone}" placeholder="${t('login_id_placeholder')}" required autocomplete="username">
             </div>
             
             <div class="form-group">
-              <label>Password <span style="color:var(--danger)">*</span></label>
-              <input type="password" id="login-password" placeholder="Enter your password" required autocomplete="current-password">
+              <label>${t('password_label')} <span style="color:var(--danger)">*</span></label>
+              <input type="password" id="login-password" placeholder="${t('password_placeholder')}" required autocomplete="current-password">
             </div>
 
-            <button type="submit" class="btn btn-primary btn-lg" id="login-btn" style="margin-top:6px;">Secure Login</button>
+            <button type="submit" class="btn btn-primary btn-lg" id="login-btn" style="margin-top:6px;">${t('login_btn')}</button>
           </form>
 
           <div style="text-align: center; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border);">
-            <span style="font-size:13px;color:var(--text-muted);">New worker or contractor?</span>
-            <a class="auth-link" style="margin-left:4px;" onclick="renderLoginView('signup')">Sign Up for Rewards ➔</a>
+            <span style="font-size:13px;color:var(--text-muted);">${t('new_worker_prompt')}</span>
+            <a class="auth-link" style="margin-left:4px;" onclick="renderLoginView('signup')">${t('signup_link')}</a>
           </div>
         ` : `
           <!-- Sign Up Form (New Worker Self-Registration) -->
           <form id="signup-form" onsubmit="handleSignUpSubmit(event)">
             <div class="form-group">
-              <label>Full Name <span style="color:var(--danger)">*</span></label>
-              <input type="text" id="signup-name" placeholder="e.g. Ramesh Kumar" required autocomplete="name">
+              <label>${t('full_name')} <span style="color:var(--danger)">*</span></label>
+              <input type="text" id="signup-name" placeholder="${t('full_name_placeholder')}" required autocomplete="name">
             </div>
 
             <div class="form-group">
-              <label>10-Digit Mobile Number <span style="color:var(--danger)">*</span></label>
-              <input type="tel" id="signup-phone" pattern="[0-9]{10}" maxlength="10" minlength="10" inputmode="numeric" placeholder="10-digit mobile number" required autocomplete="tel">
-              <small style="color:var(--text-muted);font-size:11px;">Mandatory 10-digit mobile number for account login & points alerts.</small>
+              <label>${t('mobile_number')} <span style="color:var(--danger)">*</span></label>
+              <input type="tel" id="signup-phone" pattern="[0-9]{10}" maxlength="10" minlength="10" inputmode="numeric" placeholder="${t('mobile_number')}" required autocomplete="tel">
+              <small style="color:var(--text-muted);font-size:11px;">${t('register_note')}</small>
             </div>
 
             <div class="form-group">
-              <label>Trade / Work Specialty <span style="color:var(--danger)">*</span></label>
+              <label>${t('trade_category')} <span style="color:var(--danger)">*</span></label>
               <select id="signup-trade" onchange="handleDropdownWithCustom(this, 'signup-trade-custom')">
-                <option value="">-- Choose Trade Category (Optional) --</option>
+                <option value="">-- Choose Trade Category --</option>
                 ${TRADE_TYPES.map(t => `<option value="${t}">${t}</option>`).join('')}
                 <option value="__custom__">✏️ Other / Custom Trade (Type below)</option>
               </select>
@@ -749,10 +1487,71 @@ async function handleSignUpSubmit(e) {
     localStorage.setItem('mech_audit_token', res.token);
     showToast(res.message || 'Account created successfully!', 'success');
     startAutoSync();
-    navigate('dash');
+
+    if (res.welcomeGreeting) {
+      showWorkerWelcomeModal(res.welcomeGreeting, () => {
+        navigate('dash');
+      });
+    } else {
+      navigate('dash');
+    }
   } catch (err) {
     btn.disabled = false;
     btn.textContent = 'Create Account & Sign In';
+  }
+}
+
+// Welcome Greeting Modal for newly registered worker (Option A: Instant WhatsApp Greeting)
+function showWorkerWelcomeModal(welcomeData, onProceed) {
+  if (!welcomeData) {
+    if (onProceed) onProceed();
+    return;
+  }
+
+  const modalRoot = document.getElementById('modal-root');
+  modalRoot.innerHTML = `
+    <div class="modal-backdrop" onclick="closeWelcomeModal()">
+      <div class="modal-content" style="max-width:520px;text-align:center;" onclick="event.stopPropagation()">
+        
+        <div style="font-size:48px;margin-bottom:8px;">🎉</div>
+        <h2 style="font-size:22px;font-weight:800;color:var(--primary);margin:0 0 4px 0;">Welcome to Mahabir Traders!</h2>
+        <p style="font-size:13.5px;color:var(--text-muted);margin:0 0 16px 0;">
+          Account registered successfully for <b>${welcomeData.workerName}</b> (User ID: <b>${welcomeData.uid}</b>)
+        </p>
+
+        <!-- WhatsApp Greeting Card Preview -->
+        <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:var(--radius-sm);padding:14px;text-align:left;margin-bottom:16px;font-size:12.5px;line-height:1.6;color:#166534;white-space:pre-line;max-height:200px;overflow-y:auto;">
+${welcomeData.messageText}
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a href="${welcomeData.whatsappUrl}" target="_blank" class="btn btn-primary btn-lg" style="background:#25D366;color:#ffffff;border:none;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:15px;text-decoration:none;" onclick="handleWelcomeWhatsAppClicked()">
+            <span>💬</span>
+            <span>Send Welcome Greeting on WhatsApp</span>
+          </a>
+
+          <button type="button" class="btn btn-secondary btn-lg" onclick="closeWelcomeModal()">
+            Continue to Dashboard ➔
+          </button>
+        </div>
+
+      </div>
+    </div>
+  `;
+
+  window._welcomeModalCallback = onProceed;
+}
+
+function handleWelcomeWhatsAppClicked() {
+  showToast('Opening WhatsApp with greeting...', 'info');
+}
+
+function closeWelcomeModal() {
+  closeModal();
+  if (window._welcomeModalCallback) {
+    const cb = window._welcomeModalCallback;
+    window._welcomeModalCallback = null;
+    cb();
   }
 }
 
@@ -986,208 +1785,206 @@ async function renderAboutView() {
   main.innerHTML = `
     <div class="top-bar">
       <div>
-        <h1 class="page-title">🏪 About Mahabir Traders</h1>
-        <p style="font-size:13px;color:var(--text-muted)">Authorized Hub for Building Materials, Sanitaryware & Vitrified Tiles · Rosera, Samastipur</p>
+        <h1 class="page-title">🏪 ${t('about_title')}</h1>
+        <p style="font-size:13px;color:var(--text-muted)">${t('about_subtitle')}</p>
       </div>
       <div class="top-actions">
-        <a href="tel:+919955594571" class="btn btn-primary btn-sm">📞 Call Rajesh Ji</a>
-        <a href="https://wa.me/919955594571?text=Hello%20Rajesh%20Ji%2C%20I%20am%20contacting%20you%20from%20Mahabir%20Traders%20App" target="_blank" class="btn btn-secondary btn-sm" style="background:#25D366;color:#ffffff;border:none;">💬 WhatsApp</a>
+        <a href="tel:+919955594571" class="btn btn-primary btn-sm">📞 ${t('call_rajesh')}</a>
+        <a href="https://wa.me/919955594571?text=Hello%20Rajesh%20Ji%2C%20I%20am%20contacting%20you%20from%20Mahabir%20Traders%20App" target="_blank" class="btn btn-secondary btn-sm" style="background:#25D366;color:#ffffff;border:none;">💬 ${t('whatsapp_rajesh')}</a>
       </div>
     </div>
 
-    <div class="about-grid-layout">
-      <!-- Left Column: Full Stitched Showcase Poster -->
-      <div class="about-poster-card">
-        <div class="about-poster-img-wrap" onclick="openShowcaseLightbox('/images/mahabir_about_stitch.png')">
-          <img src="/images/mahabir_about_stitch.png" alt="Mahabir Traders Full Showcase Poster" class="about-poster-img" />
-          <div class="about-poster-zoom-hint">
-            <span>🔍</span> Tap to Enlarge Poster
+    <div class="about-single-column">
+      
+      <!-- 1. Store Identity & Storefront Photo Card -->
+      <div class="card" style="padding:22px;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
+          <div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:28px;">🏪</span>
+              <h2 style="font-size:22px;font-weight:800;color:var(--primary);margin:0;">${t('brand_name')}</h2>
+            </div>
+            <div style="font-size:14px;font-weight:700;color:#0284C7;margin-top:2px;">${t('brand_name')} · Rosera / Block Road</div>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <span class="badge" style="background:#FEF3C7;color:#92400E;border:1px solid #FDE68A;font-weight:700;">${t('trusted_badge')}</span>
+            <span class="badge" style="background:#E0E7FF;color:#3730A3;border:1px solid #C7D2FE;font-weight:700;">${t('authorized_hub_badge')}</span>
           </div>
         </div>
-        <div class="about-poster-footer">
-          <button class="btn btn-secondary btn-sm" style="width:100%;" onclick="openShowcaseLightbox('/images/mahabir_about_stitch.png')">
-            🔍 View Full Poster (HD)
+
+        <h3 style="font-size:17px;font-weight:800;color:#0F172A;line-height:1.3;margin:0 0 6px 0;">
+          ${t('foundations_headline')}
+        </h3>
+        <p style="font-size:14px;line-height:1.6;color:var(--text-muted);margin:0 0 16px 0;">
+          ${t('foundations_desc')}
+        </p>
+
+        <!-- Storefront Photo Banner -->
+        <div class="storefront-banner-card" onclick="openShowcaseLightbox('/images/storefront.jpg')">
+          <img src="/images/storefront.jpg" alt="Mahabir Traders Storefront Rosera Block Road" class="storefront-banner-img" />
+          <div class="storefront-banner-overlay">
+            <div>
+              <div style="font-size:16px;font-weight:800;color:#ffffff;text-shadow:0 1px 4px rgba(0,0,0,0.8);">${t('brand_name')}</div>
+              <div style="font-size:12px;color:#E2E8F0;text-shadow:0 1px 3px rgba(0,0,0,0.8);">Block Road, Rosera</div>
+            </div>
+            <span style="padding:4px 10px;border-radius:4px;background:#C2410C;color:#ffffff;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">
+              ${t('authorized_hub_badge')}
+            </span>
+          </div>
+        </div>
+
+        <!-- GST Bar -->
+        <div style="display:flex;align-items:center;justify-content:space-between;background:#F1F5F9;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);flex-wrap:wrap;gap:8px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:18px;">🧾</span>
+            <span style="font-size:13px;font-weight:700;color:#334155;">GSTIN:</span>
+            <code style="font-size:14px;font-weight:800;color:#0F172A;letter-spacing:0.5px;">10AHBPK0437M1ZF</code>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="copyGstinToClipboard('10AHBPK0437M1ZF')" style="padding:4px 12px;font-size:12px;">
+            ${t('copy_gstin')}
           </button>
-          <a href="/images/mahabir_about_stitch.png" download="Mahabir_Traders_Showcase.png" class="btn btn-secondary btn-sm" title="Download Image">
-            ⬇️
+        </div>
+      </div>
+
+      <!-- 2. Leadership & Contact Details -->
+      <div class="card" style="padding:22px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+          <div style="width:50px;height:50px;border-radius:50%;background:#0B132B;color:#38BDF8;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;flex-shrink:0;">
+            👤
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:#D97706;text-transform:uppercase;letter-spacing:0.5px;">${t('leadership_title')}</div>
+            <h3 style="font-size:19px;font-weight:800;color:#0F172A;margin:2px 0 0 0;">${t('proprietor_name')}</h3>
+            <div style="font-size:13px;color:var(--text-muted);">${t('proprietor_role')}</div>
+          </div>
+        </div>
+
+        <!-- Proprietor Quote Box -->
+        <div style="background:#EFF6FF;border-left:4px solid #3B82F6;padding:14px 16px;border-radius:4px;margin-bottom:16px;">
+          <div style="font-size:11px;font-weight:700;color:#1D4ED8;text-transform:uppercase;margin-bottom:4px;">💬 ${t('proprietors_message_title')}</div>
+          <p style="font-size:13.5px;font-style:italic;color:#1E3A8A;margin:0;line-height:1.5;">
+            ${t('proprietors_message')}
+          </p>
+        </div>
+
+        <!-- Action Contact Grid -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+          <a href="tel:+919955594571" class="btn btn-primary" style="display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;padding:11px 14px;font-size:13.5px;">
+            <span>📞</span>
+            <span>${t('call_rajesh')}</span>
+          </a>
+          <a href="https://wa.me/919955594571?text=Hello%20Rajesh%20Ji%2C%20I%20am%20contacting%20you%20from%20Mahabir%20Traders%20App" target="_blank" class="btn btn-secondary" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:#ffffff;border:none;text-decoration:none;padding:11px 14px;font-size:13.5px;">
+            <span>💬</span>
+            <span>${t('whatsapp_rajesh')}</span>
+          </a>
+        </div>
+
+        <!-- Store Location -->
+        <div style="display:flex;align-items:flex-start;gap:10px;background:#F8FAFC;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);">
+          <span style="font-size:20px;margin-top:2px;">📍</span>
+          <div style="flex:1;">
+            <div style="font-size:12px;font-weight:700;color:#475569;">${t('store_location_label')}</div>
+            <div style="font-size:13.5px;font-weight:600;color:#0F172A;margin-top:2px;">${t('store_location_val')}</div>
+          </div>
+          <a href="https://maps.google.com/?q=Mahabir+Traders+Block+Road+Rosera+Samastipur+Bihar+848210" target="_blank" class="btn btn-secondary btn-sm" style="padding:5px 10px;font-size:11.5px;flex-shrink:0;">
+            🗺️ ${t('map_btn')}
           </a>
         </div>
       </div>
 
-      <!-- Right Column: Interactive Details, Storefront & Live Gallery Walkthrough -->
-      <div style="display:flex;flex-direction:column;gap:16px;">
-        
-        <!-- Store Identity & Storefront Photo Card -->
-        <div class="card" style="padding:20px;">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
-            <div>
-              <div style="display:flex;align-items:center;gap:8px;">
-                <span style="font-size:28px;">🏪</span>
-                <h2 style="font-size:22px;font-weight:800;color:var(--primary);margin:0;">Mahabir Traders</h2>
-              </div>
-              <div style="font-size:14px;font-weight:700;color:#0284C7;margin-top:2px;">महावीर ट्रेडर्स · Rosera / Block Road</div>
-            </div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <span class="badge" style="background:#FEF3C7;color:#92400E;border:1px solid #FDE68A;font-weight:700;">⭐ Trusted For Decades</span>
-              <span class="badge" style="background:#E0E7FF;color:#3730A3;border:1px solid #C7D2FE;font-weight:700;">🏢 Authorized Hub</span>
-            </div>
+      <!-- 3. Showroom Display & Studio Walkthrough (3 Zones with High-Res Images) -->
+      <div class="card" style="padding:22px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+          <div>
+            <div style="font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">${t('walkthrough_title')}</div>
+            <h3 style="font-size:19px;font-weight:800;color:#0F172A;margin:2px 0 0 0;">${t('walkthrough_title')}</h3>
           </div>
+          <span class="badge" style="background:#EFF6FF;color:#1D4ED8;border:1px solid #BFDBFE;font-weight:700;">${t('experience_zones')}</span>
+        </div>
 
-          <h3 style="font-size:17px;font-weight:800;color:#0F172A;line-height:1.3;margin:0 0 4px 0;">
-            Building Strong Foundations.
-          </h3>
-          <p style="font-size:13.5px;line-height:1.6;color:var(--text-muted);margin:0 0 14px 0;">
-            Crafting modern sanitary &amp; architectural living spaces across Samastipur &amp; North Bihar. Single-window authorized source for certified steel, cement, designer tiles, and luxury sanitaryware in Rosera.
+        <!-- Zone 01: Wash Basins & Vanities -->
+        <div class="experience-zone-card">
+          <div class="zone-badge">🚿 ${t('zone1_title')}</div>
+          <div class="zone-img-wrap" onclick="openShowcaseLightbox('/images/zone1_vanity.jpg')">
+            <img src="/images/zone1_vanity.jpg" alt="${t('zone1_name')}" class="zone-img" />
+          </div>
+          <h4 style="font-size:15px;font-weight:700;color:#0F172A;margin:0 0 4px 0;">${t('zone1_name')}</h4>
+          <p style="font-size:13px;color:var(--text-muted);margin:0;line-height:1.5;">
+            ${t('zone1_desc')}
           </p>
-
-          <!-- Storefront Photo Banner -->
-          <div class="storefront-banner-card" onclick="openShowcaseLightbox('/images/storefront.jpg')">
-            <img src="/images/storefront.jpg" alt="Mahabir Traders Storefront Rosera Block Road" class="storefront-banner-img" />
-            <div class="storefront-banner-overlay">
-              <div>
-                <div style="font-size:16px;font-weight:800;color:#ffffff;text-shadow:0 1px 4px rgba(0,0,0,0.8);">महावीर ट्रेडर्स</div>
-                <div style="font-size:12px;color:#E2E8F0;text-shadow:0 1px 3px rgba(0,0,0,0.8);">Block Road, Rosera</div>
-              </div>
-              <span style="padding:4px 10px;border-radius:4px;background:#C2410C;color:#ffffff;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">
-                Authorized Hub
-              </span>
-            </div>
-          </div>
-
-          <!-- GST Bar -->
-          <div style="display:flex;align-items:center;justify-content:space-between;background:#F1F5F9;padding:10px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);flex-wrap:wrap;gap:8px;">
-            <div style="display:flex;align-items:center;gap:8px;">
-              <span style="font-size:16px;">🧾</span>
-              <span style="font-size:13px;font-weight:700;color:#334155;">GSTIN:</span>
-              <code style="font-size:13.5px;font-weight:800;color:#0F172A;letter-spacing:0.5px;">10AHBPK0437M1ZF</code>
-            </div>
-            <button class="btn btn-secondary btn-sm" onclick="copyGstinToClipboard('10AHBPK0437M1ZF')" style="padding:4px 10px;font-size:12px;">
-              📋 Copy GSTIN
-            </button>
-          </div>
         </div>
 
-        <!-- Leadership & Contact Details -->
-        <div class="card" style="padding:20px;">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
-            <div style="width:48px;height:48px;border-radius:50%;background:#0B132B;color:#38BDF8;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;flex-shrink:0;">
-              👤
-            </div>
-            <div>
-              <div style="font-size:11px;font-weight:700;color:#D97706;text-transform:uppercase;letter-spacing:0.5px;">Leadership &amp; Quality Promise</div>
-              <h3 style="font-size:18px;font-weight:800;color:#0F172A;margin:2px 0 0 0;">Rajesh Kumar Khemka</h3>
-              <div style="font-size:12.5px;color:var(--text-muted);">Proprietor &amp; Managing Director</div>
-            </div>
+        <!-- Zone 02: Luxury Tiles & Glazed Vitrified Display -->
+        <div class="experience-zone-card" style="border-left-color:#F59E0B;">
+          <div class="zone-badge" style="background:#FEF3C7;color:#92400E;">🧱 ${t('zone2_title')}</div>
+          <div class="zone-img-wrap" onclick="openShowcaseLightbox('/images/zone2_tiles.jpg')">
+            <img src="/images/zone2_tiles.jpg" alt="${t('zone2_name')}" class="zone-img" />
           </div>
-
-          <!-- Proprietor Quote Box -->
-          <div style="background:#EFF6FF;border-left:4px solid #3B82F6;padding:12px 14px;border-radius:4px;margin-bottom:16px;">
-            <div style="font-size:11px;font-weight:700;color:#1D4ED8;text-transform:uppercase;margin-bottom:4px;">💬 Proprietor's Message</div>
-            <p style="font-size:13px;font-style:italic;color:#1E3A8A;margin:0;line-height:1.5;">
-              "Delivering 100% factory-grade building materials and modern sanitary designs with complete integrity and wholesale pricing."
-            </p>
-          </div>
-
-          <!-- Action Contact Grid -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
-            <a href="tel:+919955594571" class="btn btn-primary" style="display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;padding:10px 12px;font-size:13px;">
-              <span>📞</span>
-              <span>Call Rajesh Ji</span>
-            </a>
-            <a href="https://wa.me/919955594571?text=Hello%20Rajesh%20Ji%2C%20I%20am%20contacting%20you%20from%20Mahabir%20Traders%20App" target="_blank" class="btn btn-secondary" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:#ffffff;border:none;text-decoration:none;padding:10px 12px;font-size:13px;">
-              <span>💬</span>
-              <span>WhatsApp</span>
-            </a>
-          </div>
-
-          <!-- Store Location -->
-          <div style="display:flex;align-items:flex-start;gap:10px;background:#F8FAFC;padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border);">
-            <span style="font-size:18px;margin-top:2px;">📍</span>
-            <div style="flex:1;">
-              <div style="font-size:12px;font-weight:700;color:#475569;">Store Location &amp; Dispatch Point:</div>
-              <div style="font-size:13px;font-weight:600;color:#0F172A;margin-top:2px;">Block Road, Rosera, Samastipur District, Bihar — 848210</div>
-            </div>
-            <a href="https://maps.google.com/?q=Mahabir+Traders+Block+Road+Rosera+Samastipur+Bihar+848210" target="_blank" class="btn btn-secondary btn-sm" style="padding:4px 8px;font-size:11px;flex-shrink:0;">
-              🗺️ Map
-            </a>
-          </div>
+          <h4 style="font-size:15px;font-weight:700;color:#0F172A;margin:0 0 4px 0;">${t('zone2_name')}</h4>
+          <p style="font-size:13px;color:var(--text-muted);margin:0;line-height:1.5;">
+            ${t('zone2_desc')}
+          </p>
         </div>
 
-        <!-- Showroom Display & Studio Walkthrough (3 Zones with High-Res Images) -->
-        <div class="card" style="padding:20px;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
-            <div>
-              <div style="font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:0.5px;">Walkthrough Experience</div>
-              <h3 style="font-size:18px;font-weight:800;color:#0F172A;margin:2px 0 0 0;">Showroom Display &amp; Studio</h3>
-            </div>
-            <span class="badge" style="background:#EFF6FF;color:#1D4ED8;border:1px solid #BFDBFE;font-weight:700;">3 Experience Zones</span>
+        <!-- Zone 03: Modern Sanitary Studio -->
+        <div class="experience-zone-card" style="border-left-color:#10B981;">
+          <div class="zone-badge" style="background:#D1FAE5;color:#065F46;">🚽 ${t('zone3_title')}</div>
+          <div class="zone-img-wrap" onclick="openShowcaseLightbox('/images/zone3_sanitary.jpg')">
+            <img src="/images/zone3_sanitary.jpg" alt="${t('zone3_name')}" class="zone-img" />
           </div>
-
-          <!-- Zone 01: Wash Basins & Vanities -->
-          <div class="experience-zone-card">
-            <div class="zone-badge">🚿 ZONE 01 · VANITY STUDIO</div>
-            <div class="zone-img-wrap" onclick="openShowcaseLightbox('/images/zone1_vanity.jpg')">
-              <img src="/images/zone1_vanity.jpg" alt="Designer Wash Basins & Mirror Displays" class="zone-img" />
-            </div>
-            <h4 style="font-size:14.5px;font-weight:700;color:#0F172A;margin:0 0 4px 0;">Designer Wash Basins &amp; Mirror Displays</h4>
-            <p style="font-size:12.5px;color:var(--text-muted);margin:0;line-height:1.5;">
-              Dual-tone gloss ceramic basins, luxury tabletop sinks, LED mirrors, and designer chrome fittings.
-            </p>
-          </div>
-
-          <!-- Zone 02: Luxury Tiles & Glazed Vitrified Display -->
-          <div class="experience-zone-card" style="border-left-color:#F59E0B;">
-            <div class="zone-badge" style="background:#FEF3C7;color:#92400E;">🧱 ZONE 02 · SLABS &amp; TILES</div>
-            <div class="zone-img-wrap" onclick="openShowcaseLightbox('/images/zone2_tiles.jpg')">
-              <img src="/images/zone2_tiles.jpg" alt="Full-Height Sliding Vitrified Tile Racks" class="zone-img" />
-            </div>
-            <h4 style="font-size:14.5px;font-weight:700;color:#0F172A;margin:0 0 4px 0;">Full-Height Sliding Vitrified Tile Racks</h4>
-            <p style="font-size:12.5px;color:var(--text-muted);margin:0;line-height:1.5;">
-              Large-format PGVT glazed vitrified slabs, anti-skid floor tiles, and elevation displays.
-            </p>
-          </div>
-
-          <!-- Zone 03: Modern Sanitary Studio -->
-          <div class="experience-zone-card" style="border-left-color:#10B981;">
-            <div class="zone-badge" style="background:#D1FAE5;color:#065F46;">🚽 ZONE 03 · SANITARY MART</div>
-            <div class="zone-img-wrap" onclick="openShowcaseLightbox('/images/zone3_sanitary.jpg')">
-              <img src="/images/zone3_sanitary.jpg" alt="Sanitaryware & Closets Showroom" class="zone-img" />
-            </div>
-            <h4 style="font-size:14.5px;font-weight:700;color:#0F172A;margin:0 0 4px 0;">Sanitaryware &amp; Closets Showroom</h4>
-            <p style="font-size:12.5px;color:var(--text-muted);margin:0;line-height:1.5;">
-              Rimless flushing EWCs, wall-hung concealed cisterns, and ceramic pedestal basins.
-            </p>
-          </div>
-
-          <!-- Trust Pillars Grid -->
-          <div class="trust-pillar-grid">
-            <div class="trust-pillar-item">
-              <div style="font-size:22px;margin-bottom:4px;">🛡️</div>
-              <div style="font-size:12.5px;font-weight:700;color:#0F172A;">100% Genuine</div>
-              <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Authorized Mill Stock</div>
-            </div>
-            <div class="trust-pillar-item">
-              <div style="font-size:22px;margin-bottom:4px;">🚚</div>
-              <div style="font-size:12.5px;font-weight:700;color:#0F172A;">Bulk Dispatch</div>
-              <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Job-Site Logistics</div>
-            </div>
-            <div class="trust-pillar-item">
-              <div style="font-size:22px;margin-bottom:4px;">🧾</div>
-              <div style="font-size:12.5px;font-weight:700;color:#0F172A;">GST Invoicing</div>
-              <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Transparent Billing</div>
-            </div>
-          </div>
+          <h4 style="font-size:15px;font-weight:700;color:#0F172A;margin:0 0 4px 0;">${t('zone3_name')}</h4>
+          <p style="font-size:13px;color:var(--text-muted);margin:0;line-height:1.5;">
+            ${t('zone3_desc')}
+          </p>
         </div>
 
-        <!-- System Platform Information -->
-        <div class="card" style="padding:16px;background:#F8FAFC;border:1px solid var(--border);">
-          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:12.5px;color:var(--text-muted);">
-            <div><b>App Version:</b> 1.0.0 (Multi-Device PWA)</div>
-            <div><b>Platform:</b> Mechanic Loyalty, Rewards &amp; Field Audit System</div>
+        <!-- Trust Pillars Grid -->
+        <div class="trust-pillar-grid">
+          <div class="trust-pillar-item">
+            <div style="font-size:22px;margin-bottom:4px;">🛡️</div>
+            <div style="font-size:13px;font-weight:700;color:#0F172A;">${t('trust_genuine')}</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">${t('trust_genuine_sub')}</div>
+          </div>
+          <div class="trust-pillar-item">
+            <div style="font-size:22px;margin-bottom:4px;">🚚</div>
+            <div style="font-size:13px;font-weight:700;color:#0F172A;">${t('trust_dispatch')}</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">${t('trust_dispatch_sub')}</div>
+          </div>
+          <div class="trust-pillar-item">
+            <div style="font-size:22px;margin-bottom:4px;">🧾</div>
+            <div style="font-size:13px;font-weight:700;color:#0F172A;">${t('trust_gst')}</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">${t('trust_gst_sub')}</div>
           </div>
         </div>
-
       </div>
+
+      <!-- 4. High-Resolution Poster Card (Full HD Showcase) -->
+      <div class="card" style="padding:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;background:#F8FAFC;border:1px dashed var(--border-focus);">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:26px;">🖼️</span>
+          <div>
+            <div style="font-weight:700;font-size:14px;color:var(--primary);">${t('view_full_poster')}</div>
+            <small style="color:var(--text-muted);">View or download full showroom poster banner (HD)</small>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-secondary btn-sm" onclick="openShowcaseLightbox('/images/mahabir_about_stitch.png')">
+            🔍 ${t('view')}
+          </button>
+          <a href="/images/mahabir_about_stitch.png" download="Mahabir_Traders_Showcase.png" class="btn btn-secondary btn-sm" title="Download Image">
+            ⬇️ Download
+          </a>
+        </div>
+      </div>
+
+      <!-- 5. System Platform Information -->
+      <div class="card" style="padding:16px;background:#F8FAFC;border:1px solid var(--border);">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:12.5px;color:var(--text-muted);">
+          <div><b>${t('version')}:</b> 1.0.0 (Multi-Device PWA)</div>
+          <div><b>${t('brand_name')}:</b> ${t('brand_tagline')}</div>
+        </div>
+      </div>
+
     </div>
   `;
 }
@@ -1204,56 +2001,56 @@ async function renderAdminDashboard() {
   main.innerHTML = `
     <div class="top-bar">
       <div>
-        <h1 class="page-title">Operations & Audit Dashboard</h1>
-        <p style="font-size:13px;color:var(--text-muted)">Live business metrics and field audit oversight</p>
+        <h1 class="page-title">${t('admin_dash_title')}</h1>
+        <p style="font-size:13px;color:var(--text-muted)">${t('admin_dash_subtitle')}</p>
       </div>
       <div class="top-actions">
-        <button class="btn btn-secondary btn-sm" onclick="navigate('verifications')">🔍 Verify Bills (${stats.pendingBills})</button>
+        <button class="btn btn-secondary btn-sm" onclick="navigate('verifications')">${t('verify_bills_btn')} (${stats.pendingBills})</button>
       </div>
     </div>
 
     <div class="stats-grid">
       <div class="stat-card interactive" onclick="navigate('mechanics')">
-        <div class="stat-label">Total Mechanics</div>
+        <div class="stat-label">${t('stat_total_mechanics')}</div>
         <div class="stat-value">${stats.totalMechanics}</div>
-        <span style="font-size:11px;color:var(--success)">${stats.activeMechanics} Active in Field</span>
+        <span style="font-size:11px;color:var(--success)">${stats.activeMechanics} ${t('stat_active_in_field')}</span>
       </div>
 
       <div class="stat-card interactive highlight" onclick="navigate('verifications')">
-        <div class="stat-label">Pending Verification</div>
+        <div class="stat-label">${t('stat_pending_verification')}</div>
         <div class="stat-value" style="color:var(--warning)">${stats.pendingBills}</div>
-        <span style="font-size:11px;color:var(--text-muted)">Requires Auditor Action</span>
+        <span style="font-size:11px;color:var(--text-muted)">${t('stat_requires_action')}</span>
       </div>
 
       <div class="stat-card">
-        <div class="stat-label">Approved Purchases</div>
+        <div class="stat-label">${t('stat_approved_purchases')}</div>
         <div class="stat-value" style="color:var(--success)">${stats.approvedBills}</div>
-        <span style="font-size:11px;color:var(--text-muted)">${formatINR(stats.purchaseValue)} Total Value</span>
+        <span style="font-size:11px;color:var(--text-muted)">${formatINR(stats.purchaseValue)} ${t('stat_total_value')}</span>
       </div>
 
       <div class="stat-card">
-        <div class="stat-label">Points Issued</div>
+        <div class="stat-label">${t('stat_points_issued')}</div>
         <div class="stat-value">${stats.pointsIssued.toLocaleString()}</div>
-        <span style="font-size:11px;color:var(--text-muted)">${stats.pointsRedeemed.toLocaleString()} Redeemed</span>
+        <span style="font-size:11px;color:var(--text-muted)">${stats.pointsRedeemed.toLocaleString()} ${t('stat_points_redeemed')}</span>
       </div>
 
       <div class="stat-card interactive" onclick="navigate('redemptions')">
-        <div class="stat-label">Pending Claims</div>
+        <div class="stat-label">${t('stat_pending_claims')}</div>
         <div class="stat-value" style="color:${stats.pendingRedemptions > 0 ? 'var(--warning)' : 'var(--primary)'}">${stats.pendingRedemptions}</div>
-        <span style="font-size:11px;color:var(--text-muted)">Reward Redemptions</span>
+        <span style="font-size:11px;color:var(--text-muted)">${t('stat_reward_redemptions')}</span>
       </div>
 
       <div class="stat-card interactive" onclick="navigate('returns')">
-        <div class="stat-label">Product Returns</div>
+        <div class="stat-label">${t('stat_product_returns')}</div>
         <div class="stat-value">${stats.returnsCount}</div>
-        <span style="font-size:11px;color:var(--danger)">${stats.pointsReversed} pts reversed</span>
+        <span style="font-size:11px;color:var(--danger)">${stats.pointsReversed} ${t('stat_pts_reversed')}</span>
       </div>
     </div>
 
     <div class="grid-2col" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;width:100%;">
       <div class="card">
         <div class="card-header">
-          <div class="card-title">Trade Category Revenue Breakdown</div>
+          <div class="card-title">${t('chart_trade_breakdown')}</div>
         </div>
         <div style="position:relative;height:240px;">
           <canvas id="trade-chart"></canvas>
@@ -1263,19 +2060,19 @@ async function renderAdminDashboard() {
       <div class="card">
         <div class="card-header">
           <div>
-            <div class="card-title">Field Category Performance</div>
-            <small style="color:var(--text-muted)">Click any trade category to view its workers and profiles</small>
+            <div class="card-title">${t('field_cat_performance')}</div>
+            <small style="color:var(--text-muted)">${t('field_cat_subtitle')}</small>
           </div>
-          <button class="btn btn-secondary btn-sm" onclick="navigate('reports')">Full Report</button>
+          <button class="btn btn-secondary btn-sm" onclick="navigate('reports')">${t('full_report_btn')}</button>
         </div>
         <div class="table-responsive">
           <table>
             <thead>
               <tr>
-                <th>Trade Type (Click to Open)</th>
-                <th>Workers</th>
-                <th>Approved Sales</th>
-                <th>Pending Bills</th>
+                <th>${t('th_trade_type')}</th>
+                <th>${t('th_workers')}</th>
+                <th>${t('th_approved_sales')}</th>
+                <th>${t('th_pending_bills')}</th>
               </tr>
             </thead>
             <tbody>
@@ -1346,10 +2143,6 @@ async function renderAdminDashboard() {
    AUDITOR / FIELD AUDIT QUEUE VIEW (MOBILE-OPTIMIZED)
    ========================================================================= */
 
-async function renderAuditorDashboard() {
-  return renderBillVerifications();
-}
-
 async function renderBillVerifications() {
   const main = document.getElementById('main-content');
   const res = await API.get('/api/purchases?status=PENDING');
@@ -1358,20 +2151,20 @@ async function renderBillVerifications() {
   main.innerHTML = `
     <div class="top-bar">
       <div>
-        <h1 class="page-title">🔍 Mobile Audit & Verification Queue</h1>
-        <p style="font-size:13px;color:var(--text-muted)">Verify customer authenticity, bill receipt photos, and award points</p>
+        <h1 class="page-title">${t('audit_queue_title')}</h1>
+        <p style="font-size:13px;color:var(--text-muted)">${t('audit_queue_sub')}</p>
       </div>
       <div class="top-actions">
-        <button class="btn btn-secondary btn-sm" onclick="renderBillVerifications()">🔄 Refresh (${purchases.length})</button>
-        <button class="btn btn-primary btn-sm" onclick="navigate('submit_purchase')">📸 Snap New Bill</button>
+        <button class="btn btn-secondary btn-sm" onclick="renderBillVerifications()">🔄 ${t('refresh')} (${purchases.length})</button>
+        <button class="btn btn-primary btn-sm" onclick="navigate('submit_purchase')">${t('snap_new_bill')}</button>
       </div>
     </div>
 
     ${purchases.length === 0 ? `
       <div class="card" style="text-align:center;padding:48px 16px;">
         <div style="font-size:48px;margin-bottom:8px;">✅</div>
-        <h3>All Caught Up!</h3>
-        <p style="color:var(--text-muted);margin-top:4px;">No pending bill submissions in the audit queue.</p>
+        <h3>${t('all_caught_up')}</h3>
+        <p style="color:var(--text-muted);margin-top:4px;">${t('no_pending_bills')}</p>
       </div>
     ` : `
       <div style="display:flex;flex-direction:column;gap:12px;">
@@ -1379,32 +2172,32 @@ async function renderBillVerifications() {
           <div class="audit-card">
             <div class="audit-card-header">
               <div>
-                <div class="audit-customer">Bill #${p.id} — ${p.customer_name}</div>
+                <div class="audit-customer">${t('bill_receipt')} #${p.id} — ${p.customer_name}</div>
                 <div class="audit-meta">
-                  <b>Mechanic:</b> ${p.mechanic_name} (${p.trade_type} · ${p.mechanic_uid}) · <b>Phone:</b> ${p.mechanic_phone}
+                  <b>${t('role_mechanic')}:</b> ${p.mechanic_name} (${p.trade_type} · ${p.mechanic_uid}) · <b>${t('phone')}:</b> ${p.mechanic_phone}
                 </div>
                 <div class="audit-meta">
-                  <b>Date:</b> ${p.purchase_date} · <b>Amount:</b> <span style="font-size:15px;font-weight:700;color:var(--primary);">${formatINR(p.total_amount)}</span>
+                  <b>${t('date')}:</b> ${p.purchase_date} · <b>${t('amount')}:</b> <span style="font-size:15px;font-weight:700;color:var(--primary);">${formatINR(p.total_amount)}</span>
                 </div>
               </div>
-              <span class="badge badge-pending">Pending Verification</span>
+              <span class="badge badge-pending">${t('pending')}</span>
             </div>
 
             <div style="background:#F8FAFC;padding:10px 12px;border-radius:var(--radius-sm);margin:8px 0;font-size:13px;">
-              <b>Address:</b> ${p.customer_address}<br>
-              <b>Items:</b> ${(p.items || []).map(i => `${i.product_name} (${i.quantity} ${i.unit})`).join(', ') || 'General purchase'}
+              <b>${t('address')}:</b> ${p.customer_address}<br>
+              <b>${t('items')}:</b> ${(p.items || []).map(i => `${i.product_name} (${i.quantity} ${i.unit})`).join(', ') || 'General purchase'}
             </div>
 
             <div class="audit-quick-actions">
-              <a href="tel:${p.customer_phone}" class="audit-btn-call">📞 Call Customer (${p.customer_phone})</a>
-              <a href="https://wa.me/91${p.customer_phone}?text=${encodeURIComponent(`Hello ${p.customer_name}, verifying your purchase of ${formatINR(p.total_amount)} on ${p.purchase_date}.`)}" target="_blank" class="audit-btn-whatsapp">💬 WhatsApp</a>
-              ${p.bill_file_url ? `<button class="btn btn-secondary btn-sm" onclick="openBillViewerModal('${p.bill_file_url}', ${p.id})">🖼️ View Bill Photo</button>` : `<span style="font-size:12px;color:var(--danger)">No Bill Photo Attached</span>`}
+              <a href="tel:${p.customer_phone}" class="audit-btn-call">📞 ${t('call_customer')} (${p.customer_phone})</a>
+              <a href="https://wa.me/91${p.customer_phone}?text=${encodeURIComponent(`Hello ${p.customer_name}, verifying your purchase of ${formatINR(p.total_amount)} on ${p.purchase_date}.`)}" target="_blank" class="audit-btn-whatsapp">💬 ${t('whatsapp')}</a>
+              ${p.bill_file_url ? `<button class="btn btn-secondary btn-sm" onclick="openBillViewerModal('${p.bill_file_url}', ${p.id})">🖼️ ${t('view_bill_photo')}</button>` : `<span style="font-size:12px;color:var(--danger)">No Bill Photo Attached</span>`}
             </div>
 
             <div style="display:flex;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border);flex-wrap:wrap;">
-              <button class="btn btn-success" onclick="openAuditActionModal(${p.id}, 'APPROVE', ${p.total_amount})">✓ Approve & Credit Points</button>
-              <button class="btn btn-danger btn-sm" onclick="openAuditActionModal(${p.id}, 'REJECT')">✕ Reject Bill</button>
-              <button class="btn btn-warning btn-sm" onclick="openAuditActionModal(${p.id}, 'CORRECTION')">⚠️ Request Correction</button>
+              <button class="btn btn-success" onclick="openAuditActionModal(${p.id}, 'APPROVE', ${p.total_amount})">${t('approve_credit_pts')}</button>
+              <button class="btn btn-danger btn-sm" onclick="openAuditActionModal(${p.id}, 'REJECT')">${t('reject_bill')}</button>
+              <button class="btn btn-warning btn-sm" onclick="openAuditActionModal(${p.id}, 'CORRECTION')">${t('request_correction')}</button>
             </div>
           </div>
         `).join('')}
@@ -1420,7 +2213,7 @@ function openBillViewerModal(fileUrl, billId) {
     <div class="modal-backdrop" onclick="closeModal()">
       <div class="modal-content" onclick="event.stopPropagation()">
         <div class="modal-header">
-          <div class="card-title">Bill Receipt #${billId}</div>
+          <div class="card-title">${t('bill_receipt')} #${billId}</div>
           <button class="modal-close" onclick="closeModal()">✕</button>
         </div>
         <div class="bill-preview-box">
@@ -1432,7 +2225,7 @@ function openBillViewerModal(fileUrl, billId) {
         </div>
         <div style="display:flex;justify-content:space-between;margin-top:12px;">
           <a href="${fileUrl}" target="_blank" class="btn btn-secondary btn-sm">Open in New Tab</a>
-          <button class="btn btn-primary btn-sm" onclick="closeModal()">Close</button>
+          <button class="btn btn-primary btn-sm" onclick="closeModal()">${t('close')}</button>
         </div>
       </div>
     </div>
@@ -1448,7 +2241,7 @@ function openAuditActionModal(purchaseId, action, totalAmount = 0) {
   if (action === 'APPROVE') {
     bodyHtml = `
       <div class="form-group">
-        <label>Points to Award (Calculated from ₹${totalAmount.toLocaleString('en-IN')})</label>
+        <label>${t('points_to_award')} (Calculated from ₹${totalAmount.toLocaleString('en-IN')})</label>
         <input type="number" id="audit-points" value="${defaultPoints}" min="0">
         <small style="color:var(--text-muted)">Standard rate: 3 points per ₹100 spent</small>
       </div>
@@ -1460,7 +2253,7 @@ function openAuditActionModal(purchaseId, action, totalAmount = 0) {
   } else if (action === 'REJECT') {
     bodyHtml = `
       <div class="form-group">
-        <label>Rejection Reason (Required for Audit Trail)</label>
+        <label>${t('rejection_reason')} (Required for Audit Trail)</label>
         <select id="audit-reason-select" onchange="handleDropdownWithCustom(this, 'audit-reason-custom')">
           <option value="">-- Choose Rejection Reason --</option>
           <option value="Bill receipt unreadable / blurry photo">Bill receipt unreadable / blurry photo</option>
@@ -1476,7 +2269,7 @@ function openAuditActionModal(purchaseId, action, totalAmount = 0) {
   } else if (action === 'CORRECTION') {
     bodyHtml = `
       <div class="form-group">
-        <label>Correction Message for Mechanic</label>
+        <label>${t('correction_msg')}</label>
         <textarea id="audit-correction-msg" rows="3" placeholder="e.g. Please re-upload a clearer photo showing the customer phone number and date..."></textarea>
       </div>
     `;
@@ -1486,12 +2279,12 @@ function openAuditActionModal(purchaseId, action, totalAmount = 0) {
     <div class="modal-backdrop" onclick="closeModal()">
       <div class="modal-content" onclick="event.stopPropagation()">
         <div class="modal-header">
-          <div class="card-title">${action === 'APPROVE' ? 'Approve Bill & Issue Points' : action === 'REJECT' ? 'Reject Bill Submission' : 'Request Correction'}</div>
+          <div class="card-title">${action === 'APPROVE' ? t('approve_credit_pts') : action === 'REJECT' ? t('reject_bill') : t('request_correction')}</div>
           <button class="modal-close" onclick="closeModal()">✕</button>
         </div>
         ${bodyHtml}
         <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;">
-          <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+          <button class="btn btn-secondary" onclick="closeModal()">${t('cancel')}</button>
           <button class="btn ${action === 'APPROVE' ? 'btn-success' : action === 'REJECT' ? 'btn-danger' : 'btn-warning'}" onclick="submitAuditAction(${purchaseId}, '${action}')">Confirm ${action}</button>
         </div>
       </div>
@@ -1564,7 +2357,7 @@ function showWorkerNotificationModal(notif, onClosed = null) {
             <a href="${notif.smsUrl}" class="btn btn-secondary" style="text-decoration:none;">📱 Send as Text SMS</a>
             <button class="btn btn-secondary" onclick="copyNotifText()">📋 Copy Text</button>
           </div>
-          <button class="btn btn-secondary btn-sm" style="margin-top:4px;" onclick="closeModal(); if(typeof window._notifOnClose === 'function') window._notifOnClose();">Done</button>
+          <button class="btn btn-secondary btn-sm" style="margin-top:4px;" onclick="closeModal(); if(typeof window._notifOnClose === 'function') window._notifOnClose();">${t('close')}</button>
         </div>
       </div>
     </div>
@@ -1612,8 +2405,8 @@ async function renderSubmitPurchase() {
   main.innerHTML = `
     <div class="top-bar">
       <div>
-        <h1 class="page-title">📸 Submit Purchase & Bill</h1>
-        <p style="font-size:13px;color:var(--text-muted)">Upload bill photo and record customer purchase details</p>
+        <h1 class="page-title">${t('submit_purchase_title')}</h1>
+        <p style="font-size:13px;color:var(--text-muted)">${t('submit_purchase_sub')}</p>
       </div>
     </div>
 
@@ -1621,16 +2414,16 @@ async function renderSubmitPurchase() {
       <form id="purchase-form" onsubmit="handlePurchaseSubmit(event)">
         ${isAuditorOrAdmin ? `
           <div class="card">
-            <div class="card-title" style="margin-bottom:12px;">👷 Select Mechanic <span style="color:var(--danger)">*</span></div>
+            <div class="card-title" style="margin-bottom:12px;">${t('select_mechanic_title')} <span style="color:var(--danger)">*</span></div>
             <div class="form-group">
-              <label>Mechanic Account <span style="color:var(--danger)">*</span></label>
+              <label>${t('role_mechanic')} <span style="color:var(--danger)">*</span></label>
               <select id="pur-mechanic-id" onchange="handleDropdownWithCustom(this, 'pur-mechanic-search')">
-                <option value="">-- Choose Mechanic from Dropdown --</option>
+                <option value="">${t('choose_mech_dropdown')}</option>
                 ${mechanics.filter(m => m.is_active).map(m => `
                   <option value="${m.id}">${m.name} (${m.uid} · ${m.trade_type} · ${m.phone})</option>
                 `).join('')}
               </select>
-              <input type="text" id="pur-mechanic-search" list="pur-mechanics-datalist" placeholder="Or type mechanic name, User ID (e.g. MEC1001), or phone..." style="margin-top:6px;" oninput="handlePurMechSearchInput(this)">
+              <input type="text" id="pur-mechanic-search" list="pur-mechanics-datalist" placeholder="${t('search_mech_placeholder')}" style="margin-top:6px;" oninput="handlePurMechSearchInput(this)">
               <datalist id="pur-mechanics-datalist">
                 ${mechanics.filter(m => m.is_active).map(m => `
                   <option value="${m.name} (${m.uid} · ${m.phone})"></option>
@@ -1641,36 +2434,36 @@ async function renderSubmitPurchase() {
         ` : ''}
 
         <div class="card">
-          <div class="card-title" style="margin-bottom:12px;">👤 Customer & Date <span style="color:var(--danger)">*</span></div>
+          <div class="card-title" style="margin-bottom:12px;">${t('cust_date_title')} <span style="color:var(--danger)">*</span></div>
           <div class="form-row">
             <div class="form-group">
-              <label>Purchase Date <span style="color:var(--danger)">*</span></label>
+              <label>${t('purchase_date')} <span style="color:var(--danger)">*</span></label>
               <input type="date" id="pur-date" value="${new Date().toISOString().slice(0, 10)}" required>
             </div>
             <div class="form-group">
-              <label>Customer Name <span style="color:var(--danger)">*</span></label>
-              <input type="text" id="pur-cust-name" placeholder="Full name of customer" required>
+              <label>${t('cust_name')} <span style="color:var(--danger)">*</span></label>
+              <input type="text" id="pur-cust-name" placeholder="${t('cust_name_placeholder')}" required>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label>Customer Mobile Number <span style="color:var(--danger)">*</span></label>
-              <input type="tel" id="pur-cust-phone" pattern="[0-9]{10}" maxlength="10" minlength="10" inputmode="numeric" placeholder="10-digit mobile number" required autocomplete="tel">
+              <label>${t('cust_phone')} <span style="color:var(--danger)">*</span></label>
+              <input type="tel" id="pur-cust-phone" pattern="[0-9]{10}" maxlength="10" minlength="10" inputmode="numeric" placeholder="${t('cust_phone')}" required autocomplete="tel">
               <small style="color:var(--text-muted);font-size:11px;">Mandatory 10-digit mobile number for audit verification.</small>
             </div>
             <div class="form-group">
-              <label>Customer Address / Area (Optional)</label>
-              <input type="text" id="pur-cust-addr" placeholder="Location, Street, City (Optional)">
+              <label>${t('cust_addr')}</label>
+              <input type="text" id="pur-cust-addr" placeholder="${t('cust_addr_placeholder')}">
             </div>
           </div>
         </div>
 
         <div class="card">
           <div class="card-header" style="margin-bottom:8px;">
-            <div class="card-title">📦 Products Purchased <span style="font-size:12px;color:var(--text-muted);font-weight:normal;">(Optional)</span></div>
+            <div class="card-title">${t('products_purchased_title')} <span style="font-size:12px;color:var(--text-muted);font-weight:normal;">${t('optional_badge')}</span></div>
           </div>
-          <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">Optional: Choose from the catalog or type any custom item name in the text field if not in the dropdown menu.</p>
+          <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">${t('products_purchased_sub')}</p>
           
           <datalist id="common-units-list">
             <option value="Piece">
@@ -1691,37 +2484,37 @@ async function renderSubmitPurchase() {
           </datalist>
 
           <div class="purchase-items-header">
-            <div>Catalog Dropdown</div>
-            <div>Item Name / Text Field</div>
-            <div>Quantity</div>
-            <div>Unit</div>
+            <div>${t('th_catalog_dd')}</div>
+            <div>${t('th_item_name')}</div>
+            <div>${t('th_quantity')}</div>
+            <div>${t('th_unit')}</div>
             <div></div>
           </div>
 
           <div id="items-container">
             <!-- Dynamic item rows -->
           </div>
-          <button type="button" class="btn btn-secondary btn-sm" style="margin-top:8px;" onclick="addPurchaseItemRow()">+ Add Product Line</button>
+          <button type="button" class="btn btn-secondary btn-sm" style="margin-top:8px;" onclick="addPurchaseItemRow()">${t('add_product_line')}</button>
         </div>
 
         <div class="card">
           <div class="card-header" style="margin-bottom:8px;">
-            <div class="card-title">💰 Amount & Bill Photo <span style="font-size:12px;color:var(--text-muted);font-weight:normal;">(Optional)</span></div>
+            <div class="card-title">${t('amount_photo_title')} <span style="font-size:12px;color:var(--text-muted);font-weight:normal;">${t('optional_badge')}</span></div>
           </div>
           <div class="form-group">
-            <label>Total Bill Amount (₹) (Optional)</label>
-            <input type="number" id="pur-amount" placeholder="e.g. 4500 (Optional)" min="0" step="any">
+            <label>${t('total_bill_amount')} ${t('optional_badge')}</label>
+            <input type="number" id="pur-amount" placeholder="e.g. 4500" min="0" step="any">
           </div>
 
           <div class="form-group">
-            <label>Bill Photo / Receipt (Optional)</label>
+            <label>${t('bill_photo_receipt')} ${t('optional_badge')}</label>
             <input type="file" id="pur-file" accept="image/*,.pdf" capture="environment" onchange="handleBillFileSelected(this)">
-            <small style="color:var(--text-muted)">Take a photo of the bill if available (Optional).</small>
+            <small style="color:var(--text-muted)">${t('bill_photo_sub')}</small>
             <div id="file-preview-slot" style="margin-top:10px;"></div>
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-lg" id="pur-submit-btn">Submit Purchase & Generate Bill</button>
+        <button type="submit" class="btn btn-primary btn-lg" id="pur-submit-btn">${t('submit_bill_btn')}</button>
       </form>
     </div>
   `;
@@ -1979,17 +2772,17 @@ async function renderMechanicsList() {
   main.innerHTML = `
     <div class="top-bar">
       <div>
-        <h1 class="page-title">👷 Mechanics Directory</h1>
-        <p style="font-size:13px;color:var(--text-muted)">Manage accounts, points balance, and field profiles</p>
+        <h1 class="page-title">${t('mechanics_directory_title')}</h1>
+        <p style="font-size:13px;color:var(--text-muted)">${t('mechanics_directory_sub')}</p>
       </div>
       <div class="top-actions">
-        ${isAdmin ? `<button class="btn btn-primary btn-sm" onclick="openAddMechanicModal()">+ Register Mechanic</button>` : ''}
+        ${isAdmin ? `<button class="btn btn-primary btn-sm" onclick="openAddMechanicModal()">${t('register_mechanic_btn')}</button>` : ''}
       </div>
     </div>
 
     <div class="card" style="margin-bottom:12px;">
       <div class="form-row">
-        <input type="text" id="mech-search" placeholder="Search by name, phone, user ID, or address..." oninput="filterMechanicsTable(this.value)">
+        <input type="text" id="mech-search" placeholder="${t('search_mechanics_placeholder')}" oninput="filterMechanicsTable(this.value)">
       </div>
     </div>
 
@@ -1999,14 +2792,14 @@ async function renderMechanicsList() {
           <thead>
             <tr>
               <th>ID</th>
-              <th>Name</th>
-              <th>Trade</th>
-              <th>Phone</th>
-              <th>Available Points</th>
-              <th>Lifetime Points</th>
-              <th>Pending Bills</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th>${t('full_name')}</th>
+              <th>${t('trade_category')}</th>
+              <th>${t('phone')}</th>
+              <th>${t('available_points')}</th>
+              <th>${t('lifetime_points')}</th>
+              <th>${t('th_pending_bills')}</th>
+              <th>${t('status')}</th>
+              <th>${t('actions')}</th>
             </tr>
           </thead>
           <tbody>
@@ -2019,12 +2812,12 @@ async function renderMechanicsList() {
                 <td><b style="color:var(--primary);font-size:15px;">${m.available_points}</b>${m.recovery_points > 0 ? `<br><small style="color:var(--danger)">Recovery: ${m.recovery_points}</small>` : ''}</td>
                 <td>${m.lifetime_points}</td>
                 <td>${m.pending_bills_count > 0 ? `<span class="badge badge-pending">${m.pending_bills_count}</span>` : '0'}</td>
-                <td><span class="badge ${m.is_active ? 'badge-active' : 'badge-inactive'}">${m.is_active ? 'Active' : 'Inactive'}</span></td>
+                <td><span class="badge ${m.is_active ? 'badge-active' : 'badge-inactive'}">${m.is_active ? t('active') : t('inactive')}</span></td>
                 <td>
-                  <button class="btn btn-secondary btn-sm" onclick="navigate('mechanic_detail', ${m.id})">Profile</button>
+                  <button class="btn btn-secondary btn-sm" onclick="navigate('mechanic_detail', ${m.id})">${t('profile')}</button>
                   ${isAdmin ? `
-                    <button class="btn btn-secondary btn-sm" onclick="openResetMechanicPasswordModal(${m.id}, '${m.name.replace(/'/g, "\\'")}', '${m.uid}')" title="Reset Password">🔑 Reset PW</button>
-                    <button class="btn btn-secondary btn-sm" onclick="toggleMechanicStatus(${m.id})">${m.is_active ? 'Deactivate' : 'Activate'}</button>
+                    <button class="btn btn-secondary btn-sm" onclick="openResetMechanicPasswordModal(${m.id}, '${m.name.replace(/'/g, "\\'")}', '${m.uid}')" title="${t('reset_pw')}">🔑 ${t('reset_pw')}</button>
+                    <button class="btn btn-secondary btn-sm" onclick="toggleMechanicStatus(${m.id})">${m.is_active ? t('deactivate') : t('activate')}</button>
                   ` : ''}
                 </td>
               </tr>
@@ -2150,10 +2943,16 @@ async function handleAddMechanicSubmit(e) {
   };
 
   try {
-    await API.post('/api/mechanics', payload);
+    const res = await API.post('/api/mechanics', payload);
     showToast('Mechanic registered successfully', 'success');
     closeModal();
-    renderMechanicsList();
+    if (res.welcomeGreeting) {
+      showWorkerWelcomeModal(res.welcomeGreeting, () => {
+        renderMechanicsList();
+      });
+    } else {
+      renderMechanicsList();
+    }
   } catch (err) {}
 }
 
@@ -2186,46 +2985,46 @@ async function renderCategoryWorkers(categoryType) {
   main.innerHTML = `
     <div class="top-bar">
       <div>
-        <button class="btn btn-secondary btn-sm" onclick="navigate('dash')" style="margin-bottom:8px;">← Back to Dashboard</button>
-        <h1 class="page-title">👷 ${type} Category Workers</h1>
+        <button class="btn btn-secondary btn-sm" onclick="navigate('dash')" style="margin-bottom:8px;">${t('back_to_dash')}</button>
+        <h1 class="page-title">👷 ${t('category_workers_title', '', { cat: type })}</h1>
         <p style="font-size:13px;color:var(--text-muted)">
-          All registered ${type} professionals. Click any worker's name to view their complete profile, bills & transaction ledger.
+          ${t('category_workers_sub', '', { cat: type })}
         </p>
       </div>
       <div class="top-actions">
-        ${isAdmin ? `<button class="btn btn-primary btn-sm" onclick="openAddMechanicModal()">+ Add ${type}</button>` : ''}
+        ${isAdmin ? `<button class="btn btn-primary btn-sm" onclick="openAddMechanicModal()">${t('add_worker_btn', '', { cat: type })}</button>` : ''}
       </div>
     </div>
 
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-label">Total ${type}s</div>
+        <div class="stat-label">${t('total_in_cat', '', { cat: type })}</div>
         <div class="stat-value">${totalWorkers}</div>
-        <span style="font-size:11px;color:var(--success)">${activeWorkers} Active in Field</span>
+        <span style="font-size:11px;color:var(--success)">${activeWorkers} ${t('stat_active_in_field')}</span>
       </div>
 
       <div class="stat-card">
-        <div class="stat-label">Available Points</div>
+        <div class="stat-label">${t('th_avail_points')}</div>
         <div class="stat-value" style="color:var(--primary);">${totalAvailablePoints.toLocaleString()}</div>
-        <span style="font-size:11px;color:var(--text-muted)">Across all ${type}s</span>
+        <span style="font-size:11px;color:var(--text-muted)">${t('across_all_cat', '', { cat: type })}</span>
       </div>
 
       <div class="stat-card">
-        <div class="stat-label">Lifetime Points</div>
+        <div class="stat-label">${t('th_lifetime_points')}</div>
         <div class="stat-value" style="color:var(--success);">${totalLifetimePoints.toLocaleString()}</div>
-        <span style="font-size:11px;color:var(--text-muted)">Total earned to date</span>
+        <span style="font-size:11px;color:var(--text-muted)">${t('total_earned_to_date')}</span>
       </div>
 
       <div class="stat-card ${totalPendingBills > 0 ? 'highlight' : ''}">
-        <div class="stat-label">Pending Verifications</div>
+        <div class="stat-label">${t('stat_pending_verification')}</div>
         <div class="stat-value" style="color:${totalPendingBills > 0 ? 'var(--warning)' : 'var(--primary)'};">${totalPendingBills}</div>
-        <span style="font-size:11px;color:var(--text-muted)">Awaiting bill audit</span>
+        <span style="font-size:11px;color:var(--text-muted)">${t('awaiting_audit')}</span>
       </div>
     </div>
 
     <div class="card" style="margin-bottom:12px;">
       <div class="form-row">
-        <input type="text" id="cat-mech-search" placeholder="Search ${type}s by name, phone, user ID, or address..." oninput="filterCategoryMechanicsTable(this.value)">
+        <input type="text" id="cat-mech-search" placeholder="${t('search_cat_placeholder', '', { cat: type })}" oninput="filterCategoryMechanicsTable(this.value)">
       </div>
     </div>
 
@@ -2234,20 +3033,20 @@ async function renderCategoryWorkers(categoryType) {
         <table id="cat-mechanics-table">
           <thead>
             <tr>
-              <th>User ID</th>
-              <th>Worker Name (Click to View Details)</th>
-              <th>Phone / Quick Contact</th>
-              <th>Address / Shop</th>
-              <th>Available Points</th>
-              <th>Lifetime Points</th>
-              <th>Pending Bills</th>
-              <th>Status</th>
-              <th>Action</th>
+              <th>${t('th_user_id')}</th>
+              <th>${t('th_worker_name_click')}</th>
+              <th>${t('th_phone_contact')}</th>
+              <th>${t('th_address_shop')}</th>
+              <th>${t('th_avail_points')}</th>
+              <th>${t('th_lifetime_points')}</th>
+              <th>${t('th_pending_bills_count')}</th>
+              <th>${t('th_status')}</th>
+              <th>${t('th_action')}</th>
             </tr>
           </thead>
           <tbody>
             ${mechanics.length === 0 ? `
-              <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text-muted);">No workers found registered in ${type} category.</td></tr>
+              <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text-muted);">${t('no_workers_cat', '', { cat: type })}</td></tr>
             ` : mechanics.map(m => `
               <tr data-search="${(m.name + m.phone + m.uid + m.trade_type + m.address).toLowerCase()}">
                 <td><b>${m.uid}</b></td>
@@ -2259,20 +3058,20 @@ async function renderCategoryWorkers(categoryType) {
                 <td>
                   <b>${m.phone}</b>
                   <div style="display:flex;gap:4px;margin-top:4px;">
-                    <a href="tel:${m.phone}" class="btn btn-secondary btn-sm" style="padding:2px 6px;font-size:11px;" title="Call">📞 Call</a>
+                    <a href="tel:${m.phone}" class="btn btn-secondary btn-sm" style="padding:2px 6px;font-size:11px;" title="${t('call_worker')}">📞 ${t('call_worker')}</a>
                     <a href="https://wa.me/91${m.phone}" target="_blank" class="btn btn-secondary btn-sm" style="padding:2px 6px;font-size:11px;background:#DCFCE7;color:#166534;" title="WhatsApp">💬 WA</a>
                   </div>
                 </td>
                 <td><small style="color:var(--text-muted)">${m.address}</small></td>
                 <td>
                   <b style="color:var(--primary);font-size:15px;">${m.available_points}</b>
-                  ${m.recovery_points > 0 ? `<br><small style="color:var(--danger)">Recovery: ${m.recovery_points}</small>` : ''}
+                  ${m.recovery_points > 0 ? `<br><small style="color:var(--danger)">${t('recovery_pending')}: ${m.recovery_points}</small>` : ''}
                 </td>
                 <td><b style="color:var(--success);">${m.lifetime_points}</b></td>
-                <td>${m.pending_bills_count > 0 ? `<span class="badge badge-pending">${m.pending_bills_count} pending</span>` : '<span style="color:var(--text-muted)">0</span>'}</td>
-                <td><span class="badge ${m.is_active ? 'badge-active' : 'badge-inactive'}">${m.is_active ? 'Active' : 'Inactive'}</span></td>
+                <td>${m.pending_bills_count > 0 ? `<span class="badge badge-pending">${m.pending_bills_count} ${t('pending')}</span>` : '<span style="color:var(--text-muted)">0</span>'}</td>
+                <td><span class="badge ${m.is_active ? 'badge-active' : 'badge-inactive'}">${m.is_active ? t('active') : t('inactive')}</span></td>
                 <td>
-                  <button class="btn btn-primary btn-sm" onclick="navigate('mechanic_detail', ${m.id})">View Full Profile ➔</button>
+                  <button class="btn btn-primary btn-sm" onclick="navigate('mechanic_detail', ${m.id})">${t('view_full_profile')}</button>
                 </td>
               </tr>
             `).join('')}
@@ -2312,26 +3111,26 @@ async function renderMechanicDetail(mechanicId) {
     <div class="top-bar">
       <div>
         <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
-          <button class="btn btn-secondary btn-sm" onclick="navigate('category_workers', '${m.trade_type}')">← Back to ${m.trade_type} Category</button>
-          <button class="btn btn-secondary btn-sm" onclick="navigate('mechanics')">👷 All Mechanics</button>
-          <button class="btn btn-secondary btn-sm" onclick="navigate('dash')">📊 Dashboard</button>
+          <button class="btn btn-secondary btn-sm" onclick="navigate('category_workers', '${m.trade_type}')">${t('back_to_cat', '', { cat: m.trade_type })}</button>
+          <button class="btn btn-secondary btn-sm" onclick="navigate('mechanics')">${t('all_mechanics_btn')}</button>
+          <button class="btn btn-secondary btn-sm" onclick="navigate('dash')">📊 ${t('nav_dashboard')}</button>
         </div>
         <div style="display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap;">
           <h1 class="page-title" style="margin:0;">${m.name}</h1>
           <span class="badge" style="background:#E0F2FE;color:#0284C7;font-size:13px;">${m.trade_type}</span>
-          <span class="badge ${m.is_active ? 'badge-active' : 'badge-inactive'}">${m.is_active ? 'Active Account' : 'Inactive'}</span>
+          <span class="badge ${m.is_active ? 'badge-active' : 'badge-inactive'}">${m.is_active ? t('active_account') : t('inactive_account')}</span>
         </div>
         <p style="font-size:13px;color:var(--text-muted);margin-top:4px;">
-          <b>User ID:</b> ${m.uid} · <b>Phone:</b> ${m.phone} · <b>Location:</b> ${m.address}
+          <b>${t('user_id_label')}:</b> ${m.uid} · <b>${t('phone')}:</b> ${m.phone} · <b>${t('address')}:</b> ${m.address}
         </p>
       </div>
       <div class="top-actions">
-        <a href="tel:${m.phone}" class="btn btn-secondary btn-sm">📞 Call Worker</a>
-        <a href="https://wa.me/91${m.phone}" target="_blank" class="btn btn-secondary btn-sm" style="background:#DCFCE7;color:#166534;">💬 WhatsApp</a>
+        <a href="tel:${m.phone}" class="btn btn-secondary btn-sm">📞 ${t('call_worker')}</a>
+        <a href="https://wa.me/91${m.phone}" target="_blank" class="btn btn-secondary btn-sm" style="background:#DCFCE7;color:#166534;">💬 ${t('whatsapp')}</a>
         ${isAdmin ? `
-          <button class="btn btn-secondary btn-sm" onclick="openResetMechanicPasswordModal(${m.id}, '${m.name.replace(/'/g, "\\'")}', '${m.uid}')">🔑 Reset Password</button>
-          <button class="btn btn-primary btn-sm" onclick="openAdjustPointsModal(${m.id}, '${m.name}')">± Adjust Points</button>
-          <button class="btn btn-secondary btn-sm" onclick="toggleMechanicStatusDetail(${m.id})">${m.is_active ? 'Deactivate' : 'Activate'}</button>
+          <button class="btn btn-secondary btn-sm" onclick="openResetMechanicPasswordModal(${m.id}, '${m.name.replace(/'/g, "\\'")}', '${m.uid}')">${t('reset_pw_btn')}</button>
+          <button class="btn btn-primary btn-sm" onclick="openAdjustPointsModal(${m.id}, '${m.name}')">${t('adjust_points_btn')}</button>
+          <button class="btn btn-secondary btn-sm" onclick="toggleMechanicStatusDetail(${m.id})">${m.is_active ? t('deactivate') : t('activate')}</button>
         ` : ''}
       </div>
     </div>
@@ -2339,27 +3138,27 @@ async function renderMechanicDetail(mechanicId) {
     <!-- Overview KPI Grid -->
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-label">Available Points</div>
+        <div class="stat-label">${t('th_avail_points')}</div>
         <div class="stat-value" style="color:var(--primary);">${m.available_points}</div>
-        <span style="font-size:11px;color:var(--text-muted)">Ready for redemption</span>
+        <span style="font-size:11px;color:var(--text-muted)">${t('ready_for_redemption')}</span>
       </div>
 
       <div class="stat-card">
-        <div class="stat-label">Lifetime Earned</div>
+        <div class="stat-label">${t('th_lifetime_points')}</div>
         <div class="stat-value" style="color:var(--success);">${m.lifetime_points}</div>
-        <span style="font-size:11px;color:var(--text-muted)">Total points earned</span>
+        <span style="font-size:11px;color:var(--text-muted)">${t('total_points_earned')}</span>
       </div>
 
       <div class="stat-card ${m.recovery_points > 0 ? 'highlight' : ''}">
-        <div class="stat-label">Recovery Pending</div>
+        <div class="stat-label">${t('recovery_pending')}</div>
         <div class="stat-value" style="color:${m.recovery_points > 0 ? 'var(--danger)' : 'var(--text-muted)'};">${m.recovery_points}</div>
-        <span style="font-size:11px;color:var(--text-muted)">Deducted from future bills</span>
+        <span style="font-size:11px;color:var(--text-muted)">${t('deducted_future_bills')}</span>
       </div>
 
       <div class="stat-card">
-        <div class="stat-label">Approved Purchases</div>
+        <div class="stat-label">${t('stat_approved_purchases')}</div>
         <div class="stat-value" style="color:var(--success);">${approvedPurchases.length}</div>
-        <span style="font-size:11px;color:var(--text-muted)">${formatINR(totalApprovedSpend)} total value</span>
+        <span style="font-size:11px;color:var(--text-muted)">${formatINR(totalApprovedSpend)} ${t('stat_total_value')}</span>
       </div>
     </div>
 
@@ -2367,29 +3166,29 @@ async function renderMechanicDetail(mechanicId) {
     <div class="card" style="margin-bottom:16px;">
       <div class="card-header">
         <div>
-          <div class="card-title">🧾 Purchase & Bill Submissions (${purchases.length})</div>
-          <small style="color:var(--text-muted)">All historical bills submitted by ${m.name}</small>
+          <div class="card-title">🧾 ${t('nav_purchases')} (${purchases.length})</div>
+          <small style="color:var(--text-muted)">${t('all_historical_bills', '', { name: m.name })}</small>
         </div>
-        ${pendingPurchases.length > 0 ? `<span class="badge badge-pending">${pendingPurchases.length} Pending Verification</span>` : ''}
+        ${pendingPurchases.length > 0 ? `<span class="badge badge-pending">${pendingPurchases.length} ${t('stat_pending_verification')}</span>` : ''}
       </div>
       <div class="table-responsive">
         <table>
           <thead>
             <tr>
-              <th>Bill ID</th>
-              <th>Date</th>
-              <th>Customer Details</th>
-              <th>Products / Items</th>
-              <th>Total Amount</th>
-              <th>Status</th>
-              <th>Points Awarded</th>
-              <th>Receipt</th>
-              <th>Send Alert</th>
+              <th>ID</th>
+              <th>${t('date')}</th>
+              <th>${t('customer')}</th>
+              <th>${t('items')}</th>
+              <th>${t('amount')}</th>
+              <th>${t('status')}</th>
+              <th>${t('points')}</th>
+              <th>${t('bill_receipt')}</th>
+              <th>${t('whatsapp')}</th>
             </tr>
           </thead>
           <tbody>
             ${purchases.length === 0 ? `
-              <tr><td colspan="9" style="text-align:center;padding:24px;color:var(--text-muted);">No purchases submitted yet.</td></tr>
+              <tr><td colspan="9" style="text-align:center;padding:24px;color:var(--text-muted);">${t('no_purchases_found')}</td></tr>
             ` : purchases.map(p => `
               <tr>
                 <td><b>#${p.id}</b></td>
@@ -2402,19 +3201,19 @@ async function renderMechanicDetail(mechanicId) {
                 <td>${(p.items || []).map(i => `${i.product_name} (${i.quantity} ${i.unit})`).join('<br>') || '-'}</td>
                 <td><b style="font-size:14px;">${formatINR(p.total_amount)}</b></td>
                 <td>
-                  <span class="badge badge-${p.status.toLowerCase()}">${p.status}</span>
-                  ${p.rejection_reason ? `<br><small style="color:var(--danger)">Reason: ${p.rejection_reason}</small>` : ''}
-                  ${p.correction_message ? `<br><small style="color:var(--warning)">Msg: ${p.correction_message}</small>` : ''}
+                  <span class="badge badge-${p.status.toLowerCase()}">${p.status === 'APPROVED' ? t('approved') : p.status === 'PENDING' ? t('pending') : t('rejected')}</span>
+                  ${p.rejection_reason ? `<br><small style="color:var(--danger)">${t('rejection_reason')}: ${p.rejection_reason}</small>` : ''}
+                  ${p.correction_message ? `<br><small style="color:var(--warning)">${t('correction_msg')}: ${p.correction_message}</small>` : ''}
                 </td>
                 <td><b style="color:${p.points_awarded ? 'var(--success)' : 'inherit'};">${p.points_awarded !== null ? `+${p.points_awarded} pts` : '-'}</b></td>
                 <td>
                   ${p.bill_file_url ? `
-                    <button class="btn btn-secondary btn-sm" onclick="openBillViewerModal('${p.bill_file_url}', ${p.id})">🖼️ View Bill</button>
-                  ` : '<span style="color:var(--text-muted);font-size:12px;">No photo</span>'}
+                    <button class="btn btn-secondary btn-sm" onclick="openBillViewerModal('${p.bill_file_url}', ${p.id})">🖼️ ${t('view')}</button>
+                  ` : `<span style="color:var(--text-muted);font-size:12px;">-</span>`}
                 </td>
                 <td>
                   <button class="btn btn-secondary btn-sm" style="background:#DCFCE7;color:#166534;" onclick="triggerSendWorkerNotification(${p.id})">
-                    💬 WhatsApp
+                    💬 ${t('whatsapp')}
                   </button>
                 </td>
               </tr>
@@ -2428,36 +3227,36 @@ async function renderMechanicDetail(mechanicId) {
     <div class="card">
       <div class="card-header">
         <div>
-          <div class="card-title">📜 Points Transaction Ledger & History</div>
-          <small style="color:var(--text-muted)">Complete chronological audit statement of credits, debits, reversals, and adjustments</small>
+          <div class="card-title">${t('points_ledger_title')}</div>
+          <small style="color:var(--text-muted)">${t('points_ledger_sub')}</small>
         </div>
       </div>
       <div class="table-responsive">
         <table>
           <thead>
             <tr>
-              <th>Timestamp</th>
-              <th>Transaction Type</th>
-              <th>Description / Reason</th>
-              <th>Points Change</th>
-              <th>Balance After</th>
-              <th>Auditor / System Actor</th>
+              <th>${t('th_timestamp')}</th>
+              <th>${t('th_txn_type')}</th>
+              <th>${t('th_desc_reason')}</th>
+              <th>${t('th_points_change')}</th>
+              <th>${t('th_bal_after')}</th>
+              <th>${t('th_auditor_actor')}</th>
             </tr>
           </thead>
           <tbody>
             ${ledger.length === 0 ? `
-              <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">No transaction records found.</td></tr>
-            ` : ledger.map(t => `
+              <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">${t('no_txns_found')}</td></tr>
+            ` : ledger.map(t_item => `
               <tr>
-                <td>${t.created_at}</td>
-                <td><span class="badge" style="background:#E2E8F0;">${t.type}</span></td>
+                <td>${t_item.created_at}</td>
+                <td><span class="badge" style="background:#E2E8F0;">${t_item.type}</span></td>
                 <td>
-                  ${t.description}
-                  ${t.reason ? `<br><small style="color:var(--text-muted)">Reason: ${t.reason}</small>` : ''}
+                  ${t_item.description}
+                  ${t_item.reason ? `<br><small style="color:var(--text-muted)">Reason: ${t_item.reason}</small>` : ''}
                 </td>
-                <td><b style="font-size:14px;color:${t.points >= 0 ? 'var(--success)' : 'var(--danger)'};">${t.points > 0 ? '+' : ''}${t.points} pts</b></td>
-                <td><b>${t.balance_after} pts</b></td>
-                <td>${t.created_by || 'System'}</td>
+                <td><b style="font-size:14px;color:${t_item.points >= 0 ? 'var(--success)' : 'var(--danger)'};">${t_item.points > 0 ? '+' : ''}${t_item.points} pts</b></td>
+                <td><b>${t_item.balance_after} pts</b></td>
+                <td>${t_item.created_by || 'System'}</td>
               </tr>
             `).join('')}
           </tbody>
@@ -2627,14 +3426,14 @@ async function renderPurchasesList() {
   main.innerHTML = `
     <div class="top-bar">
       <div>
-        <h1 class="page-title">🧾 ${isWorker ? 'My Purchases & Bills' : 'Purchases & Bill Records'}</h1>
+        <h1 class="page-title">🧾 ${isWorker ? t('nav_my_purchases') : t('nav_purchases')}</h1>
         <p style="font-size:13px;color:var(--text-muted)">
           ${isWorker ? 'Track your submitted bills, verification status, and reward points' : 'Historical bills, verified status, and reward allocation'}
         </p>
       </div>
       <div class="top-actions">
-        ${isAdminOrAuditor ? `<a href="/api/reports/export-purchases-csv" download class="btn btn-secondary btn-sm">📊 Export CSV</a>` : ''}
-        <button class="btn btn-primary btn-sm" onclick="navigate('submit_purchase')">+ Submit New Bill</button>
+        ${isAdminOrAuditor ? `<a href="/api/reports/export-purchases-csv" download class="btn btn-secondary btn-sm">${t('export_csv')}</a>` : ''}
+        <button class="btn btn-primary btn-sm" onclick="navigate('submit_purchase')">+ ${t('submit_purchase_btn')}</button>
       </div>
     </div>
 
@@ -2644,19 +3443,19 @@ async function renderPurchasesList() {
           <thead>
             <tr>
               <th>ID</th>
-              <th>Date</th>
-              ${isAdminOrAuditor ? '<th>Mechanic</th>' : ''}
-              <th>Customer</th>
-              <th>Items</th>
-              <th>Amount</th>
-              <th>Status</th>
-              <th>Points</th>
-              <th>Bill</th>
-              ${isAdminOrAuditor ? '<th>Notify Worker</th>' : ''}
+              <th>${t('date')}</th>
+              ${isAdminOrAuditor ? `<th>${t('role_mechanic')}</th>` : ''}
+              <th>${t('customer')}</th>
+              <th>${t('items')}</th>
+              <th>${t('amount')}</th>
+              <th>${t('status')}</th>
+              <th>${t('points')}</th>
+              <th>${t('bill_receipt')}</th>
+              ${isAdminOrAuditor ? `<th>${t('actions')}</th>` : ''}
             </tr>
           </thead>
           <tbody>
-            ${purchases.length === 0 ? `<tr><td colspan="${isAdminOrAuditor ? 10 : 8}">No purchase records found.</td></tr>` : purchases.map(p => `
+            ${purchases.length === 0 ? `<tr><td colspan="${isAdminOrAuditor ? 10 : 8}">${t('loading').replace('...', '')}</td></tr>` : purchases.map(p => `
               <tr>
                 <td><b>#${p.id}</b></td>
                 <td>${p.purchase_date}</td>
@@ -2664,15 +3463,15 @@ async function renderPurchasesList() {
                 <td>${p.customer_name}<br><small style="color:var(--text-muted)">${p.customer_phone}</small></td>
                 <td>${(p.items || []).map(i => `${i.product_name} (${i.quantity} ${i.unit})`).join('<br>') || '-'}</td>
                 <td><b>${formatINR(p.total_amount)}</b></td>
-                <td><span class="badge badge-${p.status.toLowerCase()}">${p.status}</span></td>
+                <td><span class="badge badge-${p.status.toLowerCase()}">${p.status === 'APPROVED' ? t('approved') : p.status === 'PENDING' ? t('pending') : t('rejected')}</span></td>
                 <td><b>${p.points_awarded !== null ? p.points_awarded : '-'}</b></td>
                 <td>
-                  ${p.bill_file_url ? `<button class="btn btn-secondary btn-sm" onclick="openBillViewerModal('${p.bill_file_url}', ${p.id})">View</button>` : '-'}
+                  ${p.bill_file_url ? `<button class="btn btn-secondary btn-sm" onclick="openBillViewerModal('${p.bill_file_url}', ${p.id})">${t('view')}</button>` : '-'}
                 </td>
                 ${isAdminOrAuditor ? `
                   <td>
                     <button class="btn btn-secondary btn-sm" style="background:#DCFCE7;color:#166534;" onclick="triggerSendWorkerNotification(${p.id})">
-                      💬 WhatsApp
+                      💬 ${t('whatsapp')}
                     </button>
                   </td>
                 ` : ''}
@@ -2709,9 +3508,9 @@ async function renderReturnsView() {
   main.innerHTML = `
     <div class="top-bar">
       <div>
-        <h1 class="page-title">↩️ Product Returns, Reversals & Exchanges</h1>
+        <h1 class="page-title">${t('returns_title')}</h1>
         <p style="font-size:13px;color:var(--text-muted)">
-          Search verified purchases to process customer item returns, product replacements, and automatic points adjustments for workers.
+          ${t('returns_subtitle')}
         </p>
       </div>
     </div>
@@ -2720,7 +3519,7 @@ async function renderReturnsView() {
     <div class="card" style="margin-bottom:20px;border-left:4px solid var(--accent);">
       <div class="card-header" style="margin-bottom:12px;">
         <div>
-          <div class="card-title">🔍 Search Customer Purchases for Return / Replacement</div>
+          <div class="card-title">${t('search_purchases_return')}</div>
           <small style="color:var(--text-muted)">Find any approved bill by Customer Name, Mechanic Name, Phone, Address, or Bill ID</small>
         </div>
       </div>
@@ -2729,7 +3528,7 @@ async function renderReturnsView() {
         <input 
           type="text" 
           id="return-search-input" 
-          placeholder="🔎 Type Customer Name, Mechanic Name, Phone Number, Bill ID (e.g. #102), or Product..." 
+          placeholder="${t('search_purchases_placeholder')}" 
           style="font-size:15px;padding:12px 14px;border:2px solid var(--border-focus);"
           oninput="filterReturnsPurchases(this.value)"
           autofocus
@@ -2741,13 +3540,13 @@ async function renderReturnsView() {
           <thead>
             <tr>
               <th>Bill ID</th>
-              <th>Date</th>
-              <th>Customer Details</th>
-              <th>Referenced Mechanic</th>
-              <th>Items Billed</th>
-              <th>Bill Amount</th>
-              <th>Points</th>
-              <th>Action</th>
+              <th>${t('date')}</th>
+              <th>${t('customer')}</th>
+              <th>${t('role_mechanic')}</th>
+              <th>${t('items')}</th>
+              <th>${t('amount')}</th>
+              <th>${t('points')}</th>
+              <th>${t('actions')}</th>
             </tr>
           </thead>
           <tbody>
@@ -3386,15 +4185,15 @@ async function renderRewardsView() {
   main.innerHTML = `
     <div class="top-bar">
       <div>
-        <h1 class="page-title">🎁 Rewards Catalog</h1>
+        <h1 class="page-title">${t('rewards_catalog_title')}</h1>
         <p style="font-size:13px;color:var(--text-muted)">
           ${isMechanic ? `
-            Your Available Balance: <b style="color:var(--primary);font-size:16px;">${mechPoints} pts</b> · Trade Category: <span class="badge" style="background:#E0F2FE;color:#0284C7;font-weight:700;">${mechTrade}</span>
+            ${t('your_balance')}: <b style="color:var(--primary);font-size:16px;">${mechPoints} pts</b> · ${t('trade_category')}: <span class="badge" style="background:#E0F2FE;color:#0284C7;font-weight:700;">${mechTrade}</span>
           ` : 'Configure rewards catalog, point values, inventory, and category-targeted visibility'}
         </p>
       </div>
       <div class="top-actions">
-        ${isAdmin ? `<button class="btn btn-primary btn-sm" onclick="openAddRewardModal()">+ Add Reward Item</button>` : ''}
+        ${isAdmin ? `<button class="btn btn-primary btn-sm" onclick="openAddRewardModal()">${t('add_reward_btn')}</button>` : ''}
       </div>
     </div>
 
@@ -3403,14 +4202,14 @@ async function renderRewardsView() {
       <div class="card" style="margin-bottom:16px;padding:12px;">
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
           <div style="font-size:13px;font-weight:700;color:var(--primary);display:flex;align-items:center;gap:6px;">
-            <span>👁️ Filter View by Worker Category:</span>
+            <span>${t('filter_by_category')}</span>
           </div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;" id="reward-filter-pills">
-            <button class="btn btn-sm btn-primary pill-filter active" data-filter="ALL" onclick="filterAdminRewards('ALL')">All Rewards (${rewards.length})</button>
-            <button class="btn btn-sm btn-secondary pill-filter" data-filter="all_trades" onclick="filterAdminRewards('all_trades')">🌟 Visible to All</button>
-            ${TRADE_TYPES.map(t => {
-              const count = rewards.filter(r => (r.eligible_types || []).includes('all') || (r.eligible_types || []).includes(t)).length;
-              return `<button class="btn btn-sm btn-secondary pill-filter" data-filter="${t}" onclick="filterAdminRewards('${t}')">${t} (${count})</button>`;
+            <button class="btn btn-sm btn-primary pill-filter active" data-filter="ALL" onclick="filterAdminRewards('ALL')">${t('all')} (${rewards.length})</button>
+            <button class="btn btn-sm btn-secondary pill-filter" data-filter="all_trades" onclick="filterAdminRewards('all_trades')">${t('visible_to_all')}</button>
+            ${TRADE_TYPES.map(tr => {
+              const count = rewards.filter(r => (r.eligible_types || []).includes('all') || (r.eligible_types || []).includes(tr)).length;
+              return `<button class="btn btn-sm btn-secondary pill-filter" data-filter="${tr}" onclick="filterAdminRewards('${tr}')">${tr} (${count})</button>`;
             }).join('')}
           </div>
         </div>
@@ -3527,7 +4326,7 @@ function renderRewardsCardsHtml(rewardsList, isMechanic, isAdmin, mechPoints, me
         <p style="font-size:15px;color:var(--text-muted);margin-bottom:12px;">
           ${isMechanic ? `No reward items are currently assigned to the "${mechTrade}" category.` : 'No rewards found matching this category filter.'}
         </p>
-        ${isAdmin ? `<button class="btn btn-primary btn-sm" onclick="openAddRewardModal()">+ Add New Reward</button>` : ''}
+        ${isAdmin ? `<button class="btn btn-primary btn-sm" onclick="openAddRewardModal()">${t('add_reward_btn')}</button>` : ''}
       </div>
     `;
   }
@@ -3546,7 +4345,7 @@ function renderRewardsCardsHtml(rewardsList, isMechanic, isAdmin, mechPoints, me
           ${(hasTargetImg && hasRewardImg) ? `
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
               <div style="background:#F8FAFC;border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px;text-align:center;">
-                <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;">📦 Item to Sell</div>
+                <div style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-bottom:4px;">${t('item_to_sell')}</div>
                 <div style="height:105px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:4px;background:#fff;">
                   <img src="${r.target_product_image_url}" style="max-height:100%;max-width:100%;object-fit:contain;" alt="${r.target_product_name || 'Item to sell'}">
                 </div>
@@ -3554,7 +4353,7 @@ function renderRewardsCardsHtml(rewardsList, isMechanic, isAdmin, mechPoints, me
               </div>
 
               <div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:var(--radius-sm);padding:6px;text-align:center;">
-                <div style="font-size:10px;font-weight:700;color:#1E40AF;text-transform:uppercase;margin-bottom:4px;">🎁 Reward Gift</div>
+                <div style="font-size:10px;font-weight:700;color:#1E40AF;text-transform:uppercase;margin-bottom:4px;">${t('reward_gift')}</div>
                 <div style="height:105px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:4px;background:#fff;">
                   <img src="${r.image_url}" style="max-height:100%;max-width:100%;object-fit:contain;" alt="${r.name}">
                 </div>
@@ -3565,7 +4364,7 @@ function renderRewardsCardsHtml(rewardsList, isMechanic, isAdmin, mechPoints, me
             <div class="reward-card-image-wrap" style="position:relative;">
               <img src="${hasRewardImg ? r.image_url : r.target_product_image_url}" class="reward-card-img" alt="${r.name}">
               <span style="position:absolute;top:6px;left:6px;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(15,23,42,0.75);color:#fff;">
-                ${hasRewardImg ? '🎁 Reward' : '📦 Item to Sell'}
+                ${hasRewardImg ? t('reward_gift') : t('item_to_sell')}
               </span>
             </div>
           ` : `
@@ -3576,7 +4375,7 @@ function renderRewardsCardsHtml(rewardsList, isMechanic, isAdmin, mechPoints, me
 
           ${hasTargetName && !(hasTargetImg && hasRewardImg) ? `
             <div style="background:#F1F5F9;border:1px solid #E2E8F0;border-radius:var(--radius-sm);padding:6px 10px;margin-bottom:10px;font-size:12px;color:var(--text);">
-              <span style="font-weight:700;color:var(--text-muted);font-size:11px;text-transform:uppercase;display:block;">📦 On Selling:</span>
+              <span style="font-weight:700;color:var(--text-muted);font-size:11px;text-transform:uppercase;display:block;">${t('on_selling')}</span>
               <b>${r.target_product_name}</b>
             </div>
           ` : ''}
@@ -3585,14 +4384,14 @@ function renderRewardsCardsHtml(rewardsList, isMechanic, isAdmin, mechPoints, me
             <h3 style="font-size:16px;font-weight:700;color:var(--primary);margin:0;">${r.name}</h3>
             ${isAdmin ? `
               <span class="badge ${r.is_active ? 'badge-active' : 'badge-inactive'}">
-                ${r.is_active ? 'Active' : 'Inactive'}
+                ${r.is_active ? t('active') : t('inactive')}
               </span>
             ` : ''}
           </div>
           
           <div style="margin:10px 0;">
             <span style="font-size:24px;font-weight:800;color:var(--accent);">${r.points_required.toLocaleString()}</span>
-            <span style="font-size:13px;color:var(--text-muted);font-weight:600;margin-left:4px;">Points</span>
+            <span style="font-size:13px;color:var(--text-muted);font-weight:600;margin-left:4px;">${t('points')}</span>
           </div>
 
           ${isAdmin ? `
@@ -3610,7 +4409,7 @@ function renderRewardsCardsHtml(rewardsList, isMechanic, isAdmin, mechPoints, me
             </div>
           ` : `
             <div style="font-size:12px;color:var(--text-muted);background:#F8FAFC;padding:8px 10px;border-radius:var(--radius-sm);">
-              <b>Eligible:</b> ${isAll ? '🌟 All Trade Categories' : (r.eligible_types || []).join(', ')}
+              <b>${t('eligible_label')}</b> ${isAll ? t('visible_to_all') : (r.eligible_types || []).join(', ')}
             </div>
           `}
         </div>
@@ -3618,15 +4417,15 @@ function renderRewardsCardsHtml(rewardsList, isMechanic, isAdmin, mechPoints, me
         <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);">
           ${isMechanic ? `
             <button class="btn btn-primary" style="width:100%;" ${!isEligible ? 'disabled' : ''} onclick="handleRedeemRequest(${r.id}, '${r.name.replace(/'/g, "\\'")}')">
-              ${mechPoints < r.points_required ? `Need ${r.points_required - mechPoints} more pts` : 'Claim Reward'}
+              ${mechPoints < r.points_required ? t('need_more_pts_msg', '', { pts: r.points_required - mechPoints }) : t('claim_reward')}
             </button>
           ` : `
             <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;">
               <div style="display:flex;gap:6px;">
-                <button class="btn btn-secondary btn-sm" onclick="openEditRewardModal(${r.id}, '${r.name.replace(/'/g, "\\'")}', ${r.points_required}, '${(r.image_url || '').replace(/'/g, "\\'")}', ${JSON.stringify(r.eligible_types).replace(/"/g, '&quot;')}, '${(r.target_product_name || '').replace(/'/g, "\\'")}', '${(r.target_product_image_url || '').replace(/'/g, "\\'")}')">✏️ Edit</button>
-                <button class="btn btn-secondary btn-sm" onclick="toggleRewardActive(${r.id})">${r.is_active ? 'Deactivate' : 'Activate'}</button>
+                <button class="btn btn-secondary btn-sm" onclick="openEditRewardModal(${r.id}, '${r.name.replace(/'/g, "\\'")}', ${r.points_required}, '${(r.image_url || '').replace(/'/g, "\\'")}', ${JSON.stringify(r.eligible_types).replace(/"/g, '&quot;')}, '${(r.target_product_name || '').replace(/'/g, "\\'")}', '${(r.target_product_image_url || '').replace(/'/g, "\\'")}')">✏️ ${t('edit')}</button>
+                <button class="btn btn-secondary btn-sm" onclick="toggleRewardActive(${r.id})">${r.is_active ? t('deactivate') : t('activate')}</button>
               </div>
-              <button class="btn btn-danger btn-sm" onclick="deleteReward(${r.id}, '${r.name.replace(/'/g, "\\'")}')" title="Delete reward">🗑️</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteReward(${r.id}, '${r.name.replace(/'/g, "\\'")}')" title="${t('delete')}">🗑️</button>
             </div>
           `}
         </div>
@@ -4057,11 +4856,11 @@ async function renderAuditLogsView() {
   main.innerHTML = `
     <div class="top-bar">
       <div>
-        <h1 class="page-title">📋 Comprehensive Audit Trail</h1>
-        <p style="font-size:13px;color:var(--text-muted)">Immutable log of all approvals, rejections, points adjustments, and logins</p>
+        <h1 class="page-title">${t('audit_logs_title')}</h1>
+        <p style="font-size:13px;color:var(--text-muted)">${t('audit_logs_sub')}</p>
       </div>
       <div class="top-actions">
-        <a href="/api/audit-logs/export-csv" download class="btn btn-secondary btn-sm">📊 Download Audit CSV</a>
+        <a href="/api/audit-logs/export-csv" download class="btn btn-secondary btn-sm">${t('download_audit_csv')}</a>
       </div>
     </div>
 
@@ -4071,21 +4870,21 @@ async function renderAuditLogsView() {
           <thead>
             <tr>
               <th>ID</th>
-              <th>Timestamp</th>
-              <th>Actor</th>
-              <th>Role</th>
-              <th>Action</th>
-              <th>Details</th>
-              <th>Client IP</th>
+              <th>${t('th_timestamp')}</th>
+              <th>${t('th_actor')}</th>
+              <th>${t('th_role')}</th>
+              <th>${t('th_action')}</th>
+              <th>${t('th_details')}</th>
+              <th>${t('th_client_ip')}</th>
             </tr>
           </thead>
           <tbody>
-            ${logs.length === 0 ? `<tr><td colspan="7">No audit logs recorded.</td></tr>` : logs.map(l => `
+            ${logs.length === 0 ? `<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted);">${t('no_logs_found')}</td></tr>` : logs.map(l => `
               <tr>
                 <td>#${l.id}</td>
                 <td>${l.timestamp}</td>
                 <td><b>${l.actor_name}</b></td>
-                <td><span class="user-badge role-${l.actor_role}">${l.actor_role}</span></td>
+                <td><span class="user-badge role-${l.actor_role}">${l.actor_role === 'admin' ? t('role_admin') : l.actor_role === 'auditor' ? t('role_auditor') : t('role_mechanic')}</span></td>
                 <td><b>${l.action}</b></td>
                 <td>${l.details}</td>
                 <td><small style="color:var(--text-muted)">${l.ip_address}</small></td>
@@ -4112,8 +4911,8 @@ async function renderRedemptionsView() {
   main.innerHTML = `
     <div class="top-bar">
       <div>
-        <h1 class="page-title">🏆 Reward Redemptions</h1>
-        <p style="font-size:13px;color:var(--text-muted)">Claims submitted by mechanics for rewards</p>
+        <h1 class="page-title">${t('redemptions_title')}</h1>
+        <p style="font-size:13px;color:var(--text-muted)">${t('redemptions_sub')}</p>
       </div>
     </div>
 
@@ -4122,27 +4921,27 @@ async function renderRedemptionsView() {
         <table>
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Mechanic</th>
-              <th>Reward</th>
-              <th>Points</th>
-              <th>Status</th>
-              ${isAdmin ? '<th>Action</th>' : ''}
+              <th>${t('date')}</th>
+              <th>${t('role_mechanic')}</th>
+              <th>${t('th_reward')}</th>
+              <th>${t('points')}</th>
+              <th>${t('status')}</th>
+              ${isAdmin ? `<th>${t('th_action')}</th>` : ''}
             </tr>
           </thead>
           <tbody>
-            ${list.length === 0 ? `<tr><td colspan="6">No redemptions requested.</td></tr>` : list.map(r => `
+            ${list.length === 0 ? `<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-muted);">${t('no_redemptions_found')}</td></tr>` : list.map(r => `
               <tr>
                 <td>${r.requested_at}</td>
                 <td><b>${r.mechanic_name}</b> (${r.trade_type})</td>
                 <td>${r.reward_name}</td>
                 <td><b>${r.points}</b></td>
-                <td><span class="badge badge-${r.status.toLowerCase()}">${r.status}</span></td>
+                <td><span class="badge badge-${r.status.toLowerCase()}">${r.status === 'Approved' ? t('approved') : r.status === 'Pending' ? t('pending') : t('rejected')}</span></td>
                 ${isAdmin ? `
                   <td>
                     ${r.status === 'Pending' ? `
-                      <button class="btn btn-success btn-sm" onclick="decideRedemption(${r.id}, true)">Approve</button>
-                      <button class="btn btn-danger btn-sm" onclick="decideRedemption(${r.id}, false)">Reject</button>
+                      <button class="btn btn-success btn-sm" onclick="decideRedemption(${r.id}, true)">${t('approved')}</button>
+                      <button class="btn btn-danger btn-sm" onclick="decideRedemption(${r.id}, false)">${t('rejected')}</button>
                     ` : `Decided by ${r.decided_by || 'Admin'}`}
                   </td>
                 ` : ''}
@@ -4173,47 +4972,51 @@ async function renderMechanicDashboard() {
   main.innerHTML = `
     <div class="top-bar">
       <div>
-        <h1 class="page-title">Welcome, ${AppState.user.name}</h1>
-        <p style="font-size:13px;color:var(--text-muted)">${m.trade_type || 'Mechanic'} · User ID: ${m.uid || AppState.user.username}</p>
+        <h1 class="page-title">${t('worker_welcome')}, ${AppState.user.name}</h1>
+        <p style="font-size:13px;color:var(--text-muted)">${m.trade_type || t('role_mechanic')} · ${t('user_id_label')}: ${m.uid || AppState.user.username}</p>
       </div>
       <div class="top-actions">
-        <button class="btn btn-primary btn-sm" onclick="navigate('submit_purchase')">📸 Submit Purchase</button>
+        <button class="btn btn-primary btn-sm" onclick="navigate('submit_purchase')">${t('submit_purchase_btn')}</button>
       </div>
     </div>
 
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-label">Available Points</div>
+        <div class="stat-label">${t('available_points')}</div>
         <div class="stat-value" style="color:var(--accent);">${m.available_points || 0}</div>
+        <span style="font-size:11px;color:var(--text-muted)">${t('ready_for_redemption')}</span>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Lifetime Points</div>
+        <div class="stat-label">${t('lifetime_points')}</div>
         <div class="stat-value" style="color:var(--success);">${m.lifetime_points || 0}</div>
+        <span style="font-size:11px;color:var(--text-muted)">${t('total_points_earned')}</span>
       </div>
       ${m.recovery_points > 0 ? `
         <div class="stat-card">
-          <div class="stat-label">Recovery Pending</div>
+          <div class="stat-label">${t('recovery_pending')}</div>
           <div class="stat-value" style="color:var(--danger);">${m.recovery_points}</div>
+          <span style="font-size:11px;color:var(--text-muted)">${t('deducted_future_bills')}</span>
         </div>
       ` : ''}
       <div class="stat-card">
-        <div class="stat-label">Approved Purchases</div>
+        <div class="stat-label">${t('stat_approved_purchases')}</div>
         <div class="stat-value">${purchases.filter(p => p.status === 'APPROVED').length}</div>
+        <span style="font-size:11px;color:var(--text-muted)">${t('nav_purchases')}</span>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-title" style="margin-bottom:12px;">Recent Purchases</div>
+      <div class="card-title" style="margin-bottom:12px;">${t('recent_purchases')}</div>
       <div class="table-responsive">
         <table>
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Customer</th>
-              <th>Items</th>
-              <th>Amount</th>
-              <th>Status</th>
-              <th>Points</th>
+              <th>${t('date')}</th>
+              <th>${t('customer')}</th>
+              <th>${t('items')}</th>
+              <th>${t('amount')}</th>
+              <th>${t('status')}</th>
+              <th>${t('points')}</th>
             </tr>
           </thead>
           <tbody>
@@ -4241,10 +5044,10 @@ async function renderNotificationsView() {
 
   main.innerHTML = `
     <div class="top-bar">
-      <h1 class="page-title">🔔 Notifications</h1>
+      <h1 class="page-title">🔔 ${t('nav_notifications')}</h1>
     </div>
     <div class="card">
-      ${notifs.length === 0 ? '<p>No new notifications.</p>' : notifs.map(n => `
+      ${notifs.length === 0 ? `<p style="color:var(--text-muted);">${t('loading').replace('...', '')}</p>` : notifs.map(n => `
         <div style="padding:10px 0;border-bottom:1px solid var(--border);">
           <div style="font-size:13px;">${n.message}</div>
           <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">${n.created_at}</div>
@@ -4264,24 +5067,24 @@ async function renderReportsView() {
   main.innerHTML = `
     <div class="top-bar">
       <div>
-        <h1 class="page-title">📈 Reports & Performance</h1>
+        <h1 class="page-title">${t('reports_title')}</h1>
       </div>
       <div class="top-actions">
-        <a href="/api/reports/export-purchases-csv" download class="btn btn-secondary btn-sm">📊 Export All Purchases CSV</a>
+        <a href="/api/reports/export-purchases-csv" download class="btn btn-secondary btn-sm">${t('export_csv')}</a>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-title" style="margin-bottom:12px;">🏆 Top Mechanics Leaderboard</div>
+      <div class="card-title" style="margin-bottom:12px;">${t('top_mechanics_leaderboard')}</div>
       <div class="table-responsive">
         <table>
           <thead>
             <tr>
               <th>Rank</th>
-              <th>Mechanic Name</th>
-              <th>Trade</th>
-              <th>Available Points</th>
-              <th>Lifetime Points</th>
+              <th>${t('full_name')}</th>
+              <th>${t('trade_category')}</th>
+              <th>${t('available_points')}</th>
+              <th>${t('lifetime_points')}</th>
             </tr>
           </thead>
           <tbody>
@@ -4309,10 +5112,45 @@ async function renderSettingsView() {
   main.innerHTML = `
     <div class="top-bar">
       <div>
-        <h1 class="page-title">⚙️ ${isAdmin ? 'Admin Settings & Security' : 'System Settings'}</h1>
+        <h1 class="page-title">⚙️ ${isAdmin ? t('settings_title') : t('system_settings_title')}</h1>
         <p style="font-size:13px;color:var(--text-muted)">
-          ${isAdmin ? 'Manage administrator login credentials, username, secure password, and system preferences' : 'System information and network configuration'}
+          ${isAdmin ? t('settings_subtitle') : t('system_settings_subtitle')}
         </p>
+      </div>
+    </div>
+
+    <!-- Universal Language Preference Card for ALL Users -->
+    <div class="card" style="margin-bottom:20px;max-width:720px;">
+      <div class="card-header" style="border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:16px;">
+        <div>
+          <div class="card-title" style="display:flex;align-items:center;gap:8px;">
+            <span>🌐 ${t('language_preferences_title')}</span>
+          </div>
+          <p style="font-size:12px;color:var(--text-muted);margin-top:2px;">
+            ${t('language_preferences_desc')}
+          </p>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:#F8FAFC;padding:14px 16px;border-radius:var(--radius-sm);border:1px solid var(--border);">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:24px;">🇮🇳</span>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--primary);">
+              ${AppState.lang === 'hi' ? 'वर्तमान भाषा: हिन्दी' : 'Current Language: English'}
+            </div>
+            <small style="color:var(--text-muted);">${AppState.lang === 'hi' ? 'अंग्रेजी या हिन्दी में कभी भी बदलें' : 'Switch anytime between English and Hindi'}</small>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;">
+          <button type="button" class="btn ${AppState.lang !== 'hi' ? 'btn-primary' : 'btn-secondary'}" onclick="setLanguage('en')" style="font-weight:700;padding:8px 16px;">
+            🇬🇧 English
+          </button>
+          <button type="button" class="btn ${AppState.lang === 'hi' ? 'btn-primary' : 'btn-secondary'}" onclick="setLanguage('hi')" style="font-weight:700;padding:8px 16px;">
+            🇮🇳 हिन्दी (Hindi)
+          </button>
+        </div>
       </div>
     </div>
 
@@ -4322,7 +5160,7 @@ async function renderSettingsView() {
         <div class="card-header" style="border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:16px;">
           <div>
             <div class="card-title" style="display:flex;align-items:center;gap:8px;">
-              <span>🔐 Administrator Account Credentials</span>
+              <span>🔐 ${t('admin_credentials_card')}</span>
             </div>
             <p style="font-size:12px;color:var(--text-muted);margin-top:2px;">
               Change your admin login username and password. Changes will take effect immediately.
@@ -4333,38 +5171,38 @@ async function renderSettingsView() {
         <form onsubmit="handleAdminCredentialsSubmit(event)">
           <div class="form-row">
             <div class="form-group" style="flex:1;">
-              <label>Admin Login Username <span style="color:var(--danger)">*</span></label>
+              <label>${t('admin_username')} <span style="color:var(--danger)">*</span></label>
               <input type="text" id="admin-username-input" value="${AppState.user.username || 'admin'}" required placeholder="e.g. admin or myusername" autocomplete="username">
               <small style="color:var(--text-muted);font-size:11px;">You will use this username (or your mobile number) to log in.</small>
             </div>
             <div class="form-group" style="flex:1;">
-              <label>Admin Display Name <span style="color:var(--danger)">*</span></label>
+              <label>${t('admin_display_name')} <span style="color:var(--danger)">*</span></label>
               <input type="text" id="admin-name-input" value="${AppState.user.name || 'System Admin'}" required placeholder="e.g. Mahabir Admin" autocomplete="name">
             </div>
           </div>
 
           <div class="form-group">
-            <label>Admin Contact Mobile <span style="color:var(--danger)">*</span></label>
+            <label>${t('admin_contact_mobile')} <span style="color:var(--danger)">*</span></label>
             <input type="tel" id="admin-phone-input" value="${AppState.user.phone || ''}" placeholder="10-digit mobile number" pattern="[0-9]{10}" maxlength="10" minlength="10" inputmode="numeric" required autocomplete="tel">
             <small style="color:var(--text-muted);font-size:11px;">Mandatory 10-digit mobile number for administrator alerts and password resets.</small>
           </div>
 
           <div style="background:#F8FAFC;border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin:16px 0;">
             <div style="font-weight:700;font-size:13px;color:var(--primary);margin-bottom:4px;display:flex;align-items:center;gap:6px;">
-              <span>🔑 Change Admin Password</span>
+              <span>🔑 ${t('change_admin_pw')}</span>
               <span style="font-size:11px;font-weight:normal;color:var(--text-muted);">(Leave empty if keeping current password)</span>
             </div>
             
             <div class="form-row" style="margin-top:12px;">
               <div class="form-group" style="flex:1;margin-bottom:0;">
-                <label style="font-size:12px;">New Password</label>
+                <label style="font-size:12px;">${t('new_pw')}</label>
                 <div style="display:flex;gap:4px;">
                   <input type="password" id="admin-new-password" placeholder="Min 4 characters (or leave empty)" minlength="4" autocomplete="new-password">
                   <button type="button" class="btn btn-secondary btn-sm" onclick="togglePasswordVisibility('admin-new-password', this)" style="padding:4px 8px;">👁️</button>
                 </div>
               </div>
               <div class="form-group" style="flex:1;margin-bottom:0;">
-                <label style="font-size:12px;">Confirm New Password</label>
+                <label style="font-size:12px;">${t('confirm_new_pw')}</label>
                 <div style="display:flex;gap:4px;">
                   <input type="password" id="admin-confirm-password" placeholder="Re-enter new password" minlength="4" autocomplete="new-password">
                   <button type="button" class="btn btn-secondary btn-sm" onclick="togglePasswordVisibility('admin-confirm-password', this)" style="padding:4px 8px;">👁️</button>
@@ -4376,7 +5214,7 @@ async function renderSettingsView() {
           <!-- Current Password Required For Security Verification -->
           <div style="background:#FEF3C7;border:1px solid #FCD34D;border-radius:var(--radius-sm);padding:14px;margin-bottom:16px;">
             <label style="font-size:13px;font-weight:700;color:#92400E;display:block;margin-bottom:6px;">
-              🔒 Current Password <span style="color:var(--danger)">*</span> (Required to save changes)
+              🔒 ${t('current_pw')} <span style="color:var(--danger)">*</span> (Required to save changes)
             </label>
             <div style="display:flex;gap:4px;">
               <input type="password" id="admin-current-password" required placeholder="Enter current admin password" autocomplete="current-password" style="background:#fff;">
@@ -4389,7 +5227,7 @@ async function renderSettingsView() {
 
           <div style="display:flex;justify-content:flex-end;gap:8px;">
             <button type="submit" class="btn btn-primary" id="save-admin-creds-btn" style="padding:10px 20px;">
-              💾 Save & Update Credentials
+              ${t('save_credentials_btn')}
             </button>
           </div>
         </form>
@@ -4398,12 +5236,12 @@ async function renderSettingsView() {
 
     <!-- System & Network Info Card -->
     <div class="card" style="max-width:720px;">
-      <div class="card-title" style="margin-bottom:12px;">💻 System & Network Information</div>
+      <div class="card-title" style="margin-bottom:12px;">💻 ${t('sys_net_info')}</div>
       <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">
         Local server network access details for Mahabir Traders Loyalty System.
       </p>
       <div style="background:#F1F5F9;padding:12px;border-radius:var(--radius-sm);font-family:monospace;font-size:14px;margin:12px 0;">
-        Primary Server Address: <b>${net.primaryUrl || window.location.origin}</b>
+        ${t('primary_server_addr')}: <b>${net.primaryUrl || window.location.origin}</b>
       </div>
     </div>
   `;

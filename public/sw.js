@@ -1,10 +1,15 @@
-const CACHE_NAME = 'mech-audit-v1';
+const CACHE_NAME = 'mahabir-app-v2';
 const ASSETS = [
   '/',
   '/index.html',
   '/css/app.css',
   '/js/app.js',
-  '/manifest.json'
+  '/manifest.json',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
+  '/icons/icon-maskable-512.png',
+  '/icons/apple-touch-icon.png',
+  '/icons/favicon.png'
 ];
 
 self.addEventListener('install', (e) => {
