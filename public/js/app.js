@@ -997,14 +997,17 @@ function navigate(view, subId = null) {
 function renderShell() {
   const app = document.getElementById('app');
   app.innerHTML = `
-    <div id="toast-container"></div>
-    <div id="modal-root"></div>
-    <div id="mobile-header-slot"></div>
-    <div id="mobile-drawer-slot"></div>
-    <div class="app-container" id="app-container">
-      <div id="sidebar-slot"></div>
-      <main class="main-content" id="main-content"></main>
-      <nav class="bottom-nav" id="bottom-nav-slot"></nav>
+    <div class="phone-wrapper">
+      <div class="phone-frame" id="phone-frame">
+        <div id="toast-container"></div>
+        <div id="modal-root"></div>
+        <div id="mobile-header-slot"></div>
+        <div id="mobile-drawer-slot"></div>
+        <div class="app-container" id="app-container">
+          <main class="main-content" id="main-content"></main>
+        </div>
+        <nav class="bottom-nav" id="bottom-nav-slot"></nav>
+      </div>
     </div>
   `;
 }
@@ -1242,77 +1245,10 @@ async function renderView() {
   }
 }
 
-// Sidebar Navigation
+// Sidebar Navigation (Unneeded in unified mobile-first phone frame)
 function renderSidebar() {
   const sidebar = document.getElementById('sidebar-slot');
-  if (!AppState.user) {
-    sidebar.innerHTML = '';
-    return;
-  }
-
-  const role = AppState.user.role;
-  let navItems = [];
-
-  if (role === 'admin') {
-    navItems = [
-      { id: 'dash', label: `📊 ${t('nav_dashboard')}` },
-      { id: 'about', label: `🏪 ${t('nav_about_store')}` },
-      { id: 'verifications', label: `🔍 ${t('nav_bill_audits')}`, count: AppState.stats.pendingBills || 0 },
-      { id: 'mechanics', label: `👷 ${t('nav_mechanics')}` },
-      { id: 'purchases', label: `🧾 ${t('nav_purchases')}` },
-      { id: 'returns', label: `↩️ ${t('nav_returns')}` },
-      { id: 'rewards', label: `🎁 ${t('nav_rewards')}` },
-      { id: 'redemptions', label: `🏆 ${t('nav_redemptions')}`, count: AppState.stats.pendingRedemptions || 0 },
-      { id: 'reports', label: `📈 ${t('nav_reports')}` },
-      { id: 'audit_logs', label: `📋 ${t('nav_audit_logs')}` },
-      { id: 'settings', label: `⚙️ ${t('nav_settings')}` }
-    ];
-  } else if (role === 'auditor') {
-    navItems = [
-      { id: 'dash', label: `📊 ${t('nav_field_overview')}` },
-      { id: 'about', label: `🏪 ${t('nav_about_store')}` },
-      { id: 'audit_feed', label: `🔍 ${t('nav_bill_audits')}`, count: AppState.stats.pendingBills || 0 },
-      { id: 'submit_purchase', label: `📸 ${t('nav_snap_bill')}` },
-      { id: 'mechanics', label: `👷 ${t('nav_mechanics')}` },
-      { id: 'purchases', label: `🧾 ${t('nav_purchases')}` },
-      { id: 'returns', label: `↩️ ${t('nav_returns')}` },
-      { id: 'audit_logs', label: `📋 ${t('nav_audit_logs')}` }
-    ];
-  } else {
-    navItems = [
-      { id: 'dash', label: `🏠 ${t('nav_my_dashboard')}` },
-      { id: 'about', label: `🏪 ${t('nav_about_store')}` },
-      { id: 'submit_purchase', label: `📸 ${t('nav_snap_bill')}` },
-      { id: 'purchases', label: `🧾 ${t('nav_my_purchases')}` },
-      { id: 'rewards', label: `🎁 ${t('nav_rewards_claim')}` },
-      { id: 'redemptions', label: `🏆 ${t('nav_redemption_history')}` },
-      { id: 'notifications', label: `🔔 ${t('nav_notifications')}` }
-    ];
-  }
-
-  sidebar.innerHTML = `
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="brand-title">🏪 ${t('brand_name')}</div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">
-          <span class="user-badge role-${role}">${role}</span>
-          ${renderLangSwitcherHtml('dark')}
-        </div>
-        <div style="font-size:12px;color:#cbd5e1;margin-top:6px;">${AppState.user.name}</div>
-      </div>
-      <nav class="nav-links">
-        ${navItems.map(item => `
-          <a class="nav-item ${AppState.view === item.id ? 'active' : ''}" onclick="navigate('${item.id}')">
-            <span>${item.label}</span>
-            ${item.count ? `<span class="badge-count">${item.count}</span>` : ''}
-          </a>
-        `).join('')}
-      </nav>
-      <div class="sidebar-footer">
-        <button class="btn btn-danger btn-sm" style="width:100%" onclick="logout(true)">🚪 ${t('logout')}</button>
-      </div>
-    </aside>
-  `;
+  if (sidebar) sidebar.innerHTML = '';
 }
 
 // Mobile Bottom Navigation Bar (With 1-Tap Access to All Features via Menu)
