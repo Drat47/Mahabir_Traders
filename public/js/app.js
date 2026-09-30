@@ -1378,8 +1378,8 @@ function renderLoginView(tab = 'login', prefillPhone = '') {
   if (mobileDrawer) mobileDrawer.innerHTML = '';
 
   main.innerHTML = `
-    <div style="max-width: 520px; margin: 4vh auto; padding: 12px;">
-      <div class="card" style="padding: 26px; box-shadow: var(--shadow-lg);">
+    <div class="auth-container">
+      <div class="card auth-card">
         
         <!-- Language Switcher Bar on Top of Login -->
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);">
