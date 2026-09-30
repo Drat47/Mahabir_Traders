@@ -2059,17 +2059,44 @@ async function renderAboutView() {
 
 async function renderAdminDashboard() {
   const main = document.getElementById('main-content');
-  const stats = await API.get('/api/dashboard/stats');
+  const [stats, purchasesRes] = await Promise.all([
+    API.get('/api/dashboard/stats'),
+    API.get('/api/purchases?limit=6').catch(() => ({ purchases: [] }))
+  ]);
   AppState.stats = stats;
+  const recentPurchases = (purchasesRes.purchases || []).slice(0, 6);
 
   main.innerHTML = `
-    <div class="top-bar">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
       <div>
-        <h1 class="page-title">${t('admin_dash_title')}</h1>
-        <p style="font-size:13px;color:var(--text-muted)">${t('admin_dash_subtitle')}</p>
+        <h1 class="page-title" style="font-size:20px;font-weight:800;margin:0;color:var(--primary);">${t('admin_dash_title')}</h1>
+        <p style="font-size:12px;color:var(--text-muted);margin:0;">${t('admin_dash_subtitle')}</p>
       </div>
-      <div class="top-actions">
-        <button class="btn btn-secondary btn-sm" onclick="navigate('verifications')">${t('verify_bills_btn')} (${stats.pendingBills})</button>
+      ${stats.pendingBills > 0 ? `
+        <button class="btn btn-warning btn-sm" onclick="navigate('verifications')" style="font-weight:700;border-radius:8px;padding:6px 12px;font-size:12px;display:flex;align-items:center;gap:4px;">
+          <span>🔍</span> <span>Verify (${stats.pendingBills})</span>
+        </button>
+      ` : ''}
+    </div>
+
+    <!-- Quick 1-Tap Action Shortcuts -->
+    <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:6px;margin-bottom:10px;">
+      <div class="card interactive" onclick="navigate('submit_purchase')" style="padding:10px 4px;text-align:center;margin:0;border-radius:10px;cursor:pointer;">
+        <div style="font-size:20px;margin-bottom:2px;">📸</div>
+        <div style="font-size:11px;font-weight:700;color:var(--primary);">Snap Bill</div>
+      </div>
+      <div class="card interactive" onclick="openAddMechanicModal()" style="padding:10px 4px;text-align:center;margin:0;border-radius:10px;cursor:pointer;">
+        <div style="font-size:20px;margin-bottom:2px;">👤</div>
+        <div style="font-size:11px;font-weight:700;color:var(--primary);">+ Worker</div>
+      </div>
+      <div class="card interactive" onclick="navigate('verifications')" style="padding:10px 4px;text-align:center;margin:0;border-radius:10px;cursor:pointer;position:relative;">
+        ${stats.pendingBills > 0 ? `<span style="position:absolute;top:4px;right:4px;background:var(--warning);color:#fff;font-size:10px;font-weight:800;border-radius:99px;padding:1px 5px;">${stats.pendingBills}</span>` : ''}
+        <div style="font-size:20px;margin-bottom:2px;">🔍</div>
+        <div style="font-size:11px;font-weight:700;color:var(--primary);">Audits</div>
+      </div>
+      <div class="card interactive" onclick="navigate('returns')" style="padding:10px 4px;text-align:center;margin:0;border-radius:10px;cursor:pointer;">
+        <div style="font-size:20px;margin-bottom:2px;">↩️</div>
+        <div style="font-size:11px;font-weight:700;color:var(--primary);">Returns</div>
       </div>
     </div>
 
@@ -2077,80 +2104,114 @@ async function renderAdminDashboard() {
       <div class="stat-card interactive" onclick="navigate('mechanics')">
         <div class="stat-label">${t('stat_total_mechanics')}</div>
         <div class="stat-value">${stats.totalMechanics}</div>
-        <span style="font-size:11px;color:var(--success)">${stats.activeMechanics} ${t('stat_active_in_field')}</span>
+        <span style="font-size:11px;color:var(--success);font-weight:600;">${stats.activeMechanics} ${t('stat_active_in_field')}</span>
       </div>
 
       <div class="stat-card interactive highlight" onclick="navigate('verifications')">
         <div class="stat-label">${t('stat_pending_verification')}</div>
-        <div class="stat-value" style="color:var(--warning)">${stats.pendingBills}</div>
-        <span style="font-size:11px;color:var(--text-muted)">${t('stat_requires_action')}</span>
+        <div class="stat-value" style="color:var(--warning);">${stats.pendingBills}</div>
+        <span style="font-size:11px;color:var(--text-muted);font-weight:600;">${t('stat_requires_action')}</span>
       </div>
 
       <div class="stat-card">
         <div class="stat-label">${t('stat_approved_purchases')}</div>
-        <div class="stat-value" style="color:var(--success)">${stats.approvedBills}</div>
-        <span style="font-size:11px;color:var(--text-muted)">${formatINR(stats.purchaseValue)} ${t('stat_total_value')}</span>
+        <div class="stat-value" style="color:var(--success);">${stats.approvedBills}</div>
+        <span style="font-size:11px;color:var(--text-muted);font-weight:600;">${formatINR(stats.purchaseValue)}</span>
       </div>
 
       <div class="stat-card">
         <div class="stat-label">${t('stat_points_issued')}</div>
         <div class="stat-value">${stats.pointsIssued.toLocaleString()}</div>
-        <span style="font-size:11px;color:var(--text-muted)">${stats.pointsRedeemed.toLocaleString()} ${t('stat_points_redeemed')}</span>
+        <span style="font-size:11px;color:var(--text-muted);font-weight:600;">${stats.pointsRedeemed.toLocaleString()} redeemed</span>
       </div>
 
       <div class="stat-card interactive" onclick="navigate('redemptions')">
         <div class="stat-label">${t('stat_pending_claims')}</div>
-        <div class="stat-value" style="color:${stats.pendingRedemptions > 0 ? 'var(--warning)' : 'var(--primary)'}">${stats.pendingRedemptions}</div>
-        <span style="font-size:11px;color:var(--text-muted)">${t('stat_reward_redemptions')}</span>
+        <div class="stat-value" style="color:${stats.pendingRedemptions > 0 ? 'var(--warning)' : 'var(--primary)'};">${stats.pendingRedemptions}</div>
+        <span style="font-size:11px;color:var(--text-muted);font-weight:600;">Reward Claims</span>
       </div>
 
       <div class="stat-card interactive" onclick="navigate('returns')">
         <div class="stat-label">${t('stat_product_returns')}</div>
         <div class="stat-value">${stats.returnsCount}</div>
-        <span style="font-size:11px;color:var(--danger)">${stats.pointsReversed} ${t('stat_pts_reversed')}</span>
+        <span style="font-size:11px;color:var(--danger);font-weight:600;">${stats.pointsReversed} pts reversed</span>
       </div>
     </div>
 
-    <div class="grid-2col" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;width:100%;">
-      <div class="card">
-        <div class="card-header">
-          <div class="card-title">${t('chart_trade_breakdown')}</div>
-        </div>
-        <div style="position:relative;height:240px;">
-          <canvas id="trade-chart"></canvas>
-        </div>
+    <!-- Trade Revenue Chart -->
+    <div class="card" style="margin-bottom:10px;">
+      <div class="card-header" style="margin-bottom:8px;">
+        <div class="card-title">${t('chart_trade_breakdown')}</div>
       </div>
+      <div style="position:relative;height:210px;width:100%;">
+        <canvas id="trade-chart"></canvas>
+      </div>
+    </div>
 
-      <div class="card" style="padding:0;overflow:hidden;">
-        <div class="card-header" style="padding:16px 16px 12px 16px;margin-bottom:0;border-bottom:1px solid var(--border);">
-          <div>
-            <div class="card-title">${t('field_cat_performance')}</div>
-            <small style="color:var(--text-muted)">${t('field_cat_subtitle')}</small>
-          </div>
-          <button class="btn btn-secondary btn-sm" onclick="navigate('reports')">${t('full_report_btn')}</button>
+    <!-- Field Performance Table Card -->
+    <div class="card" style="padding:0;overflow:hidden;margin-bottom:10px;">
+      <div class="card-header" style="padding:14px 12px 10px 12px;margin-bottom:0;border-bottom:1px solid var(--border);">
+        <div>
+          <div class="card-title">${t('field_cat_performance')}</div>
+          <small style="color:var(--text-muted)">${t('field_cat_subtitle')}</small>
         </div>
-        <div class="table-responsive" style="border:none;border-radius:0;margin-bottom:0;">
-          <table>
-            <thead>
-              <tr>
-                <th>${t('th_trade_type')}</th>
-                <th>${t('th_workers')}</th>
-                <th>${t('th_approved_sales')}</th>
-                <th>${t('th_pending_bills')}</th>
+        <button class="btn btn-secondary btn-sm" onclick="navigate('reports')">${t('full_report_btn')}</button>
+      </div>
+      <div class="table-responsive" style="border:none;border-radius:0;margin-bottom:0;">
+        <table>
+          <thead>
+            <tr>
+              <th>${t('th_trade_type')}</th>
+              <th>${t('th_workers')}</th>
+              <th>${t('th_approved_sales')}</th>
+              <th>${t('th_pending_bills')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${(stats.tradeBreakdown || []).map(t => `
+              <tr style="cursor:pointer;" onclick="navigate('category_workers', '${t.type}')" title="Click to view all ${t.type} workers">
+                <td><b style="color:var(--accent);">${t.type}</b> <span style="font-size:12px;color:var(--accent);">➔</span></td>
+                <td><b>${t.mechanics_count}</b></td>
+                <td>${formatINR(t.approved_value)}</td>
+                <td>${t.pending_bills > 0 ? `<span class="badge badge-pending">${t.pending_bills} pending</span>` : '<span style="color:var(--text-muted)">0</span>'}</td>
               </tr>
-            </thead>
-            <tbody>
-              ${(stats.tradeBreakdown || []).map(t => `
-                <tr style="cursor:pointer;" onclick="navigate('category_workers', '${t.type}')" title="Click to view all ${t.type} workers">
-                  <td><b style="color:var(--accent);">${t.type}</b> <span style="font-size:12px;color:var(--accent);">➔</span></td>
-                  <td><b>${t.mechanics_count}</b></td>
-                  <td>${formatINR(t.approved_value)}</td>
-                  <td>${t.pending_bills > 0 ? `<span class="badge badge-pending">${t.pending_bills} pending</span>` : '<span style="color:var(--text-muted)">0</span>'}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Recent Audit Activity Feed -->
+    <div class="card" style="padding:0;overflow:hidden;margin-bottom:16px;">
+      <div class="card-header" style="padding:14px 12px 10px 12px;margin-bottom:0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <div class="card-title" style="display:flex;align-items:center;gap:6px;">
+          <span>⚡</span> <span>Recent Activity Feed</span>
         </div>
+        <button class="btn btn-secondary btn-sm" onclick="navigate('purchases')">View All</button>
+      </div>
+      <div style="padding:8px 12px;">
+        ${recentPurchases.length === 0 ? `
+          <div style="padding:20px;text-align:center;color:var(--text-muted);font-size:13px;">No recent transactions yet</div>
+        ` : recentPurchases.map(p => `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;" onclick="navigate('purchases')">
+            <div>
+              <div style="font-weight:700;font-size:13.5px;color:var(--primary);">${p.mechanic_name || 'Worker'}</div>
+              <div style="font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:6px;margin-top:2px;">
+                <span class="badge" style="background:#E2E8F0;font-size:10.5px;padding:1px 6px;">${p.trade_type || 'General'}</span>
+                <span>•</span>
+                <span>${new Date(p.created_at).toLocaleDateString()}</span>
+              </div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-weight:800;font-size:14px;color:var(--primary);">${formatINR(p.total_amount || 0)}</div>
+              <div style="margin-top:2px;">
+                <span class="badge ${p.status === 'APPROVED' ? 'badge-approved' : p.status === 'PENDING' ? 'badge-pending' : 'badge-rejected'}" style="font-size:11px;padding:2px 7px;">
+                  ${p.status}
+                </span>
+              </div>
+            </div>
+          </div>
+        `).join('')}
       </div>
     </div>
   `;
