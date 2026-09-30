@@ -1270,33 +1270,53 @@ html, body {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: #fff;
   -webkit-overflow-scrolling: touch;
   overflow-x: auto;
   position: relative;
+  margin-bottom: 8px;
+}
+
+.card > .table-responsive {
+  border: none;
+  border-radius: 0;
+  margin-bottom: 0;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: 13.5px;
+  line-height: 1.45;
 }
 
 th, td {
-  padding: 14px 12px;
+  padding: 12px 12px;
   text-align: left;
   border-bottom: 1px solid var(--border);
   vertical-align: middle;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 th {
   background: #F8FAFC;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
-  color: var(--primary-light);
+  color: var(--text-muted);
   white-space: nowrap;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.4px;
+}
+
+tr:hover td {
+  background: #F8FAFC;
+}
+
+tr:last-child td {
+  border-bottom: none;
 }
 
 /* Sleek Scrollbar for Phone Frame */

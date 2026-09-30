@@ -2121,15 +2121,15 @@ async function renderAdminDashboard() {
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-header">
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div class="card-header" style="padding:16px 16px 12px 16px;margin-bottom:0;border-bottom:1px solid var(--border);">
           <div>
             <div class="card-title">${t('field_cat_performance')}</div>
             <small style="color:var(--text-muted)">${t('field_cat_subtitle')}</small>
           </div>
           <button class="btn btn-secondary btn-sm" onclick="navigate('reports')">${t('full_report_btn')}</button>
         </div>
-        <div class="table-responsive">
+        <div class="table-responsive" style="border:none;border-radius:0;margin-bottom:0;">
           <table>
             <thead>
               <tr>
