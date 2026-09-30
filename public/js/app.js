@@ -2834,62 +2834,51 @@ async function renderMechanicsList() {
   const isAdmin = AppState.user.role === 'admin';
 
   main.innerHTML = `
-    <div class="top-bar">
-      <div>
-        <h1 class="page-title">${t('mechanics_directory_title')}</h1>
-        <p style="font-size:13px;color:var(--text-muted)">${t('mechanics_directory_sub')}</p>
-      </div>
-      <div class="top-actions">
-        ${isAdmin ? `<button class="btn btn-primary btn-sm" onclick="openAddMechanicModal()">${t('register_mechanic_btn')}</button>` : ''}
-      </div>
+    <div style="margin-bottom:12px;">
+      <h1 class="page-title" style="font-size:22px;font-weight:800;margin:0 0 4px 0;display:flex;align-items:center;gap:6px;color:var(--primary);">
+        <span>👷</span> <span>${t('mechanics_directory_title')}</span>
+      </h1>
+      <p style="font-size:13px;color:var(--text-muted);margin:0;">${t('mechanics_directory_sub')}</p>
     </div>
 
-    <div class="card" style="margin-bottom:12px;">
-      <div class="form-row">
-        <input type="text" id="mech-search" placeholder="${t('search_mechanics_placeholder')}" oninput="filterMechanicsTable(this.value)">
-      </div>
+    ${isAdmin ? `
+      <button class="btn btn-primary" onclick="openAddMechanicModal()" style="width:100%;min-height:46px;font-size:15px;font-weight:700;border-radius:10px;margin-bottom:14px;">
+        + ${t('register_mechanic_btn')}
+      </button>
+    ` : ''}
+
+    <div style="margin-bottom:14px;">
+      <input type="text" id="mech-search" placeholder="${t('search_mechanics_placeholder')}" oninput="filterMechanicsTable(this.value)" style="width:100%;min-height:46px;border:1px solid var(--border);border-radius:10px;padding:0 14px;font-size:14px;background:#fff;box-sizing:border-box;">
     </div>
 
-    <div class="card" style="padding:0;">
-      <div class="table-responsive">
-        <table id="mechanics-table">
+    <div class="card" style="padding:0;overflow:hidden;border-radius:12px;margin-bottom:16px;">
+      <div class="table-responsive" style="border:none;border-radius:0;margin-bottom:0;">
+        <table id="mechanics-table" style="width:100%;border-collapse:collapse;">
           <thead>
-            <tr>
-              <th>ID</th>
-              <th>${t('full_name')}</th>
-              <th>${t('trade_category')}</th>
-              <th>${t('phone')}</th>
-              <th>${t('available_points')}</th>
-              <th>${t('lifetime_points')}</th>
-              <th>${t('th_pending_bills')}</th>
-              <th>${t('status')}</th>
-              <th>${t('actions')}</th>
+            <tr style="background:#F8FAFC;border-bottom:1px solid var(--border);">
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--text-muted);width:15%;">ID</th>
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--text-muted);width:45%;">${t('full_name')}</th>
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--text-muted);width:20%;">${t('trade_category')}</th>
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--text-muted);width:20%;">${t('phone')}</th>
             </tr>
           </thead>
           <tbody>
             ${mechanics.map(m => `
-              <tr data-search="${(m.name + m.phone + m.uid + m.trade_type + m.address).toLowerCase()}">
-                <td><b>${m.uid}</b></td>
-                <td><b>${m.name}</b><br><small style="color:var(--text-muted)">${m.address}</small></td>
-                <td><span class="badge" style="background:#E2E8F0;">${m.trade_type}</span></td>
-                <td>
-                  <b>${m.phone}</b>
-                  <div style="display:flex;gap:4px;margin-top:4px;flex-wrap:wrap;">
-                    <a href="tel:${m.phone}" class="btn btn-secondary btn-sm" style="padding:2px 6px;font-size:11px;" title="${t('call_worker')}">📞 Call</a>
-                    <a href="https://wa.me/91${m.phone}" target="_blank" class="btn btn-secondary btn-sm" style="padding:2px 6px;font-size:11px;background:#DCFCE7;color:#166534;" title="WhatsApp">💬 WA</a>
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="sendWorkerWelcomeGreetingPrompt('${m.name.replace(/'/g, "\\'")}', '${m.uid}', '${m.phone}', '${m.trade_type}')" style="padding:2px 6px;font-size:11px;background:#F0FDF4;color:#15803D;border:1px solid #BBF7D0;" title="Send WhatsApp Welcome Greeting">🎉 Greeting</button>
-                  </div>
+              <tr data-search="${(m.name + m.phone + (m.uid || '') + (m.trade_type || '') + (m.address || '')).toLowerCase()}" style="border-bottom:1px solid var(--border);cursor:pointer;" onclick="navigate('mechanic_detail', ${m.id})">
+                <td style="padding:16px 12px;vertical-align:top;font-weight:700;color:var(--primary);font-size:13.5px;">
+                  ${m.uid || ('MEC' + m.id)}
                 </td>
-                <td><b style="color:var(--primary);font-size:15px;">${m.available_points}</b>${m.recovery_points > 0 ? `<br><small style="color:var(--danger)">Recovery: ${m.recovery_points}</small>` : ''}</td>
-                <td>${m.lifetime_points}</td>
-                <td>${m.pending_bills_count > 0 ? `<span class="badge badge-pending">${m.pending_bills_count}</span>` : '0'}</td>
-                <td><span class="badge ${m.is_active ? 'badge-active' : 'badge-inactive'}">${m.is_active ? t('active') : t('inactive')}</span></td>
-                <td>
-                  <button class="btn btn-secondary btn-sm" onclick="navigate('mechanic_detail', ${m.id})">${t('profile')}</button>
-                  ${isAdmin ? `
-                    <button class="btn btn-secondary btn-sm" onclick="openResetMechanicPasswordModal(${m.id}, '${m.name.replace(/'/g, "\\'")}', '${m.uid}')" title="${t('reset_pw')}">🔑 ${t('reset_pw')}</button>
-                    <button class="btn btn-secondary btn-sm" onclick="toggleMechanicStatus(${m.id})">${m.is_active ? t('deactivate') : t('activate')}</button>
-                  ` : ''}
+                <td style="padding:16px 12px;vertical-align:top;">
+                  <div style="font-weight:700;color:var(--primary);font-size:14px;">${m.name}</div>
+                  ${m.address ? `<div style="font-size:12px;color:var(--text-muted);line-height:1.4;margin-top:2px;">${m.address}</div>` : ''}
+                </td>
+                <td style="padding:16px 12px;vertical-align:top;">
+                  <span class="badge" style="background:#E0E7FF;color:#3730A3;font-weight:600;padding:4px 10px;border-radius:99px;font-size:12px;display:inline-block;">
+                    ${m.trade_type}
+                  </span>
+                </td>
+                <td style="padding:16px 12px;vertical-align:top;font-weight:700;color:var(--primary);font-size:13.5px;white-space:nowrap;">
+                  ${m.phone}
                 </td>
               </tr>
             `).join('')}
@@ -3099,51 +3088,35 @@ async function renderCategoryWorkers(categoryType) {
       </div>
     </div>
 
-    <div class="card" style="padding:0;">
-      <div class="table-responsive">
-        <table id="cat-mechanics-table">
+    <div class="card" style="padding:0;overflow:hidden;border-radius:12px;margin-bottom:16px;">
+      <div class="table-responsive" style="border:none;border-radius:0;margin-bottom:0;">
+        <table id="cat-mechanics-table" style="width:100%;border-collapse:collapse;">
           <thead>
-            <tr>
-              <th>${t('th_user_id')}</th>
-              <th>${t('th_worker_name_click')}</th>
-              <th>${t('th_phone_contact')}</th>
-              <th>${t('th_address_shop')}</th>
-              <th>${t('th_avail_points')}</th>
-              <th>${t('th_lifetime_points')}</th>
-              <th>${t('th_pending_bills_count')}</th>
-              <th>${t('th_status')}</th>
-              <th>${t('th_action')}</th>
+            <tr style="background:#F8FAFC;border-bottom:1px solid var(--border);">
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--text-muted);width:15%;">ID</th>
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--text-muted);width:45%;">${t('full_name')}</th>
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--text-muted);width:20%;">${t('phone')}</th>
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--text-muted);width:20%;">${t('available_points')}</th>
             </tr>
           </thead>
           <tbody>
             ${mechanics.length === 0 ? `
-              <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text-muted);">${t('no_workers_cat', '', { cat: type })}</td></tr>
+              <tr><td colspan="4" style="text-align:center;padding:32px;color:var(--text-muted);">${t('no_workers_cat', '', { cat: type })}</td></tr>
             ` : mechanics.map(m => `
-              <tr data-search="${(m.name + m.phone + m.uid + m.trade_type + m.address).toLowerCase()}">
-                <td><b>${m.uid}</b></td>
-                <td>
-                  <a onclick="navigate('mechanic_detail', ${m.id})" style="color:var(--accent);font-weight:700;font-size:14px;cursor:pointer;text-decoration:underline;">
-                    ${m.name} ➔
-                  </a>
+              <tr data-search="${(m.name + m.phone + (m.uid || '') + (m.trade_type || '') + (m.address || '')).toLowerCase()}" style="border-bottom:1px solid var(--border);cursor:pointer;" onclick="navigate('mechanic_detail', ${m.id})">
+                <td style="padding:16px 12px;vertical-align:top;font-weight:700;color:var(--primary);font-size:13.5px;">
+                  ${m.uid || ('MEC' + m.id)}
                 </td>
-                <td>
-                  <b>${m.phone}</b>
-                  <div style="display:flex;gap:4px;margin-top:4px;flex-wrap:wrap;">
-                    <a href="tel:${m.phone}" class="btn btn-secondary btn-sm" style="padding:2px 6px;font-size:11px;" title="${t('call_worker')}">📞 Call</a>
-                    <a href="https://wa.me/91${m.phone}" target="_blank" class="btn btn-secondary btn-sm" style="padding:2px 6px;font-size:11px;background:#DCFCE7;color:#166534;" title="WhatsApp">💬 WA</a>
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="sendWorkerWelcomeGreetingPrompt('${m.name.replace(/'/g, "\\'")}', '${m.uid}', '${m.phone}', '${m.trade_type}')" style="padding:2px 6px;font-size:11px;background:#F0FDF4;color:#15803D;border:1px solid #BBF7D0;" title="Send WhatsApp Welcome Greeting">🎉 Greeting</button>
-                  </div>
+                <td style="padding:16px 12px;vertical-align:top;">
+                  <div style="font-weight:700;color:var(--primary);font-size:14px;">${m.name} ➔</div>
+                  ${m.address ? `<div style="font-size:12px;color:var(--text-muted);line-height:1.4;margin-top:2px;">${m.address}</div>` : ''}
                 </td>
-                <td><small style="color:var(--text-muted)">${m.address}</small></td>
-                <td>
+                <td style="padding:16px 12px;vertical-align:top;font-weight:700;color:var(--primary);font-size:13.5px;white-space:nowrap;">
+                  ${m.phone}
+                </td>
+                <td style="padding:16px 12px;vertical-align:top;">
                   <b style="color:var(--primary);font-size:15px;">${m.available_points}</b>
                   ${m.recovery_points > 0 ? `<br><small style="color:var(--danger)">${t('recovery_pending')}: ${m.recovery_points}</small>` : ''}
-                </td>
-                <td><b style="color:var(--success);">${m.lifetime_points}</b></td>
-                <td>${m.pending_bills_count > 0 ? `<span class="badge badge-pending">${m.pending_bills_count} ${t('pending')}</span>` : '<span style="color:var(--text-muted)">0</span>'}</td>
-                <td><span class="badge ${m.is_active ? 'badge-active' : 'badge-inactive'}">${m.is_active ? t('active') : t('inactive')}</span></td>
-                <td>
-                  <button class="btn btn-primary btn-sm" onclick="navigate('mechanic_detail', ${m.id})">${t('view_full_profile')}</button>
                 </td>
               </tr>
             `).join('')}
