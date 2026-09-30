@@ -191,7 +191,7 @@ function getMetaWhatsAppConfig() {
 }
 
 // Helper: Send WhatsApp Message via Official Meta Cloud API (graph.facebook.com)
-async function sendMetaWhatsAppMessage({ toPhone, messageText, templateName, templateParams = [] }) {
+async function sendMetaWhatsAppMessage({ toPhone, messageText, templateName, templateParams = [], templateLang = 'en_US' }) {
   const config = getMetaWhatsAppConfig();
   if (!config.enabled || !config.token || !config.phoneId) {
     return { sent: false, reason: 'unconfigured_or_disabled' };
@@ -212,7 +212,7 @@ async function sendMetaWhatsAppMessage({ toPhone, messageText, templateName, tem
       type: 'template',
       template: {
         name: templateName,
-        language: { code: 'en' },
+        language: { code: templateLang || (templateName === 'hello_world' ? 'en_US' : 'en') },
         components: templateParams.length > 0 ? [
           {
             type: 'body',
@@ -246,7 +246,13 @@ async function sendMetaWhatsAppMessage({ toPhone, messageText, templateName, tem
       return { sent: true, messageId: data.messages[0].id, recipient };
     } else {
       console.warn(`[Meta WhatsApp] API Error for +${recipient}:`, JSON.stringify(data));
-      return { sent: false, error: data.error?.message || JSON.stringify(data) };
+      let errorMsg = data.error?.message || JSON.stringify(data);
+      if (data.error?.code === 190) {
+        errorMsg = 'Meta Access Token expired or invalid. Please copy the fresh Access Token from your Meta Developer Dashboard (under Step 1. Try it out).';
+      } else if (data.error?.code === 131030) {
+        errorMsg = 'Recipient phone number is outside the 24-hour service window. Meta requires a registered Template message.';
+      }
+      return { sent: false, error: errorMsg, raw: data };
     }
   } catch (err) {
     console.error(`[Meta WhatsApp] Network error sending to +${recipient}:`, err.message);
@@ -1829,13 +1835,13 @@ const server = http.createServer(async (req, res) => {
         return sendError('Please enter a valid 10-digit mobile number for test send', 400);
       }
 
-      const testMsg = message || `🏪 *MAHABIR TRADERS - META WHATSAPP TEST*\n\nHello! This is a test notification from Mahabir Traders Loyalty System sent via Meta Cloud API at ${new Date().toLocaleTimeString('en-IN')}.\n\nYour API connection is active and working properly! ✅`;
-      
+      const tplName = templateName || 'hello_world';
       const result = await sendMetaWhatsAppMessage({
         toPhone: cleanPhone,
-        messageText: testMsg,
-        templateName: templateName || null,
-        templateParams: ['Test Admin', 'TEST001', 'Demo']
+        messageText: message || 'Hello from Mahabir Traders!',
+        templateName: tplName,
+        templateLang: tplName === 'hello_world' ? 'en_US' : 'en',
+        templateParams: tplName === 'hello_world' ? [] : ['Test Admin', 'TEST001', 'Demo']
       });
 
       logAudit(user.name, user.role, 'Test WhatsApp Meta API', `Test message to +91 ${cleanPhone}. Result: ${result.sent ? 'SUCCESS' : 'FAILED'}`, req);
@@ -1843,7 +1849,7 @@ const server = http.createServer(async (req, res) => {
       if (result.sent) {
         return sendJson({
           success: true,
-          message: `WhatsApp test message sent successfully to +${result.recipient}!`,
+          message: `WhatsApp test message sent successfully to +${result.recipient}! (Template: ${tplName})`,
           messageId: result.messageId
         });
       } else {
