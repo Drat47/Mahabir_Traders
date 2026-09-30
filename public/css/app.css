@@ -877,6 +877,7 @@ html, body {
   overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
   touch-action: manipulation;
+  font-size: 15px;
 }
 
 #app,
@@ -915,8 +916,8 @@ html, body {
   left: 0 !important;
   right: 0 !important;
   width: 100% !important;
-  height: 56px !important;
-  padding: env(safe-area-inset-top, 0px) 14px 0 14px !important;
+  height: 60px !important;
+  padding: env(safe-area-inset-top, 0px) 16px 0 16px !important;
   box-sizing: border-box !important;
   z-index: 40 !important;
   background: var(--primary) !important;
@@ -928,6 +929,35 @@ html, body {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15) !important;
 }
 
+.mobile-menu-btn {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border: none !important;
+  color: #fff !important;
+  font-size: 24px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  border-radius: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: background 0.15s ease !important;
+}
+
+.mobile-menu-btn:active {
+  background: rgba(255, 255, 255, 0.25) !important;
+  transform: scale(0.95) !important;
+}
+
+.mobile-brand-title {
+  font-size: 17px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.2px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
 /* App Content Scrollable Container */
 .app-container {
   flex: 1 !important;
@@ -936,7 +966,7 @@ html, body {
   width: 100% !important;
   display: flex !important;
   flex-direction: column !important;
-  padding-bottom: calc(72px + env(safe-area-inset-bottom, 12px)) !important;
+  padding-bottom: calc(78px + env(safe-area-inset-bottom, 12px)) !important;
   background: var(--bg-page) !important;
   -webkit-overflow-scrolling: touch !important;
 }
@@ -945,12 +975,18 @@ html, body {
 .main-content {
   flex: 1;
   width: 100%;
-  max-width: 800px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 12px 14px;
+  padding: 16px 16px;
   box-sizing: border-box;
   min-width: 0;
   overflow-x: hidden;
+}
+
+@media (min-width: 900px) {
+  .main-content {
+    max-width: 860px;
+  }
 }
 
 /* Fixed Bottom Navigation Bar */
@@ -960,7 +996,7 @@ html, body {
   left: 0 !important;
   right: 0 !important;
   width: 100% !important;
-  height: calc(58px + env(safe-area-inset-bottom, 8px)) !important;
+  height: calc(64px + env(safe-area-inset-bottom, 8px)) !important;
   padding-bottom: env(safe-area-inset-bottom, 8px) !important;
   background: #ffffff !important;
   border-top: 1px solid #E2E8F0 !important;
@@ -1011,7 +1047,7 @@ html, body {
   border-top-right-radius: 20px !important;
   max-height: 90vh !important;
   overflow-y: auto !important;
-  padding: 20px 16px !important;
+  padding: 22px 18px !important;
   margin: 0 !important;
   animation: slideUpMobile 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
@@ -1030,9 +1066,9 @@ html, body {
 /* Toast Container */
 #toast-container {
   position: fixed !important;
-  top: 66px !important;
-  left: 12px !important;
-  right: 12px !important;
+  top: 70px !important;
+  left: 14px !important;
+  right: 14px !important;
   max-width: 480px !important;
   margin: 0 auto !important;
   z-index: 200 !important;
@@ -1046,10 +1082,10 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 6px 2px;
+  padding: 8px 4px;
   color: #64748B;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
   text-decoration: none;
   transition: color 0.15s ease, transform 0.1s ease;
   user-select: none;
@@ -1060,19 +1096,19 @@ html, body {
 }
 .bottom-nav-item.active {
   color: var(--accent) !important;
-  font-weight: 700;
+  font-weight: 800;
 }
 .bottom-nav-icon {
-  font-size: 20px;
-  margin-bottom: 2px;
+  font-size: 22px;
+  margin-bottom: 3px;
 }
 
 .top-bar {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
 }
 
@@ -1080,62 +1116,93 @@ html, body {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 .top-bar .top-actions .btn {
   flex: 1;
-  min-width: 110px;
+  min-width: 120px;
   text-align: center;
   justify-content: center;
-  padding: 9px 12px;
-  font-size: 13px;
-  min-height: 40px;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 700;
+  min-height: 48px;
+  border-radius: 12px;
 }
 
 .page-title {
-  font-size: 19px;
+  font-size: 22px;
   font-weight: 800;
   letter-spacing: -0.3px;
+  color: var(--primary);
 }
 
 .card {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-  padding: 14px 12px;
+  padding: 18px 16px;
   border-radius: var(--radius-md);
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--primary);
 }
 
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr) !important;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 12px;
+  margin-bottom: 16px;
   width: 100%;
 }
 
 .stat-card {
-  padding: 10px 12px;
+  padding: 16px 14px;
   width: 100%;
   box-sizing: border-box;
-  border-radius: 10px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.stat-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 .stat-value {
-  font-size: 20px;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--primary);
+  margin: 6px 0 3px 0;
+  line-height: 1.15;
 }
 
 .form-row {
   display: grid;
   grid-template-columns: 1fr !important;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
 }
 
 .form-group {
   width: 100%;
   box-sizing: border-box;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .form-group input,
@@ -1144,27 +1211,32 @@ html, body {
   width: 100%;
   box-sizing: border-box;
   font-size: 16px !important; /* 16px prevents iOS Safari auto-zoom on mobile */
-  padding: 10px 12px;
-  min-height: 44px;
-  border-radius: 8px;
+  padding: 12px 14px;
+  min-height: 48px;
+  border-radius: 10px;
 }
 
 .btn {
-  padding: 10px 16px;
-  font-size: 14px;
-  min-height: 44px;
-  border-radius: 8px;
+  padding: 12px 18px;
+  font-size: 15px;
+  font-weight: 700;
+  min-height: 46px;
+  border-radius: 10px;
 }
 .btn-sm {
-  min-height: 32px;
-  padding: 5px 10px;
-  font-size: 12px;
+  min-height: 36px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 8px;
 }
 .btn-lg {
-  padding: 13px 18px;
-  font-size: 15px;
+  padding: 14px 20px;
+  font-size: 16px;
+  font-weight: 800;
   width: 100%;
-  min-height: 48px;
+  min-height: 52px;
+  border-radius: 12px;
 }
 
 /* Multi-column layouts collapse to fluid 100% single column on mobile */
@@ -1175,18 +1247,18 @@ html, body {
   display: grid;
   grid-template-columns: 1fr !important;
   width: 100%;
-  gap: 12px;
+  gap: 14px;
 }
 
 /* Auth Screens */
 .auth-container {
-  margin: 8px auto !important;
+  margin: 10px auto !important;
   padding: 4px !important;
   width: 100% !important;
 }
 .auth-card {
-  padding: 18px 14px !important;
-  border-radius: 14px !important;
+  padding: 22px 18px !important;
+  border-radius: 16px !important;
 }
 
 @keyframes slideUpMobile {
@@ -1202,6 +1274,29 @@ html, body {
   -webkit-overflow-scrolling: touch;
   overflow-x: auto;
   position: relative;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th, td {
+  padding: 14px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+th {
+  background: #F8FAFC;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary-light);
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 /* Sleek Scrollbar for Phone Frame */
