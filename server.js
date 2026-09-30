@@ -163,6 +163,97 @@ function buildWorkerWelcomeGreeting(name, uid, phone, tradeType = 'Worker') {
   };
 }
 
+// Helper: Get WhatsApp Meta Cloud API Configuration (Database settings prioritized, fallback to environment)
+function getMetaWhatsAppConfig() {
+  const dbSettings = {};
+  try {
+    const rows = db.prepare("SELECT key, value FROM settings WHERE key LIKE 'meta_wa_%'").all();
+    for (const r of rows) dbSettings[r.key] = r.value;
+  } catch (e) {}
+
+  const enabled = dbSettings.meta_wa_enabled === 'true' || process.env.META_WA_ENABLED === 'true';
+  const token = dbSettings.meta_wa_token || process.env.META_WA_ACCESS_TOKEN || '';
+  const phoneId = dbSettings.meta_wa_phone_id || process.env.META_WA_PHONE_NUMBER_ID || '';
+  const wabaId = dbSettings.meta_wa_waba_id || process.env.META_WA_WABA_ID || '';
+  const welcomeTemplate = dbSettings.meta_wa_template_welcome || process.env.META_WA_TEMPLATE_WELCOME || '';
+  const billTemplate = dbSettings.meta_wa_template_bill || process.env.META_WA_TEMPLATE_BILL || '';
+  const redemptionTemplate = dbSettings.meta_wa_template_redemption || process.env.META_WA_TEMPLATE_REDEMPTION || '';
+
+  return {
+    enabled,
+    token,
+    phoneId,
+    wabaId,
+    welcomeTemplate,
+    billTemplate,
+    redemptionTemplate
+  };
+}
+
+// Helper: Send WhatsApp Message via Official Meta Cloud API (graph.facebook.com)
+async function sendMetaWhatsAppMessage({ toPhone, messageText, templateName, templateParams = [] }) {
+  const config = getMetaWhatsAppConfig();
+  if (!config.enabled || !config.token || !config.phoneId) {
+    return { sent: false, reason: 'unconfigured_or_disabled' };
+  }
+
+  const rawPhone = (toPhone || '').replace(/[^0-9]/g, '');
+  if (!rawPhone || rawPhone.length < 10) {
+    return { sent: false, error: 'Invalid recipient phone number' };
+  }
+  const recipient = rawPhone.length === 10 ? `91${rawPhone}` : (rawPhone.startsWith('91') ? rawPhone : `91${rawPhone.slice(-10)}`);
+
+  let payload;
+  if (templateName) {
+    payload = {
+      messaging_product: 'whatsapp',
+      recipient_type: 'individual',
+      to: recipient,
+      type: 'template',
+      template: {
+        name: templateName,
+        language: { code: 'en' },
+        components: templateParams.length > 0 ? [
+          {
+            type: 'body',
+            parameters: templateParams.map(p => ({ type: 'text', text: String(p) }))
+          }
+        ] : []
+      }
+    };
+  } else {
+    payload = {
+      messaging_product: 'whatsapp',
+      recipient_type: 'individual',
+      to: recipient,
+      type: 'text',
+      text: { preview_url: false, body: messageText }
+    };
+  }
+
+  try {
+    const res = await fetch(`https://graph.facebook.com/v20.0/${config.phoneId}/messages`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${config.token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (res.ok && data.messages && data.messages.length > 0) {
+      console.log(`[Meta WhatsApp] Automated message delivered to +${recipient}. Message ID: ${data.messages[0].id}`);
+      return { sent: true, messageId: data.messages[0].id, recipient };
+    } else {
+      console.warn(`[Meta WhatsApp] API Error for +${recipient}:`, JSON.stringify(data));
+      return { sent: false, error: data.error?.message || JSON.stringify(data) };
+    }
+  } catch (err) {
+    console.error(`[Meta WhatsApp] Network error sending to +${recipient}:`, err.message);
+    return { sent: false, error: err.message };
+  }
+}
+
 // Helper: Parse Request JSON Body
 function parseJsonBody(req) {
   return new Promise((resolve, reject) => {
@@ -361,6 +452,14 @@ const server = http.createServer(async (req, res) => {
       addNotification(0, `👷 New ${trade} worker registered: ${name.trim()} (${cleanPhone}, ${uid})`);
 
       const welcomeGreeting = buildWorkerWelcomeGreeting(name.trim(), uid, cleanPhone, trade);
+
+      // Automated WhatsApp dispatch via Meta Cloud API (if configured)
+      sendMetaWhatsAppMessage({
+        toPhone: cleanPhone,
+        messageText: welcomeGreeting.messageText,
+        templateName: getMetaWhatsAppConfig().welcomeTemplate || null,
+        templateParams: [name.trim(), uid, trade]
+      }).catch(err => console.error('[Auto WhatsApp Error]', err));
 
       return sendJson({
         success: true,
@@ -614,6 +713,15 @@ const server = http.createServer(async (req, res) => {
 
       logAudit(user.name, user.role, 'Add Mechanic', `Registered new mechanic ${name} (${uid})`, req);
       const welcomeGreeting = buildWorkerWelcomeGreeting(name.trim(), uid.trim(), cleanPhone, trade_type.trim());
+
+      // Automated WhatsApp dispatch via Meta Cloud API (if configured)
+      sendMetaWhatsAppMessage({
+        toPhone: cleanPhone,
+        messageText: welcomeGreeting.messageText,
+        templateName: getMetaWhatsAppConfig().welcomeTemplate || null,
+        templateParams: [name.trim(), uid.trim(), trade_type.trim()]
+      }).catch(err => console.error('[Auto WhatsApp Error]', err));
+
       return sendJson({ success: true, id: mechId, message: 'Mechanic registered successfully', welcomeGreeting });
     }
 
@@ -932,6 +1040,14 @@ const server = http.createServer(async (req, res) => {
         const updatedMech = db.prepare("SELECT * FROM mechanics WHERE id = ?").get(purchase.mechanic_id);
         purchase.items = items;
         const notification = buildWorkerBillNotification(purchase, updatedMech, pts, 'APPROVED');
+
+        // Automated WhatsApp dispatch via Meta Cloud API (if configured)
+        sendMetaWhatsAppMessage({
+          toPhone: updatedMech.phone,
+          messageText: notification.messageText,
+          templateName: getMetaWhatsAppConfig().billTemplate || null,
+          templateParams: [updatedMech.name, purchase.id, pts, updatedMech.available_points]
+        }).catch(err => console.error('[Auto WhatsApp Error]', err));
 
         addNotification(purchase.mechanic_id, `Your purchase (Bill #${id} - ₹${purchase.total_amount.toLocaleString('en-IN')}) was approved! You earned +${pts} points.`);
         logAudit(user.name, user.role, 'Approve Purchase', `Approved Bill #${id} for ${mech.name} (+${pts} pts)`, req);
@@ -1411,6 +1527,18 @@ const server = http.createServer(async (req, res) => {
       if (approve) {
         db.prepare("UPDATE redemptions SET status = 'Approved', decided_by = ?, decided_at = ? WHERE id = ?")
           .run(user.name, today, id);
+        
+        const mech = db.prepare("SELECT * FROM mechanics WHERE id = ?").get(red.mechanic_id);
+        if (mech) {
+          const redMsg = `🏪 *MAHABIR TRADERS - REWARD APPROVED!* 🎁\n\nHello *${mech.name}*,\nCongratulations! Your redemption request for *${red.reward_name}* (${red.points} Points) has been *APPROVED*!\n\nYour gift is ready for pickup/dispatch at Mahabir Traders showroom.\n\n⭐ *Available Balance:* ${mech.available_points} Points\n\nThank you for partnering with Mahabir Traders!`;
+          sendMetaWhatsAppMessage({
+            toPhone: mech.phone,
+            messageText: redMsg,
+            templateName: getMetaWhatsAppConfig().redemptionTemplate || null,
+            templateParams: [mech.name, red.reward_name, red.points, mech.available_points]
+          }).catch(err => console.error('[Auto WhatsApp Error]', err));
+        }
+
         addNotification(red.mechanic_id, `Your redemption for "${red.reward_name}" was approved! Prepare for delivery.`);
         logAudit(user.name, user.role, 'Approve Redemption', `Approved redemption #${id} (${red.reward_name})`, req);
       } else {
@@ -1642,6 +1770,89 @@ const server = http.createServer(async (req, res) => {
           role: 'admin'
         }
       });
+    }
+
+    // 16c. Admin: Get WhatsApp Meta Cloud API Config
+    if (pathname === '/api/admin/whatsapp/config' && req.method === 'GET') {
+      const user = authenticate(req);
+      if (!user || user.role !== 'admin') return sendError('Forbidden', 403);
+
+      const config = getMetaWhatsAppConfig();
+      // Mask token for security
+      const maskedToken = config.token ? `${config.token.slice(0, 8)}...${config.token.slice(-6)}` : '';
+      return sendJson({
+        config: {
+          enabled: config.enabled,
+          phoneId: config.phoneId,
+          wabaId: config.wabaId,
+          hasToken: !!config.token,
+          maskedToken,
+          welcomeTemplate: config.welcomeTemplate,
+          billTemplate: config.billTemplate,
+          redemptionTemplate: config.redemptionTemplate
+        }
+      });
+    }
+
+    // 16d. Admin: Save WhatsApp Meta Cloud API Config
+    if (pathname === '/api/admin/whatsapp/config' && req.method === 'POST') {
+      const user = authenticate(req);
+      if (!user || user.role !== 'admin') return sendError('Forbidden', 403);
+
+      const body = await parseJsonBody(req);
+      const { enabled, phoneId, token, wabaId, welcomeTemplate, billTemplate, redemptionTemplate } = body;
+
+      db.prepare("INSERT INTO settings (key, value) VALUES ('meta_wa_enabled', ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run(enabled ? 'true' : 'false');
+      db.prepare("INSERT INTO settings (key, value) VALUES ('meta_wa_phone_id', ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run((phoneId || '').trim());
+      if (token && token.trim() && !token.includes('...')) {
+        db.prepare("INSERT INTO settings (key, value) VALUES ('meta_wa_token', ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run(token.trim());
+      }
+      db.prepare("INSERT INTO settings (key, value) VALUES ('meta_wa_waba_id', ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run((wabaId || '').trim());
+      db.prepare("INSERT INTO settings (key, value) VALUES ('meta_wa_template_welcome', ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run((welcomeTemplate || '').trim());
+      db.prepare("INSERT INTO settings (key, value) VALUES ('meta_wa_template_bill', ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run((billTemplate || '').trim());
+      db.prepare("INSERT INTO settings (key, value) VALUES ('meta_wa_template_redemption', ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run((redemptionTemplate || '').trim());
+
+      logAudit(user.name, user.role, 'Update WhatsApp Meta API Config', `WhatsApp API settings updated (Enabled: ${enabled ? 'YES' : 'NO'}, Phone ID: ${phoneId})`, req);
+      return sendJson({ success: true, message: 'WhatsApp Meta API settings saved successfully!' });
+    }
+
+    // 16e. Admin: Live Test Send WhatsApp Message via Meta Cloud API
+    if (pathname === '/api/admin/whatsapp/test' && req.method === 'POST') {
+      const user = authenticate(req);
+      if (!user || user.role !== 'admin') return sendError('Forbidden', 403);
+
+      const body = await parseJsonBody(req);
+      const { testPhone, message, templateName } = body;
+
+      const cleanPhone = (testPhone || '').replace(/[^0-9]/g, '');
+      if (!cleanPhone || cleanPhone.length < 10) {
+        return sendError('Please enter a valid 10-digit mobile number for test send', 400);
+      }
+
+      const testMsg = message || `🏪 *MAHABIR TRADERS - META WHATSAPP TEST*\n\nHello! This is a test notification from Mahabir Traders Loyalty System sent via Meta Cloud API at ${new Date().toLocaleTimeString('en-IN')}.\n\nYour API connection is active and working properly! ✅`;
+      
+      const result = await sendMetaWhatsAppMessage({
+        toPhone: cleanPhone,
+        messageText: testMsg,
+        templateName: templateName || null,
+        templateParams: ['Test Admin', 'TEST001', 'Demo']
+      });
+
+      logAudit(user.name, user.role, 'Test WhatsApp Meta API', `Test message to +91 ${cleanPhone}. Result: ${result.sent ? 'SUCCESS' : 'FAILED'}`, req);
+
+      if (result.sent) {
+        return sendJson({
+          success: true,
+          message: `WhatsApp test message sent successfully to +${result.recipient}!`,
+          messageId: result.messageId
+        });
+      } else {
+        return sendJson({
+          success: false,
+          error: result.error || result.reason || 'Failed to send test message via Meta API. Please check Phone Number ID and Access Token.',
+          details: result
+        }, 400);
+      }
     }
 
     /* =========================================================================

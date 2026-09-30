@@ -5146,6 +5146,14 @@ async function renderSettingsView() {
   const isAdmin = AppState.user && AppState.user.role === 'admin';
   const net = await API.get('/api/system/network-info');
 
+  let waConfig = { enabled: false, phoneId: '', wabaId: '', maskedToken: '', hasToken: false, welcomeTemplate: '', billTemplate: '', redemptionTemplate: '' };
+  if (isAdmin) {
+    try {
+      const waRes = await API.get('/api/admin/whatsapp/config');
+      if (waRes && waRes.config) waConfig = waRes.config;
+    } catch (e) {}
+  }
+
   main.innerHTML = `
     <div class="top-bar">
       <div>
@@ -5269,6 +5277,96 @@ async function renderSettingsView() {
           </div>
         </form>
       </div>
+
+      <!-- WhatsApp Meta Cloud API Configuration Card -->
+      <div class="card" style="margin-bottom:20px;max-width:720px;">
+        <div class="card-header" style="border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:16px;">
+          <div>
+            <div class="card-title" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span>💬 Official WhatsApp Meta Cloud API Integration</span>
+              <span class="badge ${waConfig.enabled ? 'badge-approved' : 'badge-inactive'}" style="font-size:11px;">
+                ${waConfig.enabled ? '🟢 Auto-Dispatch Enabled' : '⚪ Disabled (wa.me Manual Mode)'}
+              </span>
+            </div>
+            <p style="font-size:12px;color:var(--text-muted);margin-top:2px;">
+              Directly send automated WhatsApp notifications to registered workers on registration, bill verification, and gift claims.
+            </p>
+          </div>
+        </div>
+
+        <form onsubmit="handleWhatsAppConfigSubmit(event)">
+          <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+            <div>
+              <div style="font-size:13px;font-weight:700;color:#166534;">Automated WhatsApp Server Dispatch</div>
+              <small style="color:#15803D;font-size:11.5px;">When enabled, system will automatically send WhatsApp messages through Meta Graph API.</small>
+            </div>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:0;font-weight:700;color:var(--primary);">
+              <input type="checkbox" id="meta-wa-enabled" ${waConfig.enabled ? 'checked' : ''} style="width:18px;height:18px;cursor:pointer;">
+              <span>Enable Meta API</span>
+            </label>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group" style="flex:1;">
+              <label>Phone Number ID <span style="color:var(--danger)">*</span></label>
+              <input type="text" id="meta-wa-phone-id" value="${waConfig.phoneId || ''}" placeholder="e.g. 104829104819201" autocomplete="off">
+              <small style="color:var(--text-muted);font-size:11px;">From Meta Developer App -> WhatsApp -> API Setup</small>
+            </div>
+            <div class="form-group" style="flex:1;">
+              <label>WhatsApp Business Account ID (WABA ID)</label>
+              <input type="text" id="meta-wa-waba-id" value="${waConfig.wabaId || ''}" placeholder="e.g. 193810293810293" autocomplete="off">
+              <small style="color:var(--text-muted);font-size:11px;">Your WhatsApp Business Account ID</small>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Permanent System User Access Token <span style="color:var(--danger)">*</span></label>
+            <input type="password" id="meta-wa-token" value="${waConfig.maskedToken || ''}" placeholder="${waConfig.hasToken ? 'Token configured (Enter new token only to update)' : 'EAAG... Paste Permanent Access Token'}" autocomplete="off">
+            <small style="color:var(--text-muted);font-size:11px;">Generated from Meta Business Manager -> System Users with <code>whatsapp_business_messaging</code> permission.</small>
+          </div>
+
+          <!-- Message Templates (Optional) -->
+          <div style="background:#F8FAFC;border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin:16px 0;">
+            <div style="font-weight:700;font-size:12.5px;color:var(--primary);margin-bottom:4px;">
+              📋 Meta Approved Message Templates (Optional)
+            </div>
+            <p style="font-size:11.5px;color:var(--text-muted);margin-bottom:12px;">
+              Leave empty to send direct standard text messages, or enter your approved Meta template names.
+            </p>
+            <div class="form-row">
+              <div class="form-group" style="flex:1;margin-bottom:8px;">
+                <label style="font-size:11px;">Welcome Template Name</label>
+                <input type="text" id="meta-wa-template-welcome" value="${waConfig.welcomeTemplate || ''}" placeholder="e.g. worker_welcome_greeting">
+              </div>
+              <div class="form-group" style="flex:1;margin-bottom:8px;">
+                <label style="font-size:11px;">Bill Credit Template Name</label>
+                <input type="text" id="meta-wa-template-bill" value="${waConfig.billTemplate || ''}" placeholder="e.g. points_credit_alert">
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;gap:8px;">
+            <button type="submit" class="btn btn-primary" id="save-wa-config-btn">
+              💾 Save WhatsApp API Settings
+            </button>
+          </div>
+        </form>
+
+        <!-- Live Meta WhatsApp API Test Tool -->
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);">
+          <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+            <span>🧪 Live Connection Test</span>
+            <span style="font-size:11px;font-weight:normal;color:var(--text-muted);">(Send instant test message to verify credentials)</span>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <input type="tel" id="meta-wa-test-phone" placeholder="10-digit mobile number to test" pattern="[0-9]{10}" maxlength="10" style="flex:1;min-width:200px;">
+            <button type="button" class="btn btn-success" id="meta-wa-test-btn" onclick="handleWhatsAppTestSend()">
+              🚀 Send Test WhatsApp
+            </button>
+          </div>
+          <div id="meta-wa-test-result" style="margin-top:10px;font-size:12px;display:none;"></div>
+        </div>
+      </div>
     ` : ''}
 
     <!-- System & Network Info Card -->
@@ -5340,6 +5438,82 @@ async function handleAdminCredentialsSubmit(e) {
   } catch (err) {
     btn.disabled = false;
     btn.textContent = '💾 Save & Update Credentials';
+  }
+}
+
+async function handleWhatsAppConfigSubmit(e) {
+  e.preventDefault();
+  const enabled = document.getElementById('meta-wa-enabled').checked;
+  const phoneId = document.getElementById('meta-wa-phone-id').value.trim();
+  const wabaId = document.getElementById('meta-wa-waba-id').value.trim();
+  const token = document.getElementById('meta-wa-token').value.trim();
+  const welcomeTemplate = document.getElementById('meta-wa-template-welcome').value.trim();
+  const billTemplate = document.getElementById('meta-wa-template-bill').value.trim();
+  const btn = document.getElementById('save-wa-config-btn');
+
+  if (enabled && !phoneId) {
+    return showToast('Please enter your Meta Phone Number ID', 'error');
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Saving Settings...';
+
+  try {
+    const res = await API.post('/api/admin/whatsapp/config', {
+      enabled,
+      phoneId,
+      wabaId,
+      token: token || undefined,
+      welcomeTemplate,
+      billTemplate
+    });
+    showToast(res.message || 'WhatsApp Meta API configuration saved!', 'success');
+    renderSettingsView();
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = '💾 Save WhatsApp API Settings';
+  }
+}
+
+async function handleWhatsAppTestSend() {
+  const phoneInput = document.getElementById('meta-wa-test-phone');
+  const resultBox = document.getElementById('meta-wa-test-result');
+  const btn = document.getElementById('meta-wa-test-btn');
+  const phone = phoneInput ? phoneInput.value.trim().replace(/[^0-9]/g, '') : '';
+
+  if (!phone || phone.length !== 10) {
+    return showToast('Please enter a valid 10-digit mobile number to test', 'error');
+  }
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Sending...';
+  if (resultBox) {
+    resultBox.style.display = 'block';
+    resultBox.style.background = '#EFF6FF';
+    resultBox.style.color = '#1E40AF';
+    resultBox.style.padding = '8px 12px';
+    resultBox.style.borderRadius = 'var(--radius-sm)';
+    resultBox.innerHTML = 'Connecting to Meta WhatsApp Cloud API...';
+  }
+
+  try {
+    const res = await API.post('/api/admin/whatsapp/test', { testPhone: phone });
+    btn.disabled = false;
+    btn.textContent = '🚀 Send Test WhatsApp';
+    if (resultBox) {
+      resultBox.style.background = '#F0FDF4';
+      resultBox.style.color = '#166534';
+      resultBox.innerHTML = `✅ <b>Success!</b> Message dispatched to +91 ${phone}. (Meta ID: ${res.messageId || 'Delivered'})`;
+    }
+    showToast(`Test message sent successfully to +91 ${phone}!`, 'success');
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = '🚀 Send Test WhatsApp';
+    if (resultBox) {
+      resultBox.style.background = '#FEF2F2';
+      resultBox.style.color = '#991B1B';
+      resultBox.innerHTML = `❌ <b>Failed:</b> ${err.message || 'Could not deliver test message. Check Token & Phone ID.'}`;
+    }
   }
 }
 
