@@ -1306,8 +1306,10 @@ let activeAuthTab = 'login';
 function renderLoginView(tab = 'login', prefillPhone = '') {
   activeAuthTab = tab;
   const main = document.getElementById('main-content');
-  document.getElementById('sidebar-slot').innerHTML = '';
-  document.getElementById('bottom-nav-slot').innerHTML = '';
+  const sidebar = document.getElementById('sidebar-slot');
+  if (sidebar) sidebar.innerHTML = '';
+  const bottomNav = document.getElementById('bottom-nav-slot');
+  if (bottomNav) bottomNav.innerHTML = '';
   const mobileHeader = document.getElementById('mobile-header-slot');
   if (mobileHeader) mobileHeader.innerHTML = '';
   const mobileDrawer = document.getElementById('mobile-drawer-slot');
