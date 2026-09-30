@@ -902,9 +902,9 @@ input:focus, select:focus, textarea:focus {
   .phone-frame {
     width: 100%;
     max-width: 430px;
-    height: 92vh;
-    max-height: 890px;
-    min-height: 740px;
+    height: 94vh;
+    max-height: 900px;
+    min-height: 520px;
     background: #F8FAFC;
     border-radius: 38px;
     border: 11px solid #1E293B;
