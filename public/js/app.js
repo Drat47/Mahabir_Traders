@@ -1557,38 +1557,92 @@ async function handleSignUpSubmit(e) {
   }
 }
 
-// Welcome Greeting Modal for newly registered worker (Option A: Instant WhatsApp Greeting)
+// Welcome Greeting Modal for newly registered worker (1-Tap WhatsApp Greeting & Onboarding)
 function showWorkerWelcomeModal(welcomeData, onProceed) {
   if (!welcomeData) {
     if (onProceed) onProceed();
     return;
   }
 
+  const isWorker = AppState.user && AppState.user.role === 'mechanic';
   const modalRoot = document.getElementById('modal-root');
+  
+  const workerWhatsAppMsg = `Namaste Mahabir Traders! I have registered as a new worker on your rewards app.\n\n👤 Name: ${welcomeData.workerName}\n🆔 User ID: ${welcomeData.uid}\n📱 Mobile: ${welcomeData.workerPhone}\n🛠️ Trade: ${welcomeData.tradeType || 'Worker'}\n\nPlease connect my account for points alerts & updates.`;
+  const workerHelplineUrl = `https://wa.me/919955594571?text=${encodeURIComponent(workerWhatsAppMsg)}`;
+  const workerSelfUrl = `https://wa.me/91${welcomeData.workerPhone}?text=${encodeURIComponent(welcomeData.messageText)}`;
+
   modalRoot.innerHTML = `
     <div class="modal-backdrop" onclick="closeWelcomeModal()">
-      <div class="modal-content" style="max-width:520px;text-align:center;" onclick="event.stopPropagation()">
+      <div class="modal-content" style="max-width:540px;text-align:center;" onclick="event.stopPropagation()">
         
-        <div style="font-size:48px;margin-bottom:8px;">🎉</div>
-        <h2 style="font-size:22px;font-weight:800;color:var(--primary);margin:0 0 4px 0;">Welcome to Mahabir Traders!</h2>
-        <p style="font-size:13.5px;color:var(--text-muted);margin:0 0 16px 0;">
-          Account registered successfully for <b>${welcomeData.workerName}</b> (User ID: <b>${welcomeData.uid}</b>)
+        <div style="font-size:44px;margin-bottom:6px;">🎉</div>
+        <h2 style="font-size:22px;font-weight:800;color:var(--primary);margin:0 0 6px 0;">
+          ${isWorker ? 'Welcome to Mahabir Traders!' : 'Worker Registered Successfully!'}
+        </h2>
+        <p style="font-size:13.5px;color:var(--text-muted);margin:0 0 14px 0;">
+          ${isWorker 
+            ? `Your rewards profile is ready. Connect on WhatsApp to get points alerts!` 
+            : `Account created for <b>${welcomeData.workerName}</b> (${welcomeData.uid}). Send them their official welcome greeting:`}
         </p>
 
+        <!-- Summary Chip Grid -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:14px;text-align:left;font-size:12.5px;">
+          <div><b>👤 Name:</b> ${welcomeData.workerName}</div>
+          <div><b>🆔 User ID:</b> <span style="color:var(--primary);font-weight:700;">${welcomeData.uid}</span></div>
+          <div><b>📱 Mobile:</b> +91 ${welcomeData.workerPhone}</div>
+          <div><b>🛠️ Trade:</b> ${welcomeData.tradeType || 'Worker'}</div>
+        </div>
+
         <!-- WhatsApp Greeting Card Preview -->
-        <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:var(--radius-sm);padding:14px;text-align:left;margin-bottom:16px;font-size:12.5px;line-height:1.6;color:#166534;white-space:pre-line;max-height:200px;overflow-y:auto;">
+        <div style="text-align:left;margin-bottom:14px;">
+          <div style="font-size:11.5px;font-weight:700;color:#15803D;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">
+            💬 Official WhatsApp Welcome Message Preview:
+          </div>
+          <div id="worker-welcome-preview" style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:var(--radius-sm);padding:12px;font-size:12.5px;line-height:1.55;color:#166534;white-space:pre-line;max-height:180px;overflow-y:auto;font-family:inherit;">
 ${welcomeData.messageText}
+          </div>
         </div>
 
         <div style="display:flex;flex-direction:column;gap:10px;">
-          <a href="${welcomeData.whatsappUrl}" target="_blank" class="btn btn-primary btn-lg" style="background:#25D366;color:#ffffff;border:none;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:15px;text-decoration:none;" onclick="handleWelcomeWhatsAppClicked()">
-            <span>💬</span>
-            <span>Send Welcome Greeting on WhatsApp</span>
-          </a>
+          ${isWorker ? `
+            <a href="${workerHelplineUrl}" target="_blank" class="btn btn-primary btn-lg" style="background:#25D366;color:#ffffff;border:none;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:15px;text-decoration:none;" onclick="handleWelcomeWhatsAppClicked()">
+              <span>💬</span>
+              <span>Connect with Store Helpline on WhatsApp (+91 9955594571)</span>
+            </a>
 
-          <button type="button" class="btn btn-secondary btn-lg" onclick="closeWelcomeModal()">
-            Continue to Dashboard ➔
-          </button>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <a href="${workerSelfUrl}" target="_blank" class="btn btn-secondary" style="font-size:12.5px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;" onclick="handleWelcomeWhatsAppClicked()">
+                <span>📲</span>
+                <span>Send to My WhatsApp</span>
+              </a>
+              <button type="button" class="btn btn-secondary" style="font-size:12.5px;" onclick="copyWelcomeGreetingText()">
+                📋 Copy Details
+              </button>
+            </div>
+
+            <button type="button" class="btn btn-secondary btn-lg" style="margin-top:4px;" onclick="closeWelcomeModal()">
+              Enter My Dashboard ➔
+            </button>
+          ` : `
+            <a href="${welcomeData.whatsappUrl}" target="_blank" class="btn btn-primary btn-lg" style="background:#25D366;color:#ffffff;border:none;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:15px;text-decoration:none;" onclick="handleWelcomeWhatsAppClicked()">
+              <span>💬</span>
+              <span>Send Welcome Greeting to Worker (+91 ${welcomeData.workerPhone})</span>
+            </a>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <a href="${welcomeData.smsUrl}" class="btn btn-secondary" style="font-size:12.5px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;">
+                <span>📨</span>
+                <span>Send via SMS</span>
+              </a>
+              <button type="button" class="btn btn-secondary" style="font-size:12.5px;" onclick="copyWelcomeGreetingText()">
+                📋 Copy Message Text
+              </button>
+            </div>
+
+            <button type="button" class="btn btn-secondary btn-lg" style="margin-top:4px;" onclick="closeWelcomeModal()">
+              Done / Back to Directory ➔
+            </button>
+          `}
         </div>
 
       </div>
@@ -1600,6 +1654,41 @@ ${welcomeData.messageText}
 
 function handleWelcomeWhatsAppClicked() {
   showToast('Opening WhatsApp with greeting...', 'info');
+}
+
+function copyWelcomeGreetingText() {
+  const el = document.getElementById('worker-welcome-preview');
+  if (!el) return;
+  navigator.clipboard.writeText(el.innerText).then(() => {
+    showToast('Welcome message copied to clipboard!', 'success');
+  }).catch(() => {
+    showToast('Failed to copy', 'error');
+  });
+}
+
+function sendWorkerWelcomeGreetingPrompt(name, uid, phone, tradeType) {
+  const cleanPhone = (phone || '').replace(/[^0-9]/g, '');
+  const text = `🏪 *MAHABIR TRADERS - WELCOME ABOARD!* 🏪\n\n` +
+    `Namaste *${name}*,\n` +
+    `Welcome to the *Mahabir Traders* Mechanic & Worker Loyalty Rewards Program!\n\n` +
+    `👤 *Your User ID:* ${uid}\n` +
+    `📱 *Registered Mobile:* ${cleanPhone}\n` +
+    `🛠️ *Trade Category:* ${tradeType || 'Worker'}\n` +
+    `🎁 *Starting Balance:* 0 Points\n\n` +
+    `Submit customer purchase bills whenever you buy or refer materials from Mahabir Traders to earn instant reward points and claim exciting gifts!\n\n` +
+    `📍 *Store Location:* Block Road, Rosera, Samastipur\n` +
+    `📞 *Helpline / Orders:* +91 9955594571 / 8949492740\n\n` +
+    `Thank you for partnering with Mahabir Traders!`;
+
+  showWorkerWelcomeModal({
+    workerName: name,
+    workerPhone: cleanPhone,
+    uid: uid,
+    tradeType: tradeType || 'Worker',
+    whatsappUrl: `https://wa.me/91${cleanPhone}?text=${encodeURIComponent(text)}`,
+    smsUrl: `sms:+91${cleanPhone}?body=${encodeURIComponent(text)}`,
+    messageText: text
+  });
 }
 
 function closeWelcomeModal() {
@@ -2845,7 +2934,14 @@ async function renderMechanicsList() {
                 <td><b>${m.uid}</b></td>
                 <td><b>${m.name}</b><br><small style="color:var(--text-muted)">${m.address}</small></td>
                 <td><span class="badge" style="background:#E2E8F0;">${m.trade_type}</span></td>
-                <td>${m.phone}</td>
+                <td>
+                  <b>${m.phone}</b>
+                  <div style="display:flex;gap:4px;margin-top:4px;flex-wrap:wrap;">
+                    <a href="tel:${m.phone}" class="btn btn-secondary btn-sm" style="padding:2px 6px;font-size:11px;" title="${t('call_worker')}">📞 Call</a>
+                    <a href="https://wa.me/91${m.phone}" target="_blank" class="btn btn-secondary btn-sm" style="padding:2px 6px;font-size:11px;background:#DCFCE7;color:#166534;" title="WhatsApp">💬 WA</a>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="sendWorkerWelcomeGreetingPrompt('${m.name.replace(/'/g, "\\'")}', '${m.uid}', '${m.phone}', '${m.trade_type}')" style="padding:2px 6px;font-size:11px;background:#F0FDF4;color:#15803D;border:1px solid #BBF7D0;" title="Send WhatsApp Welcome Greeting">🎉 Greeting</button>
+                  </div>
+                </td>
                 <td><b style="color:var(--primary);font-size:15px;">${m.available_points}</b>${m.recovery_points > 0 ? `<br><small style="color:var(--danger)">Recovery: ${m.recovery_points}</small>` : ''}</td>
                 <td>${m.lifetime_points}</td>
                 <td>${m.pending_bills_count > 0 ? `<span class="badge badge-pending">${m.pending_bills_count}</span>` : '0'}</td>
@@ -3094,9 +3190,10 @@ async function renderCategoryWorkers(categoryType) {
                 </td>
                 <td>
                   <b>${m.phone}</b>
-                  <div style="display:flex;gap:4px;margin-top:4px;">
-                    <a href="tel:${m.phone}" class="btn btn-secondary btn-sm" style="padding:2px 6px;font-size:11px;" title="${t('call_worker')}">📞 ${t('call_worker')}</a>
+                  <div style="display:flex;gap:4px;margin-top:4px;flex-wrap:wrap;">
+                    <a href="tel:${m.phone}" class="btn btn-secondary btn-sm" style="padding:2px 6px;font-size:11px;" title="${t('call_worker')}">📞 Call</a>
                     <a href="https://wa.me/91${m.phone}" target="_blank" class="btn btn-secondary btn-sm" style="padding:2px 6px;font-size:11px;background:#DCFCE7;color:#166534;" title="WhatsApp">💬 WA</a>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="sendWorkerWelcomeGreetingPrompt('${m.name.replace(/'/g, "\\'")}', '${m.uid}', '${m.phone}', '${m.trade_type}')" style="padding:2px 6px;font-size:11px;background:#F0FDF4;color:#15803D;border:1px solid #BBF7D0;" title="Send WhatsApp Welcome Greeting">🎉 Greeting</button>
                   </div>
                 </td>
                 <td><small style="color:var(--text-muted)">${m.address}</small></td>
@@ -3161,9 +3258,10 @@ async function renderMechanicDetail(mechanicId) {
           <b>${t('user_id_label')}:</b> ${m.uid} · <b>${t('phone')}:</b> ${m.phone} · <b>${t('address')}:</b> ${m.address}
         </p>
       </div>
-      <div class="top-actions">
+      <div class="top-actions" style="display:flex;gap:6px;flex-wrap:wrap;">
         <a href="tel:${m.phone}" class="btn btn-secondary btn-sm">📞 ${t('call_worker')}</a>
         <a href="https://wa.me/91${m.phone}" target="_blank" class="btn btn-secondary btn-sm" style="background:#DCFCE7;color:#166534;">💬 ${t('whatsapp')}</a>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="sendWorkerWelcomeGreetingPrompt('${m.name.replace(/'/g, "\\'")}', '${m.uid}', '${m.phone}', '${m.trade_type}')" style="background:#F0FDF4;color:#15803D;border:1px solid #BBF7D0;font-weight:600;">🎉 Send Welcome Greeting</button>
         ${isAdmin ? `
           <button class="btn btn-secondary btn-sm" onclick="openResetMechanicPasswordModal(${m.id}, '${m.name.replace(/'/g, "\\'")}', '${m.uid}')">${t('reset_pw_btn')}</button>
           <button class="btn btn-primary btn-sm" onclick="openAdjustPointsModal(${m.id}, '${m.name}')">${t('adjust_points_btn')}</button>
