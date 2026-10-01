@@ -1000,19 +1000,15 @@ function navigate(view, subId = null) {
 function renderShell() {
   const app = document.getElementById('app');
   app.innerHTML = `
-    <div class="app-layout" id="app-layout">
+    <div id="toast-container"></div>
+    <div id="modal-root"></div>
+    <div id="mobile-header-slot"></div>
+    <div id="mobile-drawer-slot"></div>
+    <div class="app-container" id="app-container">
       <aside id="sidebar-slot" class="sidebar"></aside>
-      <div class="app-main-area">
-        <div id="toast-container"></div>
-        <div id="modal-root"></div>
-        <div id="mobile-header-slot"></div>
-        <div id="mobile-drawer-slot"></div>
-        <div class="app-container" id="app-container">
-          <main class="main-content" id="main-content"></main>
-        </div>
-        <nav class="bottom-nav" id="bottom-nav-slot"></nav>
-      </div>
+      <main class="main-content" id="main-content"></main>
     </div>
+    <nav class="bottom-nav" id="bottom-nav-slot"></nav>
   `;
 }
 
