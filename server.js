@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
 const crypto = require('node:crypto');
+const webpush = require('web-push');
 const { db, initDatabase } = require('./database.js');
 
 const PORT = process.env.PORT || 3000;
@@ -13,6 +14,42 @@ const PUBLIC_DIR = path.join(__dirname, 'public');
 // Ensure directories exist
 if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 if (!fs.existsSync(PUBLIC_DIR)) fs.mkdirSync(PUBLIC_DIR, { recursive: true });
+
+// Web Push VAPID Key Initialization
+function getVapidKeys() {
+  let pub = null;
+  let priv = null;
+  try {
+    const pubRow = db.prepare("SELECT value FROM settings WHERE key = 'vapid_public_key'").get();
+    const privRow = db.prepare("SELECT value FROM settings WHERE key = 'vapid_private_key'").get();
+    if (pubRow && privRow && pubRow.value && privRow.value) {
+      pub = pubRow.value;
+      priv = privRow.value;
+    }
+  } catch (e) {}
+
+  if (!pub || !priv) {
+    const generated = webpush.generateVAPIDKeys();
+    pub = generated.publicKey;
+    priv = generated.privateKey;
+    try {
+      db.prepare("INSERT INTO settings (key, value) VALUES ('vapid_public_key', ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run(pub);
+      db.prepare("INSERT INTO settings (key, value) VALUES ('vapid_private_key', ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run(priv);
+    } catch (e) {
+      console.error('Error storing VAPID keys in settings:', e);
+    }
+  }
+
+  webpush.setVapidDetails(
+    'mailto:support@mahabirtraders.com',
+    pub,
+    priv
+  );
+
+  return { publicKey: pub, privateKey: priv };
+}
+
+const vapidKeys = getVapidKeys();
 
 // Active in-memory token store: token -> user
 const sessions = new Map();
@@ -55,10 +92,73 @@ function logAudit(actorName, actorRole, action, details, req) {
   }
 }
 
-// Helper: Add Notification
-function addNotification(mechanicId, message) {
+// Helper: Send Web Push Notification to specific user or all subscribers
+async function sendPushNotification(targetUserIdOrAll, { title, body, url, icon, badge, tag, data }) {
+  try {
+    let rows = [];
+    if (!targetUserIdOrAll || targetUserIdOrAll === 'ALL' || targetUserIdOrAll === 0 || targetUserIdOrAll === '0') {
+      rows = db.prepare("SELECT * FROM push_subscriptions").all();
+    } else {
+      rows = db.prepare("SELECT * FROM push_subscriptions WHERE user_id = ?").all(String(targetUserIdOrAll));
+    }
+
+    if (!rows || rows.length === 0) {
+      return { sent: 0, failed: 0, reason: 'No active push subscriptions found' };
+    }
+
+    const payload = JSON.stringify({
+      title: title || 'Mahabir Traders',
+      body: body || 'Notification from Mahabir Traders',
+      url: url || '/',
+      icon: icon || '/icons/icon-192.png',
+      badge: badge || '/icons/favicon.png',
+      tag: tag || `mt-${Date.now()}`,
+      data: data || {}
+    });
+
+    let sentCount = 0;
+    let failCount = 0;
+
+    await Promise.allSettled(
+      rows.map(async (subRow) => {
+        const pushSubscription = {
+          endpoint: subRow.endpoint,
+          keys: {
+            p256dh: subRow.p256dh,
+            auth: subRow.auth
+          }
+        };
+
+        try {
+          await webpush.sendNotification(pushSubscription, payload);
+          sentCount++;
+        } catch (err) {
+          failCount++;
+          if (err.statusCode === 404 || err.statusCode === 410) {
+            try {
+              db.prepare("DELETE FROM push_subscriptions WHERE id = ?").run(subRow.id);
+            } catch (e) {}
+          }
+        }
+      })
+    );
+
+    return { sent: sentCount, failed: failCount, total: rows.length };
+  } catch (err) {
+    console.error('[WebPush Error]:', err);
+    return { error: err.message };
+  }
+}
+
+// Helper: Add Notification and trigger Push Notification
+function addNotification(mechanicId, message, title = 'Mahabir Traders Alert') {
   try {
     db.prepare("INSERT INTO notifications (mechanic_id, message) VALUES (?, ?)").run(mechanicId, message);
+    sendPushNotification(mechanicId === 0 ? 'ALL' : mechanicId, {
+      title,
+      body: message,
+      url: '/'
+    }).catch(err => console.error('[Push Notification Trigger Error]:', err));
   } catch (e) {
     console.error('Notification error:', e);
   }
@@ -1859,6 +1959,141 @@ const server = http.createServer(async (req, res) => {
           details: result
         }, 400);
       }
+    }
+
+    /* =========================================================================
+       WEB PUSH NOTIFICATION ROUTES
+       ========================================================================= */
+
+    // 17a. Get VAPID Public Key for client browser subscription
+    if (pathname === '/api/push/vapid-public-key' && req.method === 'GET') {
+      return sendJson({
+        success: true,
+        publicKey: vapidKeys.publicKey
+      });
+    }
+
+    // 17b. Subscribe browser device for Push Notifications
+    if (pathname === '/api/push/subscribe' && req.method === 'POST') {
+      const body = await parseJsonBody(req);
+      const { subscription, userId, userAgent } = body;
+
+      if (!subscription || !subscription.endpoint || !subscription.keys || !subscription.keys.p256dh || !subscription.keys.auth) {
+        return sendError('Invalid push subscription payload. Endpoint and cryptographic keys (p256dh, auth) are required.', 400);
+      }
+
+      const uidStr = userId !== undefined && userId !== null ? String(userId) : 'guest';
+      const uaStr = userAgent || (req.headers['user-agent'] || 'Unknown Browser');
+
+      try {
+        db.prepare(`
+          INSERT INTO push_subscriptions (user_id, endpoint, p256dh, auth, user_agent)
+          VALUES (?, ?, ?, ?, ?)
+          ON CONFLICT(endpoint) DO UPDATE SET
+            user_id = excluded.user_id,
+            p256dh = excluded.p256dh,
+            auth = excluded.auth,
+            user_agent = excluded.user_agent,
+            created_at = CURRENT_TIMESTAMP
+        `).run(uidStr, subscription.endpoint, subscription.keys.p256dh, subscription.keys.auth, uaStr);
+
+        // Send instant welcome notification to newly paired device
+        sendPushNotification(uidStr, {
+          title: '🏪 Welcome to Mahabir Traders!',
+          body: `Submit customer purchase bills and claim exciting rewards!\n📍 Store Location: Block Road, Rosera, Samastipur\n📞 Helpline / Orders: +91 9955594571\nThank you for partnering with Mahabir Traders!`,
+          url: '/'
+        }).catch(err => console.error('[Welcome Push Error]:', err));
+
+        return sendJson({
+          success: true,
+          message: 'Device subscribed to Web Push notifications successfully!'
+        });
+      } catch (err) {
+        console.error('Error storing push subscription:', err);
+        return sendError('Failed to save push subscription in database: ' + err.message, 500);
+      }
+    }
+
+    // 17c. Unsubscribe browser device from Push Notifications
+    if (pathname === '/api/push/unsubscribe' && req.method === 'POST') {
+      const body = await parseJsonBody(req);
+      const { endpoint } = body;
+
+      if (!endpoint) {
+        return sendError('Push endpoint is required to unsubscribe', 400);
+      }
+
+      try {
+        db.prepare("DELETE FROM push_subscriptions WHERE endpoint = ?").run(endpoint);
+        return sendJson({
+          success: true,
+          message: 'Device unsubscribed from push notifications successfully.'
+        });
+      } catch (err) {
+        return sendError('Failed to unsubscribe: ' + err.message, 500);
+      }
+    }
+
+    // 17d. Test Send Push Notification (Send to current device or all)
+    if (pathname === '/api/push/test' && req.method === 'POST') {
+      const body = await parseJsonBody(req);
+      const { userId, title, message } = body;
+
+      const pushTitle = title || '🔔 Mahabir Traders Notification Test';
+      const pushBody = message || 'Your mobile push notification setup is working perfectly on this device!';
+
+      const targetUser = userId !== undefined ? userId : 'ALL';
+      const result = await sendPushNotification(targetUser, {
+        title: pushTitle,
+        body: pushBody,
+        url: '/'
+      });
+
+      return sendJson({
+        success: true,
+        message: 'Push notification triggered',
+        result
+      });
+    }
+
+    // 17e. Admin: Push Subscribers List & Stats
+    if (pathname === '/api/admin/push/subscribers' && req.method === 'GET') {
+      const user = authenticate(req);
+      if (!user || user.role !== 'admin') return sendError('Forbidden', 403);
+
+      const subs = db.prepare("SELECT id, user_id, endpoint, user_agent, created_at FROM push_subscriptions ORDER BY id DESC").all();
+      return sendJson({
+        success: true,
+        totalSubscribers: subs.length,
+        subscribers: subs
+      });
+    }
+
+    // 17f. Admin: Broadcast Push Notification to All Devices
+    if (pathname === '/api/admin/push/broadcast' && req.method === 'POST') {
+      const user = authenticate(req);
+      if (!user || user.role !== 'admin') return sendError('Forbidden', 403);
+
+      const body = await parseJsonBody(req);
+      const { title, message, url } = body;
+
+      if (!title || !message) {
+        return sendError('Title and message are required for push broadcast', 400);
+      }
+
+      const result = await sendPushNotification('ALL', {
+        title: title.trim(),
+        body: message.trim(),
+        url: url || '/'
+      });
+
+      logAudit(user.name, user.role, 'Broadcast Push Notification', `Title: ${title.trim()} (Sent: ${result.sent}, Failed: ${result.failed})`, req);
+
+      return sendJson({
+        success: true,
+        message: `Broadcast push sent to ${result.sent || 0} device(s)!`,
+        result
+      });
     }
 
     /* =========================================================================

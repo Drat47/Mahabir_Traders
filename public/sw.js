@@ -1,9 +1,9 @@
-const CACHE_NAME = 'mahabir-app-v3';
+const CACHE_NAME = 'mahabir-app-v4';
 const ASSETS = [
   '/',
   '/index.html',
-  '/css/app.css?v=3.0',
-  '/js/app.js?v=3.0',
+  '/css/app.css?v=4.0',
+  '/js/app.js?v=4.0',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
@@ -39,3 +39,66 @@ self.addEventListener('fetch', (e) => {
     fetch(e.request).catch(() => caches.match(e.request))
   );
 });
+
+// =========================================================================
+// WEB PUSH NOTIFICATION LISTENERS
+// =========================================================================
+
+self.addEventListener('push', (event) => {
+  let data = {
+    title: 'Mahabir Traders',
+    body: 'You have a new update from Mahabir Traders!',
+    icon: '/icons/icon-192.png',
+    badge: '/icons/favicon.png',
+    url: '/'
+  };
+
+  if (event.data) {
+    try {
+      const parsed = event.data.json();
+      data = Object.assign(data, parsed);
+    } catch (e) {
+      data.body = event.data.text();
+    }
+  }
+
+  const options = {
+    body: data.body,
+    icon: data.icon || '/icons/icon-192.png',
+    badge: data.badge || '/icons/favicon.png',
+    vibrate: [200, 100, 200, 100, 200],
+    tag: data.tag || 'mahabir-notification',
+    renotify: true,
+    data: {
+      url: data.url || '/',
+      dateOfArrival: Date.now(),
+      primaryKey: data.primaryKey || 1
+    },
+    actions: data.actions || [
+      { action: 'open', title: 'Open App' }
+    ]
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(data.title, options)
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const targetUrl = (event.notification.data && event.notification.data.url) || '/';
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if (client.url.includes(targetUrl) && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(targetUrl);
+      }
+    })
+  );
+});
+

@@ -88,12 +88,20 @@ body {
 /* Main Content Area */
 .main-content {
   flex: 1;
-  padding: 12px 12px;
+  padding: 12px 12px 76px 12px;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
   min-width: 0;
   overflow-x: hidden;
+}
+
+@media (min-width: 769px) {
+  .main-content {
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 20px 24px 80px 24px;
+  }
 }
 
 /* Top App Bar on Mobile / Header */

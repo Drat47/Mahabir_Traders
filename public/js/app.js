@@ -957,6 +957,9 @@ async function initApp() {
       const res = await API.get('/api/auth/me');
       AppState.user = res.user;
       startAutoSync();
+      if (window.Notification && Notification.permission === 'granted') {
+        subscribeToPushNotifications(AppState.user?.id, true);
+      }
       navigate(AppState.user.role === 'auditor' ? 'audit_feed' : 'dash');
     } catch (e) {
       logout(false);
@@ -1435,6 +1438,9 @@ async function handleLoginSubmit(e) {
     localStorage.setItem('mech_audit_token', res.token);
     showToast(`Welcome back, ${res.user.name}!`, 'success');
     startAutoSync();
+    if (window.Notification && Notification.permission !== 'denied') {
+      subscribeToPushNotifications(res.user.id, true);
+    }
     navigate(res.user.role === 'auditor' ? 'audit_feed' : 'dash');
   } catch (err) {
     btn.disabled = false;
@@ -1481,6 +1487,9 @@ async function handleSignUpSubmit(e) {
     localStorage.setItem('mech_audit_token', res.token);
     showToast(res.message || 'Account created successfully!', 'success');
     startAutoSync();
+    if (window.Notification && Notification.permission !== 'denied') {
+      subscribeToPushNotifications(res.user.id, true);
+    }
 
     if (res.welcomeGreeting) {
       showWorkerWelcomeModal(res.welcomeGreeting, () => {
@@ -5439,6 +5448,71 @@ async function renderSettingsView() {
       </div>
     ` : ''}
 
+    <!-- Web Push Notifications & Real-Time Mobile Alerts Card -->
+    <div class="card" style="margin-bottom:20px;max-width:720px;">
+      <div class="card-header" style="border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:16px;">
+        <div>
+          <div class="card-title" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span>🔔 Web Push Notifications & Real-Time Mobile Alerts</span>
+            <span id="push-status-badge" class="badge badge-approved" style="font-size:11px;">
+              ${window.Notification && Notification.permission === 'granted' ? '🟢 Push Enabled' : '⚪ Push Inactive'}
+            </span>
+          </div>
+          <p style="font-size:12px;color:var(--text-muted);margin-top:2px;">
+            Receive instant lock-screen notifications on your phone for new bills, point approvals, rewards, and announcements even when the browser is closed.
+          </p>
+        </div>
+      </div>
+
+      <div style="background:#F8FAFC;border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+          <div>
+            <div style="font-size:13.5px;font-weight:700;color:var(--primary);">
+              This Device Push Status: <span id="push-perm-status" style="color:var(--accent);">${window.Notification ? Notification.permission : 'unsupported'}</span>
+            </div>
+            <small style="color:var(--text-muted);font-size:11.5px;">Supported on Chrome Android, Safari iOS (16.4+), Edge, Firefox, and Desktop.</small>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="button" class="btn btn-primary btn-sm" id="enable-push-btn" onclick="handleTogglePushNotifications()">
+              🔔 Enable / Pair This Device
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm" id="test-push-btn" onclick="handlePushTestSend()">
+              🚀 Test Push Alert
+            </button>
+          </div>
+        </div>
+        <div id="push-test-result" style="margin-top:10px;font-size:12px;display:none;"></div>
+      </div>
+
+      ${isAdmin ? `
+        <!-- Admin Broadcast Push Notification Tool -->
+        <div style="border-top:1px solid var(--border);padding-top:14px;">
+          <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:4px;">
+            📢 Broadcast Announcement Push to All Registered Devices
+          </div>
+          <p style="font-size:11.5px;color:var(--text-muted);margin-bottom:10px;">
+            Send an instant notification popup to all workers and auditors who have paired their phones.
+          </p>
+          <form onsubmit="handlePushBroadcastSend(event)">
+            <div class="form-group" style="margin-bottom:8px;">
+              <label style="font-size:11.5px;">Notification Title</label>
+              <input type="text" id="broadcast-push-title" placeholder="e.g. 🎁 Double Points Weekend at Mahabir Traders!" required>
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+              <label style="font-size:11.5px;">Notification Message</label>
+              <textarea id="broadcast-push-message" rows="2" placeholder="e.g. Visit our store on Block Road, Rosera or submit bills today to earn 2X loyalty reward points!" required></textarea>
+            </div>
+            <div style="display:flex;justify-content:flex-end;">
+              <button type="submit" class="btn btn-primary" id="broadcast-push-btn">
+                📢 Send Broadcast Notification
+              </button>
+            </div>
+          </form>
+          <div id="broadcast-push-result" style="margin-top:10px;font-size:12px;display:none;"></div>
+        </div>
+      ` : ''}
+    </div>
+
     <!-- System & Network Info Card -->
     <div class="card" style="max-width:720px;">
       <div class="card-title" style="margin-bottom:12px;">💻 ${t('sys_net_info')}</div>
@@ -5587,6 +5661,201 @@ async function handleWhatsAppTestSend() {
   }
 }
 
+// =========================================================================
+// WEB PUSH NOTIFICATION CLIENT HELPERS
+// =========================================================================
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding)
+    .replace(/\-/g, '+')
+    .replace(/_/g, '/');
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
+async function subscribeToPushNotifications(userId, silent = false) {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) {
+    if (!silent) showToast('Push notifications are not supported on this browser version', 'error');
+    return { supported: false };
+  }
+
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      if (!silent) showToast('Notification permission was not granted', 'info');
+      return { granted: false, permission };
+    }
+
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+
+    if (!sub) {
+      const res = await fetch('/api/push/vapid-public-key');
+      const data = await res.json();
+      if (!data.success || !data.publicKey) {
+        throw new Error('Failed to retrieve VAPID key from server');
+      }
+
+      const applicationServerKey = urlBase64ToUint8Array(data.publicKey);
+      sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey
+      });
+    }
+
+    const subJson = sub.toJSON();
+    const uid = userId || (AppState.user ? AppState.user.id : 'guest');
+
+    await fetch('/api/push/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        subscription: subJson,
+        userId: uid,
+        userAgent: navigator.userAgent
+      })
+    });
+
+    if (!silent) {
+      showToast('🔔 This device is now paired for push notifications!', 'success');
+      const badge = document.getElementById('push-status-badge');
+      const permText = document.getElementById('push-perm-status');
+      if (badge) {
+        badge.className = 'badge badge-approved';
+        badge.textContent = '🟢 Push Enabled';
+      }
+      if (permText) permText.textContent = 'granted';
+    }
+
+    return { success: true, subscription: subJson };
+  } catch (err) {
+    console.error('[WebPush Subscribe Error]:', err);
+    if (!silent) showToast('Failed to subscribe to push notifications: ' + err.message, 'error');
+    return { success: false, error: err.message };
+  }
+}
+
+async function handleTogglePushNotifications() {
+  const btn = document.getElementById('enable-push-btn');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '⏳ Pairing Device...';
+  }
+  await subscribeToPushNotifications(AppState.user?.id, false);
+  if (btn) {
+    btn.disabled = false;
+    btn.textContent = '🔔 Re-Pair Device';
+  }
+}
+
+async function handlePushTestSend() {
+  const btn = document.getElementById('test-push-btn');
+  const resultBox = document.getElementById('push-test-result');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '⏳ Sending Alert...';
+  }
+
+  if (resultBox) {
+    resultBox.style.display = 'block';
+    resultBox.style.background = '#EFF6FF';
+    resultBox.style.color = '#1E40AF';
+    resultBox.style.padding = '8px 12px';
+    resultBox.style.borderRadius = 'var(--radius-sm)';
+    resultBox.innerHTML = 'Sending instant test notification to this device...';
+  }
+
+  try {
+    // First make sure device is subscribed
+    if (window.Notification && Notification.permission !== 'granted') {
+      await subscribeToPushNotifications(AppState.user?.id, false);
+    }
+
+    const res = await API.post('/api/push/test', {
+      userId: AppState.user ? AppState.user.id : 'ALL',
+      title: '🏪 Mahabir Traders · Instant Alert',
+      message: '🎉 Push notification setup is fully operational on your mobile phone!'
+    });
+
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = '🚀 Test Push Alert';
+    }
+
+    if (resultBox) {
+      resultBox.style.background = '#F0FDF4';
+      resultBox.style.color = '#166534';
+      resultBox.innerHTML = `✅ <b>Success!</b> Test notification dispatched to your registered browser device.`;
+    }
+    showToast('Push alert sent to your device!', 'success');
+  } catch (err) {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = '🚀 Test Push Alert';
+    }
+    if (resultBox) {
+      resultBox.style.background = '#FEF2F2';
+      resultBox.style.color = '#991B1B';
+      resultBox.innerHTML = `❌ <b>Failed:</b> ${err.message || 'Could not send test push.'}`;
+    }
+  }
+}
+
+async function handlePushBroadcastSend(e) {
+  e.preventDefault();
+  const titleInput = document.getElementById('broadcast-push-title');
+  const msgInput = document.getElementById('broadcast-push-message');
+  const btn = document.getElementById('broadcast-push-btn');
+  const resultBox = document.getElementById('broadcast-push-result');
+
+  const title = titleInput ? titleInput.value.trim() : '';
+  const message = msgInput ? msgInput.value.trim() : '';
+
+  if (!title || !message) {
+    return showToast('Title and message are required', 'error');
+  }
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Dispatching Broadcast...';
+
+  if (resultBox) {
+    resultBox.style.display = 'block';
+    resultBox.style.background = '#EFF6FF';
+    resultBox.style.color = '#1E40AF';
+    resultBox.style.padding = '8px 12px';
+    resultBox.style.borderRadius = 'var(--radius-sm)';
+    resultBox.innerHTML = 'Broadcasting notification to all registered phones...';
+  }
+
+  try {
+    const res = await API.post('/api/admin/push/broadcast', { title, message, url: '/' });
+    btn.disabled = false;
+    btn.textContent = '📢 Send Broadcast Notification';
+    if (resultBox) {
+      resultBox.style.background = '#F0FDF4';
+      resultBox.style.color = '#166534';
+      resultBox.innerHTML = `✅ <b>Delivered!</b> Broadcast sent to ${res.result?.sent || 0} active device(s).`;
+    }
+    showToast(res.message || 'Broadcast sent!', 'success');
+    if (titleInput) titleInput.value = '';
+    if (msgInput) msgInput.value = '';
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = '📢 Send Broadcast Notification';
+    if (resultBox) {
+      resultBox.style.background = '#FEF2F2';
+      resultBox.style.color = '#991B1B';
+      resultBox.innerHTML = `❌ <b>Failed:</b> ${err.message || 'Failed to dispatch broadcast.'}`;
+    }
+  }
+}
+
 // Global initialization
 window.addEventListener('DOMContentLoaded', initApp);
+
 
