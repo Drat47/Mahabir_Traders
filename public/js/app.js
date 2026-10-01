@@ -1000,8 +1000,9 @@ function navigate(view, subId = null) {
 function renderShell() {
   const app = document.getElementById('app');
   app.innerHTML = `
-    <div class="phone-wrapper">
-      <div class="phone-frame" id="phone-frame">
+    <div class="app-layout" id="app-layout">
+      <aside id="sidebar-slot" class="sidebar"></aside>
+      <div class="app-main-area">
         <div id="toast-container"></div>
         <div id="modal-root"></div>
         <div id="mobile-header-slot"></div>
@@ -1248,10 +1249,108 @@ async function renderView() {
   }
 }
 
-// Sidebar Navigation (Unneeded in unified mobile-first phone frame)
+// Desktop Sidebar Navigation
 function renderSidebar() {
   const sidebar = document.getElementById('sidebar-slot');
-  if (sidebar) sidebar.innerHTML = '';
+  if (!sidebar) return;
+  if (!AppState.user) {
+    sidebar.innerHTML = '';
+    return;
+  }
+
+  const role = AppState.user.role;
+  const roleName = role === 'admin' ? t('role_admin') : role === 'auditor' ? t('role_auditor') : (AppState.user.mechanic?.trade_type || t('role_mechanic'));
+
+  let navItems = [];
+  if (role === 'admin') {
+    navItems = [
+      { id: 'dash', icon: '📊', label: t('nav_dashboard') },
+      { id: 'about', icon: '🏪', label: t('nav_about_store') },
+      { id: 'verifications', icon: '🔍', label: t('nav_bill_audits'), count: AppState.stats.pendingBills || 0 },
+      { id: 'mechanics', icon: '👷', label: t('nav_mechanics') },
+      { id: 'purchases', icon: '🧾', label: t('nav_purchases') },
+      { id: 'returns', icon: '↩️', label: t('nav_returns') },
+      { id: 'rewards', icon: '🎁', label: t('nav_rewards') },
+      { id: 'redemptions', icon: '🏆', label: t('nav_redemptions'), count: AppState.stats.pendingRedemptions || 0 },
+      { id: 'reports', icon: '📈', label: t('nav_reports') },
+      { id: 'audit_logs', icon: '📋', label: t('nav_audit_logs') },
+      { id: 'notifications', icon: '🔔', label: t('nav_notifications') },
+      { id: 'settings', icon: '⚙️', label: t('nav_settings') }
+    ];
+  } else if (role === 'auditor') {
+    navItems = [
+      { id: 'dash', icon: '📊', label: t('nav_field_overview') },
+      { id: 'about', icon: '🏪', label: t('nav_about_store') },
+      { id: 'audit_feed', icon: '🔍', label: t('nav_bill_audits'), count: AppState.stats.pendingBills || 0 },
+      { id: 'submit_purchase', icon: '📸', label: t('nav_snap_bill') },
+      { id: 'mechanics', icon: '👷', label: t('nav_mechanics') },
+      { id: 'purchases', icon: '🧾', label: t('nav_purchases') },
+      { id: 'returns', icon: '↩️', label: t('nav_returns') },
+      { id: 'audit_logs', icon: '📋', label: t('nav_audit_logs') },
+      { id: 'notifications', icon: '🔔', label: t('nav_notifications') }
+    ];
+  } else {
+    navItems = [
+      { id: 'dash', icon: '🏠', label: t('nav_my_dashboard') },
+      { id: 'about', icon: '🏪', label: t('nav_about_store') },
+      { id: 'submit_purchase', icon: '📸', label: t('nav_snap_bill') },
+      { id: 'purchases', icon: '🧾', label: t('nav_my_purchases') },
+      { id: 'rewards', icon: '🎁', label: t('nav_rewards_claim') },
+      { id: 'redemptions', icon: '🏆', label: t('nav_redemption_history') },
+      { id: 'notifications', icon: '🔔', label: t('nav_notifications') }
+    ];
+  }
+
+  let mechPts = 0;
+  if (role === 'mechanic' && AppState.user.mechanic) {
+    mechPts = AppState.user.mechanic.available_points || 0;
+  }
+
+  sidebar.innerHTML = `
+    <div class="sidebar-brand" onclick="navigate('dash')" style="cursor:pointer;">
+      <div style="font-size:26px;">🏪</div>
+      <div>
+        <div style="font-size:16px;font-weight:800;color:#fff;line-height:1.2;">${t('brand_name')}</div>
+        <small style="color:#94A3B8;font-size:11px;">Rewards & Audit System</small>
+      </div>
+    </div>
+
+    <div class="sidebar-user-card">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:38px;height:38px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;">
+          ${(AppState.user.name || 'U').charAt(0).toUpperCase()}
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:700;font-size:13.5px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+            ${AppState.user.name}
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
+            <span class="user-badge role-${role}">${roleName}</span>
+            ${role === 'mechanic' ? `<span style="font-size:11px;color:#4ADE80;font-weight:700;">${mechPts} pts</span>` : ''}
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:10px;">
+        ${renderLangSwitcherHtml('dark')}
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      ${navItems.map(item => `
+        <a class="sidebar-nav-item ${AppState.view === item.id ? 'active' : ''}" onclick="navigate('${item.id}')">
+          <span style="font-size:16px;">${item.icon}</span>
+          <span style="flex:1;">${item.label}</span>
+          ${item.count ? `<span class="badge-count">${item.count}</span>` : ''}
+        </a>
+      `).join('')}
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn btn-danger btn-sm" style="width:100%;padding:8px 12px;" onclick="logout(true)">
+        🚪 ${t('logout')}
+      </button>
+    </div>
+  `;
 }
 
 // Mobile Bottom Navigation Bar (With 1-Tap Access to All Features via Menu)

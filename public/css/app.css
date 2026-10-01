@@ -917,7 +917,35 @@ html, body {
   display: none !important;
 }
 
-/* Sticky Top Mobile Header */
+/* =========================================================================
+   RESPONSIVE APP LAYOUT (MOBILE FIRST & DESKTOP ENHANCED)
+   ========================================================================= */
+
+.app-layout {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background: var(--bg-page);
+}
+
+.app-main-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Sidebar hidden on mobile / tablets by default */
+.sidebar, #sidebar-slot {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  visibility: hidden !important;
+}
+
+/* Sticky Top Mobile Header (Mobile Only) */
 .mobile-header {
   position: sticky !important;
   top: 0 !important;
@@ -991,14 +1019,7 @@ html, body {
   overflow-x: hidden;
 }
 
-@media (min-width: 900px) {
-  .main-content {
-    max-width: 860px;
-    padding: 16px 16px;
-  }
-}
-
-/* Fixed Bottom Navigation Bar */
+/* Fixed Bottom Navigation Bar (Mobile Only) */
 .bottom-nav {
   position: fixed !important;
   bottom: 0 !important;
@@ -1015,6 +1036,117 @@ html, body {
   align-items: center !important;
   justify-content: space-around !important;
   box-sizing: border-box !important;
+}
+
+/* =========================================================================
+   DESKTOP ENHANCEMENTS (>= 993px)
+   ========================================================================= */
+
+@media (min-width: 993px) {
+  /* Visible Full Left Desktop Sidebar */
+  .sidebar, #sidebar-slot {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 260px !important;
+    min-width: 260px !important;
+    height: 100vh !important;
+    position: sticky !important;
+    top: 0 !important;
+    background: #0F172A !important;
+    color: #ffffff !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-sizing: border-box !important;
+    overflow-y: auto !important;
+    z-index: 60 !important;
+    visibility: visible !important;
+  }
+
+  .sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 22px 20px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .sidebar-user-card {
+    padding: 16px 18px;
+    background: rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow-y: auto;
+  }
+
+  .sidebar-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: #94A3B8;
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 600;
+    transition: all 0.15s ease;
+    cursor: pointer;
+  }
+
+  .sidebar-nav-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+  }
+
+  .sidebar-nav-item.active {
+    background: var(--accent);
+    color: #ffffff;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+  }
+
+  .sidebar-footer {
+    padding: 16px 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Hide Mobile Header and Mobile Bottom Bar on Desktop */
+  .mobile-header {
+    display: none !important;
+  }
+
+  .bottom-nav {
+    display: none !important;
+  }
+
+  .app-container {
+    padding-bottom: 30px !important;
+  }
+
+  /* Wide spacious desktop container */
+  .main-content {
+    max-width: 1400px !important;
+    margin: 0 auto;
+    padding: 24px 32px 40px 32px;
+  }
+
+  /* 4-column metric cards */
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 16px;
+  }
+
+  /* 2-column split for dashboard charts and tables */
+  .dashboard-desktop-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
 }
 
 /* Slide-out Drawer & Backdrop */
