@@ -2132,7 +2132,14 @@ const server = http.createServer(async (req, res) => {
     if (fs.existsSync(filePath)) {
       const ext = path.extname(filePath).toLowerCase();
       const contentType = MIME_TYPES[ext] || 'text/html; charset=utf-8';
-      res.writeHead(200, { 'Content-Type': contentType });
+      const isHtmlOrSw = safePath.endsWith('index.html') || safePath.endsWith('sw.js') || safePath === '/';
+      const headers = { 'Content-Type': contentType };
+      if (isHtmlOrSw) {
+        headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0';
+        headers['Pragma'] = 'no-cache';
+        headers['Expires'] = '0';
+      }
+      res.writeHead(200, headers);
       fs.createReadStream(filePath).pipe(res);
       return;
     }

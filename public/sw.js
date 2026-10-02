@@ -1,9 +1,9 @@
-const CACHE_NAME = 'mahabir-app-v6';
+const CACHE_NAME = 'mahabir-app-v7';
 const ASSETS = [
   '/',
   '/index.html',
-  '/css/app.css?v=6.0',
-  '/js/app.js?v=6.0',
+  '/css/app.css?v=7.0',
+  '/js/app.js?v=7.0',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
@@ -31,12 +31,21 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-  // Only cache GET requests that are not API calls
+  // Only handle GET requests that are not API calls
   if (e.request.method !== 'GET' || e.request.url.includes('/api/')) {
     return;
   }
+  // Network first strategy: always try network first so live updates take effect instantly
   e.respondWith(
-    fetch(e.request).catch(() => caches.match(e.request))
+    fetch(e.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const resClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, resClone));
+        }
+        return networkResponse;
+      })
+      .catch(() => caches.match(e.request))
   );
 });
 
