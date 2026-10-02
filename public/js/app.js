@@ -1697,7 +1697,7 @@ function showWorkerWelcomeModal(welcomeData, onProceed) {
       <div class="modal-content" style="max-width:540px;text-align:center;" onclick="event.stopPropagation()">
         
         <div style="font-size:44px;margin-bottom:6px;">🎉</div>
-        <h2 style="font-size:22px;font-weight:800;color:var(--primary);margin:0 0 6px 0;">
+        <h2 style="font-size:22px;font-weight:800;margin:0 0 6px 0;">
           ${isWorker ? 'Welcome to Mahabir Traders!' : 'Worker Registered Successfully!'}
         </h2>
         <p style="font-size:13.5px;color:var(--text-muted);margin:0 0 14px 0;">
@@ -1707,19 +1707,19 @@ function showWorkerWelcomeModal(welcomeData, onProceed) {
         </p>
 
         <!-- Summary Chip Grid -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:14px;text-align:left;font-size:12.5px;">
-          <div><b>👤 Name:</b> ${welcomeData.workerName}</div>
-          <div><b>🆔 User ID:</b> <span style="color:var(--primary);font-weight:700;">${welcomeData.uid}</span></div>
-          <div><b>📱 Mobile:</b> +91 ${welcomeData.workerPhone}</div>
-          <div><b>🛠️ Trade:</b> ${welcomeData.tradeType || 'Worker'}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:14px;text-align:left;font-size:12.5px;color:#F8FAFC;">
+          <div><b>👤 Name:</b> <span style="color:#FFFFFF;">${welcomeData.workerName}</span></div>
+          <div><b>🆔 User ID:</b> <span style="color:#FFFFFF;font-weight:700;">${welcomeData.uid}</span></div>
+          <div><b>📱 Mobile:</b> <span style="color:#FFFFFF;">+91 ${welcomeData.workerPhone}</span></div>
+          <div><b>🛠️ Trade:</b> <span style="color:#FFFFFF;">${welcomeData.tradeType || 'Worker'}</span></div>
         </div>
 
         <!-- WhatsApp Greeting Card Preview -->
         <div style="text-align:left;margin-bottom:14px;">
-          <div style="font-size:11.5px;font-weight:700;color:#15803D;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">
+          <div style="font-size:11.5px;font-weight:700;color:#34D399;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">
             💬 Official WhatsApp Welcome Message Preview:
           </div>
-          <div id="worker-welcome-preview" style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:var(--radius-sm);padding:12px;font-size:12.5px;line-height:1.55;color:#166534;white-space:pre-line;max-height:180px;overflow-y:auto;font-family:inherit;">
+          <div id="worker-welcome-preview" style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.35);border-radius:var(--radius-sm);padding:12px;font-size:12.5px;line-height:1.55;color:#E2E8F0;white-space:pre-line;max-height:180px;overflow-y:auto;font-family:inherit;">
 ${welcomeData.messageText}
           </div>
         </div>
@@ -1731,16 +1731,6 @@ ${welcomeData.messageText}
               <span>Connect with Store Helpline on WhatsApp (+91 9955594571)</span>
             </a>
 
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-              <a href="${workerSelfUrl}" target="_blank" class="btn btn-secondary" style="font-size:12.5px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;" onclick="handleWelcomeWhatsAppClicked()">
-                <span>📲</span>
-                <span>Send to My WhatsApp</span>
-              </a>
-              <button type="button" class="btn btn-secondary" style="font-size:12.5px;" onclick="copyWelcomeGreetingText()">
-                📋 Copy Details
-              </button>
-            </div>
-
             <button type="button" class="btn btn-secondary btn-lg" style="margin-top:4px;" onclick="closeWelcomeModal()">
               Enter My Dashboard ➔
             </button>
@@ -1749,16 +1739,6 @@ ${welcomeData.messageText}
               <span>💬</span>
               <span>Send Welcome Greeting to Worker (+91 ${welcomeData.workerPhone})</span>
             </a>
-
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-              <a href="${welcomeData.smsUrl}" class="btn btn-secondary" style="font-size:12.5px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;">
-                <span>📨</span>
-                <span>Send via SMS</span>
-              </a>
-              <button type="button" class="btn btn-secondary" style="font-size:12.5px;" onclick="copyWelcomeGreetingText()">
-                📋 Copy Message Text
-              </button>
-            </div>
 
             <button type="button" class="btn btn-secondary btn-lg" style="margin-top:4px;" onclick="closeWelcomeModal()">
               Done / Back to Directory ➔
