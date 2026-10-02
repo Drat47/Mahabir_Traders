@@ -3163,7 +3163,7 @@ async function renderMechanicsList() {
 
   main.innerHTML = `
     <div style="margin-bottom:12px;">
-      <h1 class="page-title" style="font-size:22px;font-weight:800;margin:0 0 4px 0;display:flex;align-items:center;gap:6px;color:var(--primary);">
+      <h1 class="page-title" style="font-size:22px;font-weight:800;margin:0 0 4px 0;display:flex;align-items:center;gap:6px;">
         <span>👷</span> <span>${t('mechanics_directory_title')}</span>
       </h1>
       <p style="font-size:13px;color:var(--text-muted);margin:0;">${t('mechanics_directory_sub')}</p>
@@ -3176,36 +3176,36 @@ async function renderMechanicsList() {
     ` : ''}
 
     <div style="margin-bottom:14px;">
-      <input type="text" id="mech-search" placeholder="${t('search_mechanics_placeholder')}" oninput="filterMechanicsTable(this.value)" style="width:100%;min-height:46px;border:1px solid var(--border);border-radius:10px;padding:0 14px;font-size:14px;background:#fff;box-sizing:border-box;">
+      <input type="text" id="mech-search" placeholder="${t('search_mechanics_placeholder')}" oninput="filterMechanicsTable(this.value)" style="width:100%;min-height:46px;border:1px solid var(--border);border-radius:10px;padding:0 14px;font-size:14px;box-sizing:border-box;">
     </div>
 
     <div class="card" style="padding:0;overflow:hidden;border-radius:12px;margin-bottom:16px;">
       <div class="table-responsive" style="border:none;border-radius:0;margin-bottom:0;">
         <table id="mechanics-table" style="width:100%;border-collapse:collapse;">
           <thead>
-            <tr style="background:#F8FAFC;border-bottom:1px solid var(--border);">
-              <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--text-muted);width:15%;">ID</th>
-              <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--text-muted);width:45%;">${t('full_name')}</th>
-              <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--text-muted);width:20%;">${t('trade_category')}</th>
-              <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--text-muted);width:20%;">${t('phone')}</th>
+            <tr style="border-bottom:1px solid var(--border);">
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:15%;">ID</th>
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:45%;">${t('full_name')}</th>
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:20%;">${t('trade_category')}</th>
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:20%;">${t('phone')}</th>
             </tr>
           </thead>
           <tbody>
             ${mechanics.map(m => `
               <tr data-search="${(m.name + m.phone + (m.uid || '') + (m.trade_type || '') + (m.address || '')).toLowerCase()}" style="border-bottom:1px solid var(--border);cursor:pointer;" onclick="navigate('mechanic_detail', ${m.id})">
-                <td style="padding:16px 12px;vertical-align:top;font-weight:700;color:var(--primary);font-size:13.5px;">
+                <td style="padding:16px 12px;vertical-align:top;font-weight:700;font-size:13.5px;">
                   ${m.uid || ('MEC' + m.id)}
                 </td>
                 <td style="padding:16px 12px;vertical-align:top;">
-                  <div style="font-weight:700;color:var(--primary);font-size:14px;">${m.name}</div>
+                  <div style="font-weight:700;font-size:14px;">${m.name}</div>
                   ${m.address ? `<div style="font-size:12px;color:var(--text-muted);line-height:1.4;margin-top:2px;">${m.address}</div>` : ''}
                 </td>
                 <td style="padding:16px 12px;vertical-align:top;">
-                  <span class="badge" style="background:#E0E7FF;color:#3730A3;font-weight:600;padding:4px 10px;border-radius:99px;font-size:12px;display:inline-block;">
+                  <span class="badge" style="padding:4px 10px;border-radius:99px;font-size:12px;display:inline-block;font-weight:600;">
                     ${m.trade_type}
                   </span>
                 </td>
-                <td style="padding:16px 12px;vertical-align:top;font-weight:700;color:var(--primary);font-size:13.5px;white-space:nowrap;">
+                <td style="padding:16px 12px;vertical-align:top;font-weight:700;font-size:13.5px;white-space:nowrap;">
                   ${m.phone}
                 </td>
               </tr>
@@ -3420,11 +3420,11 @@ async function renderCategoryWorkers(categoryType) {
       <div class="table-responsive" style="border:none;border-radius:0;margin-bottom:0;">
         <table id="cat-mechanics-table" style="width:100%;border-collapse:collapse;">
           <thead>
-            <tr style="background:#F8FAFC;border-bottom:1px solid var(--border);">
-              <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--text-muted);width:15%;">ID</th>
-              <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--text-muted);width:45%;">${t('full_name')}</th>
-              <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--text-muted);width:20%;">${t('phone')}</th>
-              <th style="padding:14px 12px;font-size:13px;font-weight:700;color:var(--text-muted);width:20%;">${t('available_points')}</th>
+            <tr style="border-bottom:1px solid var(--border);">
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:15%;">ID</th>
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:45%;">${t('full_name')}</th>
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:20%;">${t('phone')}</th>
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:20%;">${t('available_points')}</th>
             </tr>
           </thead>
           <tbody>
@@ -3432,18 +3432,18 @@ async function renderCategoryWorkers(categoryType) {
               <tr><td colspan="4" style="text-align:center;padding:32px;color:var(--text-muted);">${t('no_workers_cat', '', { cat: type })}</td></tr>
             ` : mechanics.map(m => `
               <tr data-search="${(m.name + m.phone + (m.uid || '') + (m.trade_type || '') + (m.address || '')).toLowerCase()}" style="border-bottom:1px solid var(--border);cursor:pointer;" onclick="navigate('mechanic_detail', ${m.id})">
-                <td style="padding:16px 12px;vertical-align:top;font-weight:700;color:var(--primary);font-size:13.5px;">
+                <td style="padding:16px 12px;vertical-align:top;font-weight:700;font-size:13.5px;">
                   ${m.uid || ('MEC' + m.id)}
                 </td>
                 <td style="padding:16px 12px;vertical-align:top;">
-                  <div style="font-weight:700;color:var(--primary);font-size:14px;">${m.name} ➔</div>
+                  <div style="font-weight:700;font-size:14px;">${m.name} ➔</div>
                   ${m.address ? `<div style="font-size:12px;color:var(--text-muted);line-height:1.4;margin-top:2px;">${m.address}</div>` : ''}
                 </td>
-                <td style="padding:16px 12px;vertical-align:top;font-weight:700;color:var(--primary);font-size:13.5px;white-space:nowrap;">
+                <td style="padding:16px 12px;vertical-align:top;font-weight:700;font-size:13.5px;white-space:nowrap;">
                   ${m.phone}
                 </td>
                 <td style="padding:16px 12px;vertical-align:top;">
-                  <b style="color:var(--primary);font-size:15px;">${m.available_points}</b>
+                  <b style="font-size:15px;">${m.available_points}</b>
                   ${m.recovery_points > 0 ? `<br><small style="color:var(--danger)">${t('recovery_pending')}: ${m.recovery_points}</small>` : ''}
                 </td>
               </tr>
