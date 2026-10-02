@@ -1630,6 +1630,63 @@ html, body {
     color: #CBD5E1 !important;
   }
 
+  /* Mobile Buttons - High Contrast Dark Theme */
+  .btn {
+    font-weight: 700 !important;
+    border-radius: 10px !important;
+    letter-spacing: 0.2px !important;
+    transition: all 0.15s ease !important;
+  }
+
+  .btn-secondary {
+    background: #231E3D !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .btn-secondary:hover,
+  .btn-secondary:active {
+    background: #312A54 !important;
+    border-color: #8B5CF6 !important;
+    color: #FFFFFF !important;
+    transform: scale(0.98);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%) !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4) !important;
+  }
+
+  .btn-primary:hover,
+  .btn-primary:active {
+    background: linear-gradient(135deg, #6D28D9 0%, #5B21B6 100%) !important;
+    transform: scale(0.98);
+  }
+
+  .btn-success {
+    background: #16A34A !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3) !important;
+  }
+
+  .btn-danger {
+    background: #DC2626 !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3) !important;
+  }
+
+  .btn-warning {
+    background: #D97706 !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3) !important;
+  }
+
   /* Bottom Navigation Bar (Sleek Dark Purple Bar) */
   .bottom-nav {
     display: flex !important;
