@@ -249,7 +249,7 @@ function buildWorkerWelcomeGreeting(name, uid, phone, tradeType = 'Worker') {
     `🎁 *Starting Balance:* 0 Points\n\n` +
     `Submit customer purchase bills whenever you buy or refer materials from Mahabir Traders to earn instant reward points and claim exciting gifts!\n\n` +
     `📍 *Store Location:* Block Road, Rosera, Samastipur\n` +
-    `📞 *Helpline / Orders:* +91 9955594571 / 8949492740\n\n` +
+    `📞 *Helpline / Orders:* +91 9955594571\n\n` +
     `Thank you for partnering with Mahabir Traders!`;
 
   return {
