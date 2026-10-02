@@ -849,6 +849,28 @@ const server = http.createServer(async (req, res) => {
       return sendJson({ mechanic: mech, purchases, ledger, pendingBillsCount });
     }
 
+    // Delete Mechanic Account Permanently
+    if (mechMatch && req.method === 'DELETE') {
+      const user = authenticate(req);
+      if (!user || user.role !== 'admin') return sendError('Forbidden: Admin access required', 403);
+      const id = parseInt(mechMatch[1], 10);
+      const mech = db.prepare("SELECT * FROM mechanics WHERE id = ?").get(id);
+      if (!mech) return sendError('Mechanic not found', 404);
+
+      const purchases = db.prepare("SELECT id FROM purchases WHERE mechanic_id = ?").all(id);
+      for (const p of purchases) {
+        db.prepare("DELETE FROM purchase_items WHERE purchase_id = ?").run(p.id);
+      }
+      db.prepare("DELETE FROM purchases WHERE mechanic_id = ?").run(id);
+      db.prepare("DELETE FROM point_transactions WHERE mechanic_id = ?").run(id);
+      db.prepare("DELETE FROM redemptions WHERE mechanic_id = ?").run(id);
+      db.prepare("DELETE FROM users WHERE mechanic_id = ?").run(id);
+      db.prepare("DELETE FROM mechanics WHERE id = ?").run(id);
+
+      logAudit(user.name, user.role, 'Delete Mechanic Account', `Deleted worker: ${mech.name} (${mech.uid || 'MEC' + mech.id})`, req);
+      return sendJson({ success: true, message: 'Mechanic account deleted successfully' });
+    }
+
     // Toggle Mechanic Status
     const mechStatusMatch = pathname.match(/^\/api\/mechanics\/(\d+)\/status$/);
     if (mechStatusMatch && req.method === 'PATCH') {

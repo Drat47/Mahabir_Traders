@@ -1,9 +1,9 @@
-const CACHE_NAME = 'mahabir-app-v7.3';
+const CACHE_NAME = 'mahabir-app-v7.4';
 const ASSETS = [
   '/',
   '/index.html',
-  '/css/app.css?v=7.3',
-  '/js/app.js?v=7.3',
+  '/css/app.css?v=7.4',
+  '/js/app.js?v=7.4',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png',

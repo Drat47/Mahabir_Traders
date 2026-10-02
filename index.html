@@ -14,7 +14,7 @@
   <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
   <link rel="shortcut icon" href="/icons/favicon.png">
-  <link rel="stylesheet" href="/css/app.css?v=7.3">
+  <link rel="stylesheet" href="/css/app.css?v=7.4">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
@@ -22,12 +22,12 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js?v=7.3').then((reg) => {
+        navigator.serviceWorker.register('/sw.js?v=7.4').then((reg) => {
           reg.update();
         }).catch(() => {});
       });
     }
   </script>
-  <script src="/js/app.js?v=7.3"></script>
+  <script src="/js/app.js?v=7.4"></script>
 </body>
 </html>

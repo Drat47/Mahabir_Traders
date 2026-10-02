@@ -5,7 +5,8 @@
 const API = {
   get: (url) => apiFetch(url, { method: 'GET' }),
   post: (url, data) => apiFetch(url, { method: 'POST', body: JSON.stringify(data) }),
-  patch: (url, data) => apiFetch(url, { method: 'PATCH', body: JSON.stringify(data) })
+  patch: (url, data) => apiFetch(url, { method: 'PATCH', body: JSON.stringify(data) }),
+  delete: (url) => apiFetch(url, { method: 'DELETE' })
 };
 
 let AppState = {
@@ -3151,7 +3152,7 @@ async function renderMechanicsList() {
 
     ${isAdmin ? `
       <button class="btn btn-primary" onclick="openAddMechanicModal()" style="width:100%;min-height:46px;font-size:15px;font-weight:700;border-radius:10px;margin-bottom:14px;">
-        + ${t('register_mechanic_btn')}
+        ${t('register_mechanic_btn')}
       </button>
     ` : ''}
 
@@ -3164,30 +3165,43 @@ async function renderMechanicsList() {
         <table id="mechanics-table" style="width:100%;border-collapse:collapse;">
           <thead>
             <tr style="border-bottom:1px solid var(--border);">
-              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:15%;">ID</th>
-              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:45%;">${t('full_name')}</th>
-              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:20%;">${t('trade_category')}</th>
-              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:20%;">${t('phone')}</th>
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:12%;">ID</th>
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:32%;">${t('full_name')}</th>
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:18%;">${t('trade_category')}</th>
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:18%;">${t('phone')}</th>
+              ${isAdmin ? `<th style="padding:14px 12px;font-size:13px;font-weight:700;width:20%;text-align:right;">${t('actions')}</th>` : ''}
             </tr>
           </thead>
           <tbody>
             ${mechanics.map(m => `
               <tr data-search="${(m.name + m.phone + (m.uid || '') + (m.trade_type || '') + (m.address || '')).toLowerCase()}" style="border-bottom:1px solid var(--border);cursor:pointer;" onclick="navigate('mechanic_detail', ${m.id})">
-                <td style="padding:16px 12px;vertical-align:top;font-weight:700;font-size:13.5px;">
+                <td style="padding:16px 12px;vertical-align:middle;font-weight:700;font-size:13.5px;">
                   ${m.uid || ('MEC' + m.id)}
                 </td>
-                <td style="padding:16px 12px;vertical-align:top;">
+                <td style="padding:16px 12px;vertical-align:middle;">
                   <div style="font-weight:700;font-size:14px;">${m.name}</div>
                   ${m.address ? `<div style="font-size:12px;color:var(--text-muted);line-height:1.4;margin-top:2px;">${m.address}</div>` : ''}
                 </td>
-                <td style="padding:16px 12px;vertical-align:top;">
+                <td style="padding:16px 12px;vertical-align:middle;">
                   <span class="badge" style="padding:4px 10px;border-radius:99px;font-size:12px;display:inline-block;font-weight:600;">
                     ${m.trade_type}
                   </span>
                 </td>
-                <td style="padding:16px 12px;vertical-align:top;font-weight:700;font-size:13.5px;white-space:nowrap;">
+                <td style="padding:16px 12px;vertical-align:middle;font-weight:700;font-size:13.5px;white-space:nowrap;">
                   ${m.phone}
                 </td>
+                ${isAdmin ? `
+                  <td style="padding:16px 12px;vertical-align:middle;text-align:right;" onclick="event.stopPropagation()">
+                    <div style="display:inline-flex;gap:6px;align-items:center;justify-content:flex-end;flex-wrap:wrap;">
+                      <button class="btn ${m.is_active ? 'btn-secondary' : 'btn-success'} btn-sm" onclick="toggleMechanicStatusFromList(${m.id}, event)" style="font-size:11.5px;padding:4px 8px;min-height:30px;white-space:nowrap;">
+                        ${m.is_active ? '⏸️ Deactivate' : '▶️ Activate'}
+                      </button>
+                      <button class="btn btn-danger btn-sm" onclick="deleteMechanicAccountFromList(${m.id}, '${m.name.replace(/'/g, "\\'")}', event)" style="font-size:11.5px;padding:4px 8px;min-height:30px;white-space:nowrap;">
+                        🗑️ Delete
+                      </button>
+                    </div>
+                  </td>
+                ` : ''}
               </tr>
             `).join('')}
           </tbody>
@@ -3324,6 +3338,26 @@ async function handleAddMechanicSubmit(e) {
   } catch (err) {}
 }
 
+async function toggleMechanicStatusFromList(id, event) {
+  if (event) event.stopPropagation();
+  try {
+    const res = await API.patch(`/api/mechanics/${id}/status`, {});
+    showToast(`Worker account ${res.is_active ? 'activated' : 'deactivated'}`, 'success');
+    renderMechanicsList();
+  } catch (e) {}
+}
+
+async function deleteMechanicAccountFromList(id, name, event) {
+  if (event) event.stopPropagation();
+  const confirmed = confirm(`Are you sure you want to permanently delete the worker account for "${name}"?\n\nThis will remove their points balance, account access, and records.`);
+  if (!confirmed) return;
+  try {
+    await API.delete(`/api/mechanics/${id}`);
+    showToast(`Worker account "${name}" deleted permanently`, 'success');
+    renderMechanicsList();
+  } catch (e) {}
+}
+
 async function toggleMechanicStatus(id) {
   try {
     await API.patch(`/api/mechanics/${id}/status`, {});
@@ -3401,31 +3435,44 @@ async function renderCategoryWorkers(categoryType) {
         <table id="cat-mechanics-table" style="width:100%;border-collapse:collapse;">
           <thead>
             <tr style="border-bottom:1px solid var(--border);">
-              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:15%;">ID</th>
-              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:45%;">${t('full_name')}</th>
-              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:20%;">${t('phone')}</th>
-              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:20%;">${t('available_points')}</th>
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:12%;">ID</th>
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:32%;">${t('full_name')}</th>
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:18%;">${t('phone')}</th>
+              <th style="padding:14px 12px;font-size:13px;font-weight:700;width:18%;">${t('available_points')}</th>
+              ${isAdmin ? `<th style="padding:14px 12px;font-size:13px;font-weight:700;width:20%;text-align:right;">${t('actions')}</th>` : ''}
             </tr>
           </thead>
           <tbody>
             ${mechanics.length === 0 ? `
-              <tr><td colspan="4" style="text-align:center;padding:32px;color:var(--text-muted);">${t('no_workers_cat', '', { cat: type })}</td></tr>
+              <tr><td colspan="${isAdmin ? 5 : 4}" style="text-align:center;padding:32px;color:var(--text-muted);">${t('no_workers_cat', '', { cat: type })}</td></tr>
             ` : mechanics.map(m => `
               <tr data-search="${(m.name + m.phone + (m.uid || '') + (m.trade_type || '') + (m.address || '')).toLowerCase()}" style="border-bottom:1px solid var(--border);cursor:pointer;" onclick="navigate('mechanic_detail', ${m.id})">
-                <td style="padding:16px 12px;vertical-align:top;font-weight:700;font-size:13.5px;">
+                <td style="padding:16px 12px;vertical-align:middle;font-weight:700;font-size:13.5px;">
                   ${m.uid || ('MEC' + m.id)}
                 </td>
-                <td style="padding:16px 12px;vertical-align:top;">
+                <td style="padding:16px 12px;vertical-align:middle;">
                   <div style="font-weight:700;font-size:14px;">${m.name} ➔</div>
                   ${m.address ? `<div style="font-size:12px;color:var(--text-muted);line-height:1.4;margin-top:2px;">${m.address}</div>` : ''}
                 </td>
-                <td style="padding:16px 12px;vertical-align:top;font-weight:700;font-size:13.5px;white-space:nowrap;">
+                <td style="padding:16px 12px;vertical-align:middle;font-weight:700;font-size:13.5px;white-space:nowrap;">
                   ${m.phone}
                 </td>
-                <td style="padding:16px 12px;vertical-align:top;">
+                <td style="padding:16px 12px;vertical-align:middle;">
                   <b style="font-size:15px;">${m.available_points}</b>
                   ${m.recovery_points > 0 ? `<br><small style="color:var(--danger)">${t('recovery_pending')}: ${m.recovery_points}</small>` : ''}
                 </td>
+                ${isAdmin ? `
+                  <td style="padding:16px 12px;vertical-align:middle;text-align:right;" onclick="event.stopPropagation()">
+                    <div style="display:inline-flex;gap:6px;align-items:center;justify-content:flex-end;flex-wrap:wrap;">
+                      <button class="btn ${m.is_active ? 'btn-secondary' : 'btn-success'} btn-sm" onclick="toggleMechanicStatusFromCategoryList(${m.id}, '${type}', event)" style="font-size:11.5px;padding:4px 8px;min-height:30px;white-space:nowrap;">
+                        ${m.is_active ? '⏸️ Deactivate' : '▶️ Activate'}
+                      </button>
+                      <button class="btn btn-danger btn-sm" onclick="deleteMechanicAccountFromCategoryList(${m.id}, '${m.name.replace(/'/g, "\\'")}', '${type}', event)" style="font-size:11.5px;padding:4px 8px;min-height:30px;white-space:nowrap;">
+                        🗑️ Delete
+                      </button>
+                    </div>
+                  </td>
+                ` : ''}
               </tr>
             `).join('')}
           </tbody>
@@ -3442,6 +3489,26 @@ function filterCategoryMechanicsTable(query) {
     const text = r.getAttribute('data-search') || '';
     r.style.display = text.includes(q) ? '' : 'none';
   });
+}
+
+async function toggleMechanicStatusFromCategoryList(id, catType, event) {
+  if (event) event.stopPropagation();
+  try {
+    const res = await API.patch(`/api/mechanics/${id}/status`, {});
+    showToast(`Worker account ${res.is_active ? 'activated' : 'deactivated'}`, 'success');
+    renderCategoryWorkers(catType);
+  } catch (e) {}
+}
+
+async function deleteMechanicAccountFromCategoryList(id, name, catType, event) {
+  if (event) event.stopPropagation();
+  const confirmed = confirm(`Are you sure you want to permanently delete the worker account for "${name}"?\n\nThis will remove their points balance, account access, and records.`);
+  if (!confirmed) return;
+  try {
+    await API.delete(`/api/mechanics/${id}`);
+    showToast(`Worker account "${name}" deleted permanently`, 'success');
+    renderCategoryWorkers(catType);
+  } catch (e) {}
 }
 
 /* =========================================================================
@@ -3485,6 +3552,7 @@ async function renderMechanicDetail(mechanicId) {
           <button class="btn btn-secondary btn-sm" onclick="openResetMechanicPasswordModal(${m.id}, '${m.name.replace(/'/g, "\\'")}', '${m.uid}')">${t('reset_pw_btn')}</button>
           <button class="btn btn-primary btn-sm" onclick="openAdjustPointsModal(${m.id}, '${m.name}')">${t('adjust_points_btn')}</button>
           <button class="btn btn-secondary btn-sm" onclick="toggleMechanicStatusDetail(${m.id})">${m.is_active ? t('deactivate') : t('activate')}</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteMechanicAccountDetail(${m.id}, '${m.name.replace(/'/g, "\\'")}')">🗑️ Delete Account</button>
         ` : ''}
       </div>
     </div>
@@ -3622,9 +3690,19 @@ async function renderMechanicDetail(mechanicId) {
 
 async function toggleMechanicStatusDetail(id) {
   try {
-    await API.patch(`/api/mechanics/${id}/status`, {});
+    const res = await API.patch(`/api/mechanics/${id}/status`, {});
     showToast('Mechanic status updated', 'success');
     renderMechanicDetail(id);
+  } catch (e) {}
+}
+
+async function deleteMechanicAccountDetail(id, name) {
+  const confirmed = confirm(`Are you sure you want to permanently delete the worker account for "${name}"?\n\nThis will remove their points balance, account access, and records.`);
+  if (!confirmed) return;
+  try {
+    await API.delete(`/api/mechanics/${id}`);
+    showToast(`Worker account "${name}" deleted permanently`, 'success');
+    navigate('mechanics');
   } catch (e) {}
 }
 
